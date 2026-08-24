@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+
+const rooms = [
+  { name: "Venery",     blurb: "Collective nouns and the words we invent for groups of things.", href: "https://venery.palaich.net", ready: false },
+  { name: "The Syntopicon", blurb: "Essays wandering through the great ideas, one at a time.", href: "/essays", ready: true },
+  { name: "Sports Similarity", blurb: "Which game in 150 years of baseball most resembles last night's?", href: "https://sports.palaich.net", ready: false },
+  { name: "The Daily Crawl", blurb: "The day's news, rewritten as a Star Wars opening crawl. New every morning.", href: "https://crawl.palaich.net", ready: false },
+  { name: "The Comic Strip", blurb: "A strip. It updates when it updates.", href: "/comics", ready: false },
+  { name: "The Back Rooms", blurb: "Whatever I build next lands here first.", href: "/misc", ready: false },
+];
+---
+<Base title="Rob Heffern — a cabinet of curiosities" description="A cabinet of curiosities, and incidentally I built it.">
+  <main class="wrap">
+    <header class="hero">
+      <p class="kicker">You've found</p>
+      <h1>A cabinet of curiosities.</h1>
+      <p class="lede">
+        Some rooms hold essays. One holds a hundred and fifty years of baseball.
+        One rewrites this morning's news in a font that scrolls into space.
+        Wander in. Incidentally, I built all of it.
+      </p>
+    </header>
+
+    <section class="rooms" aria-label="Rooms">
+      {rooms.map((r) => (
+        <a class:list={["room", { soon: !r.ready }]} href={r.href}>
+          <h2>{r.name}</h2>
+          <p>{r.blurb}</p>
+          <span class="tag">{r.ready ? "enter →" : "coming soon"}</span>
+        </a>
+      ))}
+    </section>
+  </main>
+
+  <style>
+    .hero { text-align: center; margin-bottom: 3.5rem; }
+    .kicker {
+      font-family: var(--sans); text-transform: uppercase;
+      letter-spacing: .28em; font-size: .72rem; color: var(--muted); margin: 0 0 .5rem;
+    }
+    h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin: 0 0 1rem; font-weight: 500; }
+    .lede { color: var(--muted); max-width: 34rem; margin: 0 auto; font-size: 1.1rem; }
+
+    .rooms {
+      display: grid; gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    }
+    .room {
+      display: block; background: var(--panel);
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 1.4rem 1.4rem 1.2rem; color: var(--ink);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .room:hover { transform: translateY(-3px); border-color: var(--gold); text-decoration: none; }
+    .room h2 { margin: 0 0 .4rem; font-size: 1.3rem; font-weight: 500; }
+    .room p { margin: 0 0 1rem; color: var(--muted); font-size: .95rem; }
+    .room .tag {
+      font-family: var(--sans); font-size: .72rem; letter-spacing: .04em;
+      color: var(--gold);
+    }
+    .room.soon { opacity: .72; }
+    .room.soon .tag { color: var(--muted); }
+  </style>
+</Base>

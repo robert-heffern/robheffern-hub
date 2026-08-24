@@ -1,0 +1,46 @@
+---
+const { title = "Rob Heffern", description = "A cabinet of curiosities." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <style is:global>
+      :root {
+        --bg: #14110f;
+        --panel: #1e1a16;
+        --ink: #ece3d4;
+        --muted: #a99a83;
+        --gold: #c8a24a;
+        --line: #352e26;
+        --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+        --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1200px 600px at 50% -10%, #241f19 0%, var(--bg) 60%);
+        color: var(--ink);
+        font-family: var(--serif);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+      a { color: var(--gold); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .wrap { max-width: 960px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+      .site-foot {
+        text-align: center; color: var(--muted);
+        font-family: var(--sans); font-size: .8rem;
+        padding: 2rem 1rem 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+    <footer class="site-foot">robheffern.palaich.net — assembled by hand, added to over time.</footer>
+  </body>
+</html>
