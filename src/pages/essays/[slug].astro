@@ -1,0 +1,39 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const essays = await getCollection("essays");
+  return essays.map((e) => ({ params: { slug: e.slug }, props: { entry: e } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+<Base title={`${entry.data.title} — Rob Heffern`} description={entry.data.excerpt}>
+  <article class="essay">
+    <p class="crumb"><a href="/essays/">← all essays</a></p>
+    <p class="cat-tag">{entry.data.category}</p>
+    <h1>{entry.data.title}</h1>
+    <div class="prose">
+      <Content />
+    </div>
+    <p class="foot-nav"><a href="/essays/">← back to the Syntopicon</a></p>
+  </article>
+
+  <style>
+    .essay { max-width: 40rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+    .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2.5rem; }
+    .cat-tag { font-family: var(--sans); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; color: var(--gold); margin: 0 0 .4rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 500; line-height: 1.15; margin: 0 0 2.5rem; }
+    .prose { font-size: 1.15rem; line-height: 1.75; }
+    .prose :global(h2) { font-size: 1.5rem; font-weight: 500; margin: 2.6rem 0 1rem; }
+    .prose :global(h3) { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 .8rem; }
+    .prose :global(p) { margin: 0 0 1.3rem; }
+    .prose :global(hr) { border: none; border-top: 1px solid var(--line); margin: 2.5rem auto; width: 40%; }
+    .prose :global(em) { color: #f0e7d6; }
+    .prose :global(blockquote) { border-left: 2px solid var(--gold); margin: 1.5rem 0; padding: .2rem 0 .2rem 1.2rem; color: var(--muted); font-style: italic; }
+    .prose :global(a) { color: var(--gold); }
+    .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  </style>
+</Base>
