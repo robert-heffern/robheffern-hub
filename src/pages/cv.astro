@@ -1,0 +1,151 @@
+---
+import Base from "../layouts/Base.astro";
+
+const experience = [
+  { role: "Innovations Research Scientist / R&D Engineer", org: "Agilent Technologies", dates: "Nov 2019 – Jul 2026",
+    points: [
+      "Designed and shipped FSE-in-a-Box, a retrieval-augmented LLM app serving 300+ field service engineers — owning the embedding/retrieval layer, prompt and reasoning-flow design, structured outputs, and the guardrail/fallback/confidence logic deciding when it answers, defers, or hands off to a human.",
+      "Built an evaluation loop measuring output quality against real engineer queries and feeding results back into prompt and retrieval changes, so improvement was measured rather than assumed.",
+      "Owned a predictive-maintenance system for a deployed instrument fleet end to end — feature engineering from raw telemetry, training, validation, deployment, and drift monitoring — so service could intervene before customers hit a failure.",
+      "Wrote the Python pipeline correlating instrument log files against power traces (parsing logs, pulling vendor APIs, processing traces, returning tagged training data), cutting data-prep time eight-fold.",
+      "Led an augmented-reality investigation quantifying a ~$6.9M/year opportunity and presented the case to executive leadership; built an internal AR pre-sales tool overlaying virtual instruments on live mobile video.",
+    ]},
+  { role: "Software Engineer / Consultant", org: "Akiva Consulting", dates: "Aug 2018 – Oct 2019",
+    points: [
+      "One of five engineers who built a GraphQL API sustaining 10,000 requests/hour for RE/MAX, from conception to production in eight months; wrote the complete API documentation.",
+      "Imported, cleaned, and loaded image data for 100,000 agents and 600 MLS feeds; built QA automation over 1,500 sparse fields across 120,000 agent records dating to 1973.",
+    ]},
+  { role: "Production Team Systems Engineer", org: "Symmetricom", dates: "Sep 2010 – Sep 2012",
+    points: [
+      "Prototyped, built, and troubleshot precision timing hardware and software in production; contributed to $3.0M in profit with a team of four.",
+      "Maintained the internal timing ensemble to picosecond accuracy; verified secure-area systems and modified hardware for theater operations. Held an active Top Secret clearance.",
+    ]},
+  { role: "Systems Engineer Associate", org: "Lockheed Martin — Commercial Space Systems", dates: "Jan 2009 – Aug 2010",
+    points: [
+      "Authored reliability studies for commercial and research satellites and ISS modules; presented estimates to Japanese, domestic, and U.S. government customers.",
+      "Planned and conducted hardware radiation testing at Brookhaven, Maryland, and RPI to determine final spaceflight availability.",
+    ]},
+];
+
+const research = [
+  { role: "Graduate Researcher — Fiber STED Nanoscopy", org: "Restrepo & Gibson Labs, CU Anschutz", dates: "2015 – 2018",
+    note: "Designed and built a fiber-based STED nanoscope to ~100 nm resolution, alone: optical layout, single-mode fiber delivery, Fourier beam shaping, acquisition and analysis. Also built an OCT microscope from scratch imaging human brain tissue in 3-D." },
+  { role: "Neuroscience Researcher", org: "Ravassard Lab, W.M. Keck Center for Neurophysics", dates: "2012 – 2013",
+    note: "Designed a chronically mounted in-vivo neural recording helmet for rat hippocampus with electronically controlled 0.5 µm depth resolution — a 200× improvement — across eight tetrode groups, with custom PCBs, 3-D printed housing, and a MATLAB control GUI." },
+  { role: "Mineral Physics Researcher", org: "Kavner Lab, UCLA Earth, Planetary & Space Sciences", dates: "2012 – 2014",
+    note: "High pressure-temperature experiments at the Advanced Light Source and ESRF on carbonates and CO₂ under extreme conditions, using diamond anvil cells, synchrotron XRD, neutron diffraction, and Raman." },
+];
+
+const skills = [
+  ["ML & AI", "RAG, embeddings & vector retrieval, LLM APIs, prompt engineering, structured outputs, evaluation & confidence calibration, forecasting, anomaly detection, feature engineering, deployment & drift monitoring"],
+  ["Programming", "Python, SQL, C++, GraphQL, MATLAB, Mathematica, R, PHP, Vue/Node.js, LaTeX, Arduino"],
+  ["Platform & Data", "AWS (Lambda, S3), REST & GraphQL APIs, ElasticSearch, ETL & telemetry pipelines, Git/GitHub, CI, data governance"],
+  ["Optics & Hardware", "free-space and fiber optical design, Fourier optics, super-resolution & fluorescence microscopy, OCT, Raman, silicon detectors, micro-soldering, 3-D printing"],
+];
+---
+<Base title="Robert Heffern — CV" description="Applied physicist and engineer: machine learning & AI systems, optical instrumentation, hardware reliability.">
+  <article class="cv">
+    <p class="crumb"><a href="/">← the cabinet</a></p>
+
+    <header class="head">
+      <h1>Robert A. Heffern</h1>
+      <p class="title">Applied Physicist &amp; Engineer — ML &amp; AI Systems · Optical Instrumentation · Hardware Reliability</p>
+      <p class="contact">Lafayette, CO · <a href="mailto:Robert.Heffern@gmail.com">Robert.Heffern@gmail.com</a></p>
+    </header>
+
+    <section>
+      <p class="lede">
+        Engineer and applied physicist with 15+ years across production machine learning, optical
+        instrumentation, and hardware test and reliability. Recent work centers on building AI and ML
+        systems that ship and keep working; earlier work built the instruments themselves — a fiber
+        STED nanoscope from scratch, an OCT microscope, chronically implanted neural recording hardware
+        — and validated hardware bound for spaceflight and defense, where every measurement was
+        traceable and every conclusion had to survive an audit. Comfortable owning a problem from
+        physics through data pipeline to production system, and equally comfortable being the person
+        who says the result is not yet trustworthy.
+      </p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+      {experience.map((e) => (
+        <div class="entry">
+          <div class="entry-head">
+            <span class="role">{e.role}</span>
+            <span class="dates">{e.dates}</span>
+          </div>
+          <p class="org">{e.org}</p>
+          <ul>{e.points.map((p) => <li>{p}</li>)}</ul>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Selected Research</h2>
+      {research.map((r) => (
+        <div class="entry">
+          <div class="entry-head">
+            <span class="role">{r.role}</span>
+            <span class="dates">{r.dates}</span>
+          </div>
+          <p class="org">{r.org}</p>
+          <p class="note">{r.note}</p>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <div class="entry">
+        <div class="entry-head"><span class="role">M.S. Bioengineering</span><span class="dates">2018</span></div>
+        <p class="org">University of Colorado Anschutz Medical Campus — Thesis: A Fiber STED Microscope</p>
+      </div>
+      <div class="entry">
+        <div class="entry-head"><span class="role">B.S. Applied Physics</span><span class="dates">2008</span></div>
+        <p class="org">University of California, Santa Cruz — Thesis: ZrW₂O₈ metal-oxygen peaks via EXAFS</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Technical Proficiencies</h2>
+      {skills.map(([k, v]) => (
+        <p class="skill"><span class="skill-k">{k}</span> {v}</p>
+      ))}
+    </section>
+
+    <section>
+      <h2>Also on record</h2>
+      <p class="misc">
+        Peer-reviewed publications in <em>Nuclear Instruments &amp; Methods A</em> and <em>American
+        Mineralogist</em> (silicon-detector radiation response; high-pressure carbonate structure).
+        TS/SCI clearance (inactive). Eagle Scout. Languages: English (native), Spanish (functional),
+        Italian (rusty). Full publication and presentation list available on request.
+      </p>
+    </section>
+
+    <p class="foot-nav"><a href="/">← back to the cabinet</a></p>
+  </article>
+
+  <style>
+    .cv { max-width: 44rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+    .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2.5rem; }
+    .head { margin-bottom: 2.5rem; }
+    .head h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 500; margin: 0 0 .4rem; }
+    .title { font-family: var(--sans); color: var(--gold); font-size: .95rem; margin: 0 0 .5rem; }
+    .contact { font-family: var(--sans); color: var(--muted); font-size: .9rem; margin: 0; }
+    .lede { font-size: 1.08rem; line-height: 1.7; color: var(--ink); }
+    h2 { font-family: var(--sans); font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .18em; color: var(--gold); border-bottom: 1px solid var(--line); padding-bottom: .5rem; margin: 2.8rem 0 1.3rem; }
+    .entry { margin: 0 0 1.6rem; }
+    .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .role { font-size: 1.15rem; }
+    .dates { font-family: var(--sans); font-size: .8rem; color: var(--muted); white-space: nowrap; }
+    .org { color: var(--muted); font-style: italic; margin: .1rem 0 .5rem; }
+    .entry ul { margin: .4rem 0 0; padding-left: 1.1rem; }
+    .entry li { margin: 0 0 .5rem; line-height: 1.6; }
+    .note { line-height: 1.65; margin: .2rem 0 0; }
+    .skill { line-height: 1.6; margin: 0 0 .8rem; }
+    .skill-k { font-family: var(--sans); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); display: inline-block; min-width: 9rem; }
+    .misc { line-height: 1.7; color: var(--ink); }
+    .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  </style>
+</Base>

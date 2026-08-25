@@ -1,0 +1,62 @@
+---
+import Base from "../layouts/Base.astro";
+
+const sports = [
+  { name: "Baseball", emoji: "⚾", blurb: "150 years of games. Find the one most like tonight's.", href: "https://sports.palaich.net", live: true },
+  { name: "Hockey", emoji: "🏒", blurb: "Shazam for NHL games — a century of hockey, searched live.", href: "https://hockey.palaich.net", live: true },
+  { name: "Basketball", emoji: "🏀", blurb: "72,000 NBA games. Which one does this one rhyme with?", href: "https://nba.palaich.net", live: true },
+  { name: "Soccer", emoji: "⚽", blurb: "The Premier League, matched against its own history.", href: "https://soccer.palaich.net", live: true },
+];
+
+const coming = ["NFL", "College Football", "NRL", "AFL", "Figure Skating"];
+---
+<Base title="Sports Similarity — Rob Heffern" description="Which game in history most resembles the one you're watching right now?">
+  <main class="wrap">
+    <p class="crumb"><a href="/">← the cabinet</a></p>
+    <header class="room-head">
+      <p class="kicker">Sports Similarity</p>
+      <h1>Which game in history is this one?</h1>
+      <p class="lede">
+        Point one of these at a game happening right now and it searches the whole
+        recorded history of the sport for the game — or season — most like it. Pick a sport.
+      </p>
+    </header>
+
+    <section class="grid">
+      {sports.map((s) => (
+        <a class="sport" href={s.href}>
+          <span class="emoji">{s.emoji}</span>
+          <span class="body">
+            <span class="name">{s.name}</span>
+            <span class="blurb">{s.blurb}</span>
+          </span>
+          <span class="go">open →</span>
+        </a>
+      ))}
+    </section>
+
+    <p class="coming">More on the workbench: {coming.join(" · ")}.</p>
+  </main>
+
+  <style>
+    .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2rem; }
+    .room-head { margin-bottom: 2.5rem; }
+    .kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: .28em; font-size: .72rem; color: var(--muted); margin: 0 0 .5rem; }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 500; margin: 0 0 1rem; }
+    .lede { color: var(--muted); max-width: 36rem; font-size: 1.1rem; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+    .sport {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+      padding: 1.3rem 1.4rem; color: var(--ink);
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .sport:hover { transform: translateY(-3px); border-color: var(--gold); text-decoration: none; }
+    .emoji { font-size: 2.2rem; line-height: 1; }
+    .body { display: flex; flex-direction: column; flex: 1; }
+    .name { font-size: 1.3rem; }
+    .blurb { color: var(--muted); font-size: .92rem; margin-top: .2rem; }
+    .go { font-family: var(--sans); font-size: .72rem; color: var(--gold); white-space: nowrap; }
+    .coming { color: var(--muted); font-family: var(--sans); font-size: .85rem; margin-top: 2.5rem; text-align: center; }
+  </style>
+</Base>
