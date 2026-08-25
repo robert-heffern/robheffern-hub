@@ -3,44 +3,146 @@ import Base from "../layouts/Base.astro";
 
 const experience = [
   { role: "Innovations Research Scientist / R&D Engineer", org: "Agilent Technologies", dates: "Nov 2019 – Jul 2026",
-    points: [
-      "Designed and shipped FSE-in-a-Box, a retrieval-augmented LLM app serving 300+ field service engineers — owning the embedding/retrieval layer, prompt and reasoning-flow design, structured outputs, and the guardrail/fallback/confidence logic deciding when it answers, defers, or hands off to a human.",
-      "Built an evaluation loop measuring output quality against real engineer queries and feeding results back into prompt and retrieval changes, so improvement was measured rather than assumed.",
-      "Owned a predictive-maintenance system for a deployed instrument fleet end to end — feature engineering from raw telemetry, training, validation, deployment, and drift monitoring — so service could intervene before customers hit a failure.",
-      "Wrote the Python pipeline correlating instrument log files against power traces (parsing logs, pulling vendor APIs, processing traces, returning tagged training data), cutting data-prep time eight-fold.",
-      "Led an augmented-reality investigation quantifying a ~$6.9M/year opportunity and presented the case to executive leadership; built an internal AR pre-sales tool overlaying virtual instruments on live mobile video.",
+    summary: "Applied research and development for the CrossLab Connect service organization, spanning machine learning, AI systems, instrument telemetry, and emerging-technology evaluation.",
+    groups: [
+      { h: "Machine Learning and AI Systems", points: [
+        "Designed and shipped FSE-in-a-Box, a retrieval-augmented LLM application serving 300+ field service engineers. Owned the embedding and retrieval layer, prompt and reasoning-flow design, structured output formatting, and the guardrail, fallback, and confidence logic determining when the system answers, when it defers, and when it hands off to a human.",
+        "Built an evaluation loop measuring output quality against real engineer queries and feeding results back into prompt and retrieval changes, so improvement was measured rather than assumed.",
+        "Owned a predictive maintenance system for a deployed instrument fleet end to end — feature engineering from raw telemetry, model training and validation, deployment, and monitoring for drift — so service could intervene before customers experienced a failure.",
+        "Managed a remote team monitoring and analyzing vacuum-pressure failure modes with a third-party vendor, establishing that power draw rises measurably with common failure modes and turning that into a usable ML data source.",
+        "With an interdivisional research effort, characterized instrument power draw under deliberate fouling and induced faults to map edge-case behavior for model training.",
+      ]},
+      { h: "Data Infrastructure and Pipelines", points: [
+        "Wrote and maintained the Python pipeline correlating text-based instrument log files against power traces — parsing logs, pulling vendor APIs, processing traces, and returning tagged data for model training. Reduced training-data preparation time eight-fold.",
+        "Managed and installed 75+ remote power-sensing devices at customer and internal sites, forming the data-collection substrate the predictive models depended on.",
+        "Authored the data-location registry, mapping data ownership, quality context, and access paths after organizational churn scattered them — the prerequisite for any trustworthy analytics or AI system over enterprise data.",
+        "Built an automated mechano-optical acquisition system using infrared webcams to detect liquid level in a vessel, capturing hundreds of labeled images automatically for ML training sets.",
+        "Reverse engineered and mapped transmission protocols between third-party equipment and Agilent products, unlocking previously unreachable data and enabling automated instrument compliance checking.",
+        "Created bulk configuration tooling and identified rollout risks for large-scale power-monitoring deployments, as part of a multi-year program on customer and vendor wireless communication protocols.",
+      ]},
+      { h: "Emerging Technology and Business Analysis", points: [
+        "Led investigation of augmented reality for industrial, educational, training, and sales applications, quantifying a ~$6.9M/year savings and growth opportunity and presenting the case to executive leadership.",
+        "Designed and built an internal AR pre-sales tool placing virtual instruments and specifications over real-time mobile video via motion tracking, for customer product evaluation.",
+        "Conducted independent surveys of field service engineers on AR use cases and unsolved problems, feeding division planning and technology road-mapping.",
+        "Created division-wide scoring tools evaluating novel technologies and estimating ROI using genetic scoring techniques.",
+        "Operated as a senior individual contributor without direct reports: scoped problems, wrote design documents, shipped the code, and set technical direction for engineers outside the reporting line.",
+      ]},
     ]},
-  { role: "Software Engineer / Consultant", org: "Akiva Consulting", dates: "Aug 2018 – Oct 2019",
-    points: [
-      "One of five engineers who built a GraphQL API sustaining 10,000 requests/hour for RE/MAX, from conception to production in eight months; wrote the complete API documentation.",
-      "Imported, cleaned, and loaded image data for 100,000 agents and 600 MLS feeds; built QA automation over 1,500 sparse fields across 120,000 agent records dating to 1973.",
+  { role: "Software Engineer / Consultant", org: "Akiva Consulting, Denver Tech Center", dates: "Aug 2018 – Oct 2019", points: [
+      "One of five engineers who built a GraphQL API sustaining 10,000 requests per hour for RE/MAX Real Estate, taken from initial conception to production in eight months. Wrote the complete API documentation.",
+      "Learned and applied SQL, GraphQL, AWS services, ElasticSearch, cURL, and Python automation scripting on the job, reaching production-level SQL within a month.",
+      "Imported, cleaned, and loaded image data for 100,000 agents, 600 distinct Multiple Listing Service feeds, and office-level geolocation data.",
+      "Built and debugged quality-assurance automation covering 1,500 sparse fields across 120,000 individual agent records dating to 1973.",
+      "Partly responsible for 200% growth of the consultancy over five months. Presented to the client on the future of global real estate with a year-2099 outlook.",
     ]},
-  { role: "Production Team Systems Engineer", org: "Symmetricom", dates: "Sep 2010 – Sep 2012",
-    points: [
+  { role: "Production Team Systems Engineer", org: "Symmetricom", dates: "Sep 2010 – Sep 2012", points: [
       "Prototyped, built, and troubleshot precision timing hardware and software in production; contributed to $3.0M in profit with a team of four.",
-      "Maintained the internal timing ensemble to picosecond accuracy; verified secure-area systems and modified hardware for theater operations. Held an active Top Secret clearance.",
+      "Maintained the internal timing ensemble to picosecond accuracy for product disciplining, working routinely with phase noise analyzers, frequency counters, and spectrum analyzers.",
+      "Verified secure-area-destined systems for accuracy and stability, and modified hardware for Afghanistan theater operations.",
+      "Managed, upgraded, scheduled, and supervised training on a 2 kHz / 100 G vibration table used for part qualification in a simulated aerospace environment.",
+      "Held an active Top Secret clearance for the duration of the role.",
     ]},
-  { role: "Systems Engineer Associate", org: "Lockheed Martin — Commercial Space Systems", dates: "Jan 2009 – Aug 2010",
-    points: [
-      "Authored reliability studies for commercial and research satellites and ISS modules; presented estimates to Japanese, domestic, and U.S. government customers.",
-      "Planned and conducted hardware radiation testing at Brookhaven, Maryland, and RPI to determine final spaceflight availability.",
+  { role: "Systems Engineer Associate", org: "Lockheed Martin — Commercial Space Systems, Specialty Engineering", dates: "Jan 2009 – Aug 2010", points: [
+      "Authored reliability studies for commercial and research satellites and International Space Station modules, and presented estimates to Japanese, domestic, and U.S. government customers.",
+      "Built and supported portable nano-torr vacuum chambers for external site testing of sensitive components.",
+      "Planned and conducted hardware radiation testing at Brookhaven National Laboratory, the University of Maryland, and Rensselaer Polytechnic Institute to determine final spaceflight availability.",
+      "Initiated an internal program giving engineers direct access to reliability data and programs.",
+    ]},
+  { role: "Technician", org: "Main Street Automotive", dates: "Jun 1998 – Sep 2004", points: [
+      "Worked every function of the family automotive repair shop — transmission and torque converter rebuilding, diagnosis of uncommon faults, telephone and electrical wiring, carpentry, bookkeeping, marketing and mass mailing, and customer relations.",
+      "Earnings from the shop helped put three siblings through college without debt.",
     ]},
 ];
 
 const research = [
-  { role: "Graduate Researcher — Fiber STED Nanoscopy", org: "Restrepo & Gibson Labs, CU Anschutz", dates: "2015 – 2018",
-    note: "Designed and built a fiber-based STED nanoscope to ~100 nm resolution, alone: optical layout, single-mode fiber delivery, Fourier beam shaping, acquisition and analysis. Also built an OCT microscope from scratch imaging human brain tissue in 3-D." },
-  { role: "Neuroscience Researcher", org: "Ravassard Lab, W.M. Keck Center for Neurophysics", dates: "2012 – 2013",
-    note: "Designed a chronically mounted in-vivo neural recording helmet for rat hippocampus with electronically controlled 0.5 µm depth resolution — a 200× improvement — across eight tetrode groups, with custom PCBs, 3-D printed housing, and a MATLAB control GUI." },
-  { role: "Mineral Physics Researcher", org: "Kavner Lab, UCLA Earth, Planetary & Space Sciences", dates: "2012 – 2014",
-    note: "High pressure-temperature experiments at the Advanced Light Source and ESRF on carbonates and CO₂ under extreme conditions, using diamond anvil cells, synchrotron XRD, neutron diffraction, and Raman." },
+  { role: "Graduate Researcher", org: "Labs of Drs. Diego Restrepo & Emily Gibson, CU Anschutz", dates: "Jun 2015 – Jun 2018", points: [
+      "Designed, built, and troubleshot a fiber-based STED nanoscope achieving ~100 nm resolution, working alone: optical layout, endlessly single-mode fiber delivery, complex Fourier beam shaping for the depletion profile, excitation delivery, fluorescence collection, opto-mechanical assembly, and the acquisition and analysis chain. Built using SolidWorks, Zemax, MATLAB, and 3-D printing.",
+      "Coupled a super-resolution nanoscope to fiber optic delivery for future chronic implantation in mouse olfactory cortex, targeting observation of learning and memory at video rates over months.",
+      "Built an optical coherence tomography microscope from scratch during rotation, producing 3-D images of human brain tissue samples.",
+    ]},
+  { role: "Virtual Reality Researcher", org: "Children's Hospital Colorado, CU Anschutz", dates: "Nov 2015 – Jun 2018", points: [
+      "Worked with Dr. Joe Albietz, Jennifer Staab, and the Child Life team on a clinical trial testing whether virtual reality reduces pain during pediatric burn dressing changes.",
+      "Collaborated with national game development and 3-D real estate companies to scan patients' homes, local landmarks, and other locations for use in long-term-care enrichment programs.",
+    ]},
+  { role: "Graduate Rotations — Drs. Ribera, Rennie, and Klug", org: "CU Anschutz", dates: "Aug 2014 – May 2015", points: [
+      "With Dr. Ribera, developed a stimulation protocol for imaging genetically encoded fluorescence changes in zebrafish embryo notochord touch-sensing neurons (Rohon-Beard cells), showing calcium uptake indicative of action potential firing at very early developmental stages.",
+      "With Dr. Rennie, used patch clamping to measure vestibular hair cell responses in the gerbil inner ear under ion channel blockers and toxins, establishing that membrane composition changes significantly as animals mature.",
+      "With Dr. Klug, measured ionic currents in ex vivo neurons of the auditory pathway (MNTB), determining that stimulation order significantly affects cellular response.",
+    ]},
+  { role: "Neuroscience Researcher", org: "Lab of Dr. Larry Hoffman, UCLA Vestibular Neuroscience", dates: "Jul 2013 – Aug 2014", points: [
+      "Designed, prototyped, and tested a six-degree-of-freedom wireless motion sensor (linear and gyroscopic XYZ) head-mounted on a chinchilla, transmitting via Bluetooth from a battery-powered backpack at 1.2 kHz to measure head-movement bandwidth.",
+      "Work spanned wireless data transmission characterization (rates, failure modes, dropped bytes), circuit power design, animal welfare protocol, and analysis of the resulting data.",
+    ]},
+  { role: "Neuroscience Researcher", org: "Lab of Dr. Pascal Ravassard, W.M. Keck Center for Neurophysics", dates: "Sep 2012 – Oct 2013", points: [
+      "Designed, built, and tested a chronically mounted in vivo neural recording helmet for rat hippocampus with electronically controlled 0.5 µm depth resolution — a 200× improvement — across eight tetrode groups, with MATLAB desktop GUI control, 3-D printed housing, and custom PCBs driving the motors and recording from the electrodes.",
+      "Designed and built a weaving loom for braiding the fine, long wires used in brain recording, substantially reducing the twisting and breakage that normally plagues them.",
+    ]},
+  { role: "Mineral Physics Researcher", org: "Lab of Dr. Abby Kavner, UCLA Earth, Planetary & Space Sciences", dates: "Sep 2012 – Aug 2014", points: [
+      "Planned and performed high pressure-temperature mineral physics experiments at the Advanced Light Source and the European Synchrotron Radiation Facility, studying kutnohorite, aragonite, and carbon dioxide under extreme conditions to inform models of the global carbon cycle. Methods included diamond anvil cells, synchrotron XRD, neutron diffraction, and Raman spectroscopy.",
+      "Debugged, repaired, and maintained the laboratory's Raman spectrometer for high-pressure chemistry and crystalline structure work.",
+    ]},
+  { role: "Student Researcher", org: "Labs of Drs. Sadrozinski & Bridges, UC Santa Cruz", dates: "Nov 2007 – Aug 2008", points: [
+      "Characterized silicon strip detectors under annealing and variable radiation dosage, contributing to published work on oxide charge, interstrip capacitance, and breakdown behavior in sLHC prototype detectors for the SMART collaboration.",
+      "Authored senior thesis on negative thermal expansion crystals using EXAFS analysis at the Stanford Linear Accelerator Center; contributed to lab work on skutterudites and colossal magnetoresistance materials.",
+    ]},
+];
+
+const projects = [
+  ["FSE-in-a-Box", "Retrieval-augmented LLM assistant for 300+ field service engineers; embeddings, retrieval, prompt design, evaluation harness, and confidence-based human handoff.", "Agilent, 2023–2026"],
+  ["Predictive Maintenance Fleet Models", "Failure prediction over deployed instruments from power-trace and log telemetry, deployed and monitored in production.", "Agilent, 2020–2026"],
+  ["AR Pre-Sales Instrument Overlay", "Motion-tracked augmented reality tool placing virtual instruments over live mobile video for customer evaluation.", "Agilent, 2020–2022"],
+  ["Fiber STED Nanoscope", "Fiber-delivered super-resolution microscope built alone to ~100 nm resolution using endlessly single-mode fiber and Fourier beam shaping.", "CU Anschutz, 2015–2018"],
+  ["OCT Tissue Imaging System", "Optical coherence tomography microscope built from scratch for 3-D imaging of human brain tissue.", "CU Anschutz, 2015–2018"],
+  ["Wireless Head-Motion Sensor", "Six-DOF Bluetooth sensor package and battery backpack for untethered 1.2 kHz motion measurement in freely moving animals.", "UCLA, 2013–2014"],
+  ["Chronic Neural Recording Helmet", "Motorized tetrode array with 0.5 µm depth control, custom PCBs, 3-D printed housing, and MATLAB control GUI.", "Keck Center, 2012–2013"],
+  ["Diamond Anvil Cell Synchrotron Studies", "High pressure-temperature carbonate and CO₂ experiments at ALS and ESRF.", "UCLA, 2012–2014"],
+  ["Production Vibration Qualification", "2 kHz / 100 G aerospace-environment part testing program.", "Symmetricom, 2010–2012"],
+  ["Satellite and ISS Reliability Analysis", "Reliability studies and radiation and vacuum qualification for spaceflight hardware.", "Lockheed Martin, 2009–2010"],
 ];
 
 const skills = [
-  ["ML & AI", "RAG, embeddings & vector retrieval, LLM APIs, prompt engineering, structured outputs, evaluation & confidence calibration, forecasting, anomaly detection, feature engineering, deployment & drift monitoring"],
-  ["Programming", "Python, SQL, C++, GraphQL, MATLAB, Mathematica, R, PHP, Vue/Node.js, LaTeX, Arduino"],
-  ["Platform & Data", "AWS (Lambda, S3), REST & GraphQL APIs, ElasticSearch, ETL & telemetry pipelines, Git/GitHub, CI, data governance"],
-  ["Optics & Hardware", "free-space and fiber optical design, Fourier optics, super-resolution & fluorescence microscopy, OCT, Raman, silicon detectors, micro-soldering, 3-D printing"],
+  ["Machine Learning & AI", "retrieval-augmented generation, embeddings and vector retrieval, LLM APIs, prompt engineering, structured outputs, evaluation frameworks and confidence calibration, classification, regression, forecasting, failure and time-to-event prediction, anomaly detection, feature engineering, model deployment and drift monitoring"],
+  ["Programming", "Python, SQL, C++, GraphQL, MATLAB, Mathematica, R, PHP, cURL, Vue/Node.js, LaTeX, Jupyter, microcontrollers and Arduino"],
+  ["Platform & Data", "AWS (Lambda, S3), REST and GraphQL APIs, ElasticSearch, ETL and telemetry pipelines, Git/GitHub with branching, PRs and code review, CI, data quality and governance, technical design documentation"],
+  ["Engineering Software", "SolidWorks, Zemax, LabVIEW, NI Circuit Design Suite, Linux/Unix, Salesforce, Excel/VBA"],
+  ["Optical & Lab Hardware", "free-space and fiber-coupled optical design and alignment, nano-optics, Fourier optics, fluorescence and super-resolution microscopy, OCT, Raman spectroscopy, silicon detector characterization, phase noise analyzers, frequency counters, spectrum analyzers, oscilloscopes, DAQ boards, micro soldering, 3-D printing"],
+  ["Analytical Chemistry", "LCs, GCs, micro-GCs (Agilent Micro-GC service certified)"],
+  ["Life Science Techniques", "patch clamping, GCaMP and calcium imaging assays, aseptic technique, western blot, microarrays, flow cytometry, reagent preparation"],
+  ["Fabrication", "lathes, mills, MIG/TIG welding, pneumatic tools, mechanical prototyping"],
+  ["Languages", "English (native), Spanish (functional), Italian (rusty)"],
+];
+
+const certs = [
+  ["Top Secret / SCI (TS/SCI) clearance — inactive", "Sep 2010 – Sep 2014"],
+  ["Agilent Micro-GC Repair and Service certification", "Oct 2021"],
+  ["Eagle Scout, Boy Scouts of America", "Jul 2004"],
+];
+
+const publications = [
+  "Sadrozinski, H.F.W., Betancourt, C., Heffern, R., et al. “Total dose dependence of oxide charge, interstrip capacitance and breakdown behavior of sLHC prototype silicon strip detectors and test structures of the SMART collaboration.” Nuclear Instruments and Methods in Physics Research A, 579(2), 769–774, May 2007.",
+  "Palaich, S.E.M., Heffern, R.A., Watenphul, A., Knight, J., and Kavner, A. “High-pressure compressibility and phase stability of Mn-dolomite (kutnohorite).” American Mineralogist, 2015.",
+  "Palaich, S.E.M., Heffern, R.A., Kavner, A., and Merlini, M. “High-pressure structure and compressibility of aragonite to 40 GPa.” American Mineralogist, 2015.",
+  "Palaich, S.E.M., Heffern, R.A., Watenphul, A., Beavers, C., and Kavner, A. “High-pressure X-ray diffraction study of Mn-bearing dolomite, kutnohorite.” AGU Fall Meeting, Abstract #1810462, December 2013.",
+];
+
+const presentations = [
+  "“What Is the Most Valuable Real Estate in the Solar System in 2099?” Monthly presentation to staff and officers, RE/MAX Real Estate Inc., March 2019.",
+  "Fiber STED Microscope — dissertation defense, CU Anschutz, December 2017.",
+  "“Developments in Fiber-Based STED Nanoscopy.” Methods and Research Seminar, CU Anschutz, January 2017.",
+  "“Development of a Fiber-Based STED Nanoscope for Biological Studies at Super-Resolution.” Colorado Photonics Industry Enterprise Fall Meeting, October 2016.",
+  "“Research in Progress: Fiber-Based STED Nanoscopy.” Student body presentation, CU Anschutz, April 2016.",
+  "High-Pressure Compressibility and Thermal Expansion of Aragonite — AGU Fall Meeting, December 2015.",
+  "High-Pressure X-Ray Diffraction Study of Mn-Bearing Dolomite — Deep Carbon Observatory Workshop, Stanford, December 2013.",
+];
+
+const leadership = [
+  ["Englewood Site Social Outreach Head, Agilent Technologies", "Mar 2020 – Jul 2026"],
+  ["School Neuroscience Outreach, Aurora/Denver, CO", "Aug 2015 – Jun 2018"],
+  ["Head Organizer of Intra-Departmental Seminars (MARS Chair), CU Anschutz", "Aug 2016 – May 2017"],
+  ["Officer, Careers in Science Club, CU Anschutz", "Sep 2015 – Oct 2016"],
+  ["Young Hands in Science, CU Anschutz", "Jul 2015 – Nov 2016"],
+  ["Denver/Boulder NewTech, Boulder, CO", "Sep 2010 – Aug 2012"],
+  ["Deputy Social Chair, New Employees of Space Systems Company, Lockheed Martin", "Mar 2010 – Aug 2010"],
 ];
 ---
 <Base title="Robert Heffern — CV" description="Applied physicist and engineer: machine learning & AI systems, optical instrumentation, hardware reliability.">
@@ -49,47 +151,52 @@ const skills = [
 
     <header class="head">
       <h1>Robert A. Heffern</h1>
-      <p class="title">Applied Physicist &amp; Engineer — ML &amp; AI Systems · Optical Instrumentation · Hardware Reliability</p>
-      <p class="contact">Lafayette, CO · <a href="mailto:Robert.Heffern@gmail.com">Robert.Heffern@gmail.com</a></p>
+      <p class="title">Applied Physicist &amp; Engineer — Machine Learning &amp; AI Systems · Optical Instrumentation · Hardware Reliability</p>
+      <p class="contact">Lafayette, CO · (925) 768-7847 · <a href="mailto:Robert.Heffern@gmail.com">Robert.Heffern@gmail.com</a></p>
+      <p class="dl"><a href="/CV_Robert_Heffern_2026.docx" download>↓ Download full CV (Word)</a></p>
     </header>
 
     <section>
       <p class="lede">
         Engineer and applied physicist with 15+ years across production machine learning, optical
-        instrumentation, and hardware test and reliability. Recent work centers on building AI and ML
-        systems that ship and keep working; earlier work built the instruments themselves — a fiber
-        STED nanoscope from scratch, an OCT microscope, chronically implanted neural recording hardware
-        — and validated hardware bound for spaceflight and defense, where every measurement was
-        traceable and every conclusion had to survive an audit. Comfortable owning a problem from
-        physics through data pipeline to production system, and equally comfortable being the person
-        who says the result is not yet trustworthy.
+        instrumentation, and hardware test and reliability. Recent work has centered on building AI and
+        ML systems that ship and keep working: a retrieval-augmented LLM application serving 300+ field
+        service engineers, predictive maintenance models over a deployed instrument fleet, and the
+        telemetry pipelines and data governance underneath both. Earlier work built the instruments
+        themselves — a fiber-based STED nanoscope designed and constructed from scratch, an optical
+        coherence tomography microscope, chronically implanted neural recording hardware — and validated
+        hardware destined for spaceflight and defense use, where every measurement was traceable and
+        every conclusion had to survive external audit. Comfortable owning a problem from physics through
+        data pipeline to production system, and equally comfortable being the person who says the result
+        is not yet trustworthy.
       </p>
     </section>
 
     <section>
-      <h2>Experience</h2>
+      <h2>Professional Experience</h2>
       {experience.map((e) => (
         <div class="entry">
-          <div class="entry-head">
-            <span class="role">{e.role}</span>
-            <span class="dates">{e.dates}</span>
-          </div>
+          <div class="entry-head"><span class="role">{e.role}</span><span class="dates">{e.dates}</span></div>
           <p class="org">{e.org}</p>
-          <ul>{e.points.map((p) => <li>{p}</li>)}</ul>
+          {e.summary && <p class="esum">{e.summary}</p>}
+          {e.points && <ul>{e.points.map((p) => <li>{p}</li>)}</ul>}
+          {e.groups && e.groups.map((g) => (
+            <div class="subgroup">
+              <p class="subh">{g.h}</p>
+              <ul>{g.points.map((p) => <li>{p}</li>)}</ul>
+            </div>
+          ))}
         </div>
       ))}
     </section>
 
     <section>
-      <h2>Selected Research</h2>
+      <h2>Research Experience</h2>
       {research.map((r) => (
         <div class="entry">
-          <div class="entry-head">
-            <span class="role">{r.role}</span>
-            <span class="dates">{r.dates}</span>
-          </div>
+          <div class="entry-head"><span class="role">{r.role}</span><span class="dates">{r.dates}</span></div>
           <p class="org">{r.org}</p>
-          <p class="note">{r.note}</p>
+          <ul>{r.points.map((p) => <li>{p}</li>)}</ul>
         </div>
       ))}
     </section>
@@ -97,13 +204,20 @@ const skills = [
     <section>
       <h2>Education</h2>
       <div class="entry">
-        <div class="entry-head"><span class="role">M.S. Bioengineering</span><span class="dates">2018</span></div>
-        <p class="org">University of Colorado Anschutz Medical Campus — Thesis: A Fiber STED Microscope</p>
+        <div class="entry-head"><span class="role">M.S. Bioengineering</span><span class="dates">May 2018</span></div>
+        <p class="org">University of Colorado Anschutz Medical Campus, Aurora, CO — Thesis: A Fiber STED Microscope: STED Patterning, Excitation Delivery, and Fluorescence Collection and Imaging</p>
       </div>
       <div class="entry">
-        <div class="entry-head"><span class="role">B.S. Applied Physics</span><span class="dates">2008</span></div>
-        <p class="org">University of California, Santa Cruz — Thesis: ZrW₂O₈ metal-oxygen peaks via EXAFS</p>
+        <div class="entry-head"><span class="role">B.S. Applied Physics</span><span class="dates">Dec 2008</span></div>
+        <p class="org">University of California, Santa Cruz — Thesis: Study of ZrW₂O₈ Metal-Oxygen Peaks Through EXAFS Analysis</p>
       </div>
+    </section>
+
+    <section>
+      <h2>Selected Projects</h2>
+      {projects.map(([n, d, w]) => (
+        <p class="proj"><span class="proj-n">{n}</span> — {d} <span class="proj-w">({w})</span></p>
+      ))}
     </section>
 
     <section>
@@ -114,38 +228,61 @@ const skills = [
     </section>
 
     <section>
-      <h2>Also on record</h2>
-      <p class="misc">
-        Peer-reviewed publications in <em>Nuclear Instruments &amp; Methods A</em> and <em>American
-        Mineralogist</em> (silicon-detector radiation response; high-pressure carbonate structure).
-        TS/SCI clearance (inactive). Eagle Scout. Languages: English (native), Spanish (functional),
-        Italian (rusty). Full publication and presentation list available on request.
-      </p>
+      <h2>Certifications & Clearance</h2>
+      {certs.map(([k, d]) => (
+        <div class="line"><span>{k}</span><span class="dates">{d}</span></div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Publications</h2>
+      <ol class="refs">{publications.map((p) => <li>{p}</li>)}</ol>
+    </section>
+
+    <section>
+      <h2>Presentations</h2>
+      <ol class="refs">{presentations.map((p) => <li>{p}</li>)}</ol>
+    </section>
+
+    <section>
+      <h2>Leadership & Service</h2>
+      {leadership.map(([k, d]) => (
+        <div class="line"><span>{k}</span><span class="dates">{d}</span></div>
+      ))}
     </section>
 
     <p class="foot-nav"><a href="/">← back to the cabinet</a></p>
   </article>
 
   <style>
-    .cv { max-width: 44rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+    .cv { max-width: 46rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
     .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2.5rem; }
     .head { margin-bottom: 2.5rem; }
     .head h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 500; margin: 0 0 .4rem; }
-    .title { font-family: var(--sans); color: var(--gold); font-size: .95rem; margin: 0 0 .5rem; }
-    .contact { font-family: var(--sans); color: var(--muted); font-size: .9rem; margin: 0; }
-    .lede { font-size: 1.08rem; line-height: 1.7; color: var(--ink); }
+    .title { font-family: var(--sans); color: var(--gold); font-size: .95rem; margin: 0 0 .5rem; line-height: 1.5; }
+    .contact { font-family: var(--sans); color: var(--muted); font-size: .9rem; margin: 0 0 .8rem; }
+    .dl a { font-family: var(--sans); font-size: .82rem; border: 1px solid var(--line); padding: .4rem .8rem; border-radius: 6px; display: inline-block; }
+    .dl a:hover { border-color: var(--gold); text-decoration: none; }
+    .lede { font-size: 1.05rem; line-height: 1.7; }
     h2 { font-family: var(--sans); font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .18em; color: var(--gold); border-bottom: 1px solid var(--line); padding-bottom: .5rem; margin: 2.8rem 0 1.3rem; }
-    .entry { margin: 0 0 1.6rem; }
+    .entry { margin: 0 0 1.8rem; }
     .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
     .role { font-size: 1.15rem; }
     .dates { font-family: var(--sans); font-size: .8rem; color: var(--muted); white-space: nowrap; }
     .org { color: var(--muted); font-style: italic; margin: .1rem 0 .5rem; }
-    .entry ul { margin: .4rem 0 0; padding-left: 1.1rem; }
-    .entry li { margin: 0 0 .5rem; line-height: 1.6; }
-    .note { line-height: 1.65; margin: .2rem 0 0; }
+    .esum { color: var(--ink); margin: .2rem 0 .6rem; font-size: .98rem; }
+    .subgroup { margin: .6rem 0 0; }
+    .subh { font-family: var(--sans); font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: .6rem 0 .2rem; }
+    .entry ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+    .entry li { margin: 0 0 .5rem; line-height: 1.55; }
+    .proj { line-height: 1.6; margin: 0 0 .7rem; }
+    .proj-n { color: var(--ink); font-weight: 600; }
+    .proj-w { font-family: var(--sans); font-size: .78rem; color: var(--muted); }
     .skill { line-height: 1.6; margin: 0 0 .8rem; }
-    .skill-k { font-family: var(--sans); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); display: inline-block; min-width: 9rem; }
-    .misc { line-height: 1.7; color: var(--ink); }
+    .skill-k { font-family: var(--sans); font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; color: var(--gold); display: block; margin-bottom: .1rem; }
+    .line { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .refs { padding-left: 1.2rem; margin: 0; }
+    .refs li { margin: 0 0 .7rem; line-height: 1.55; font-size: .95rem; }
     .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
   </style>
 </Base>
