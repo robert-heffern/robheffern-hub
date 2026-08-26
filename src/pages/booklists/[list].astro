@@ -1,0 +1,55 @@
+---
+import Base from "../../layouts/Base.astro";
+import data from "../../data/booklists.json";
+
+export function getStaticPaths() {
+  const paths = [];
+  for (const sec of data.sections) {
+    for (const l of sec.lists) {
+      paths.push({ params: { list: l.slug }, props: { list: l, section: sec.name } });
+    }
+  }
+  return paths;
+}
+const { list, section } = Astro.props;
+---
+<Base title={`${list.title} — Booklists`} description={`${list.books.length} books.`}>
+  <main class="wrap">
+    <p class="crumb"><a href="/booklists/">← all booklists</a></p>
+    <header class="lh">
+      <p class="kicker">{section}</p>
+      <h1>{list.title}</h1>
+      <p class="cnt">{list.books.length} books</p>
+    </header>
+
+    <ol class="books">
+      {list.books.map((b) => (
+        <li class="book">
+          <p class="bt">{b.title}</p>
+          {b.author && <p class="ba">{b.author}</p>}
+          {b.blurb && <p class="bl">{b.blurb}</p>}
+          <p class="find">
+            find it: <a href={b.amazon} target="_blank" rel="noopener">Amazon</a>
+            · <a href={b.goodreads} target="_blank" rel="noopener">Goodreads</a>
+          </p>
+        </li>
+      ))}
+    </ol>
+    <p class="foot-nav"><a href="/booklists/">← back to all booklists</a></p>
+  </main>
+  <style>
+    .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2rem; }
+    .lh { margin-bottom: 2.5rem; max-width: 42rem; }
+    .kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; color: var(--gold); margin: 0 0 .4rem; }
+    h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 500; margin: 0 0 .3rem; }
+    .cnt { font-family: var(--sans); color: var(--muted); font-size: .85rem; margin: 0; }
+    .books { list-style: none; margin: 0; padding: 0; max-width: 42rem; counter-reset: b; }
+    .book { border-top: 1px solid var(--line); padding: 1.3rem 0; }
+    .bt { font-size: 1.2rem; margin: 0 0 .1rem; }
+    .ba { color: var(--muted); font-style: italic; margin: 0 0 .5rem; }
+    .bl { line-height: 1.6; margin: 0 0 .6rem; color: var(--ink); }
+    .find { font-family: var(--sans); font-size: .78rem; color: var(--muted); margin: 0; }
+    .find a { color: var(--gold); }
+    .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); max-width: 42rem; }
+  </style>
+</Base>
