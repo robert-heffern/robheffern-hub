@@ -20,6 +20,7 @@ const totalBooks = data.sections.reduce((n,s)=>n+s.lists.reduce((m,l)=>m+l.books
     {data.sections.map((sec) => (
       <section class="sec">
         <h2>{sec.name} <span class="cnt">{sec.lists.length}</span></h2>
+        {sec.intro && <p class="sec-intro">{sec.intro}</p>}
         <div class="lists">
           {sec.lists.map((l) => (
             <a class="listcard" href={`/booklists/${l.slug}/`}>
@@ -40,6 +41,7 @@ const totalBooks = data.sections.reduce((n,s)=>n+s.lists.reduce((m,l)=>m+l.books
     .sec { margin: 2.5rem 0; }
     .sec h2 { font-family: var(--sans); font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .16em; color: var(--gold); border-bottom: 1px solid var(--line); padding-bottom: .5rem; margin: 0 0 1rem; }
     .cnt { color: var(--muted); font-weight: 400; }
+    .sec-intro { color: var(--muted); max-width: 40rem; line-height: 1.6; margin: 0 0 1rem; font-style: italic; }
     .lists { display: grid; gap: .6rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
     .listcard { display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: .7rem .9rem; color: var(--ink); }
     .listcard:hover { border-color: var(--gold); text-decoration: none; }
