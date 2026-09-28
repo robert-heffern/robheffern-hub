@@ -2,7 +2,8 @@
 title: "Born To It"
 category: "State"
 idea: "5c"
-excerpt: "In a house in Baltimore, sometime around 1827, a woman named Sophia Auld sat a boy down and began teaching him the alphabet. The boy was about eight. He was quick. He learned hi…"
+subidea: "State 5c"
+excerpt: "In a house in Baltimore, sometime around 1827, a woman named Sophia Auld sat a boy down and began teaching him the alphabet. The boy was about eight. He was quick. He learned his letters, then small…"
 ---
 
 In a house in Baltimore, sometime around 1827, a woman named Sophia Auld sat a boy down and began teaching him the alphabet. The boy was about eight. He was quick. He learned his letters, then small words, and he was moving on to spelling words of three and four letters when Sophia's husband found out and put a stop to it.

@@ -1,8 +1,9 @@
 ---
 title: "Only a Word"
-category: "Universal & Particular"
+category: "Universal and Particular"
 idea: "2a"
-excerpt: "An old man is about to take a young man apart, and the young man has no idea it's coming"
+subidea: "Universal and Particular 2a"
+excerpt: "An old man is about to take a young man apart, and the young man has no idea it's coming."
 ---
 
 An old man is about to take a young man apart, and the young man has no idea it's coming.

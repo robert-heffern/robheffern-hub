@@ -1,18 +1,22 @@
 ---
 import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
+import syn from "../data/syntopicon.json";
 
 const essays = await getCollection("essays");
 
-// group by category
-const groups = {};
-for (const e of essays) {
-  (groups[e.data.category] ||= []).push(e);
-}
-const categories = Object.keys(groups).sort();
-for (const c of categories) groups[c].sort((a, b) => a.data.title.localeCompare(b.data.title));
+// ideas that have essays, in idea order
+const litNames = Object.keys(syn.essays_by_idea).sort();
+const bySlug = (name) => syn.idea_slug[name];
+
+// map slug -> essay entry for quick lookup
+const entryBySlug = {};
+for (const e of essays) entryBySlug[e.slug] = e;
+
+const essayCount = essays.length;
+const litCount = litNames.length;
 ---
-<Base title="The Syntopicon — essays by Rob Heffern" description="Essays wandering through the great ideas, one at a time.">
+<Base title="The Syntopicon — essays by Rob Heffern" description="Essays wandering through the great ideas, one at a time — cross-linked across the whole map.">
   <main class="wrap">
     <p class="crumb"><a href="/">← the cabinet</a></p>
     <header class="room-head">
@@ -20,25 +24,46 @@ for (const c of categories) groups[c].sort((a, b) => a.data.title.localeCompare(
       <h1>Essays, one great idea at a time.</h1>
       <p class="lede">
         Each of these takes a single old idea — desire, rhetoric, the will, the state —
-        and walks straight into it. Plain language, no gatekeeping. Wander in anywhere.
+        and walks straight into it. Plain language, no gatekeeping. Every essay sits on
+        the old map of the {syn.ideas.length} great ideas, threaded to the others it touches.
+        {essayCount} essays so far, in {litCount} of the {syn.ideas.length} rooms. Wander in anywhere.
       </p>
     </header>
 
-    {categories.map((cat) => (
+    {litNames.map((name) => (
       <section class="cat">
-        <h2>{cat}</h2>
+        <h2><a href={`/essays/idea/${bySlug(name)}/`}>{name}</a></h2>
         <ul>
-          {groups[cat].map((e) => (
-            <li>
-              <a href={`/essays/${e.slug}/`}>
-                <span class="title">{e.data.title}</span>
-                {e.data.excerpt && <span class="teaser">{e.data.excerpt}</span>}
-              </a>
-            </li>
-          ))}
+          {syn.essays_by_idea[name].map((slug) => {
+            const e = entryBySlug[slug];
+            return e ? (
+              <li>
+                <a href={`/essays/${slug}/`}>
+                  <span class="title">{e.data.title}</span>
+                  {e.data.excerpt && <span class="teaser">{e.data.excerpt}</span>}
+                </a>
+              </li>
+            ) : null;
+          })}
         </ul>
       </section>
     ))}
+
+    <section class="map-wrap">
+      <h2 class="map-head">The whole map</h2>
+      <p class="map-note">
+        All {syn.ideas.length} great ideas. The lit ones have essays; the rest show the
+        threads from across the Syntopicon that lead into them. Nothing is a dead end.
+      </p>
+      <div class="map">
+        {syn.ideas.map((idea) => (
+          <a class={idea.essay_count > 0 ? "chip lit" : "chip"} href={`/essays/idea/${idea.slug}/`}>
+            <span class="chip-name">{idea.name}</span>
+            {idea.essay_count > 0 && <span class="chip-count">{idea.essay_count}</span>}
+          </a>
+        ))}
+      </div>
+    </section>
   </main>
 
   <style>
@@ -46,13 +71,15 @@ for (const c of categories) groups[c].sort((a, b) => a.data.title.localeCompare(
     .room-head { margin-bottom: 3rem; }
     .kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: .28em; font-size: .72rem; color: var(--muted); margin: 0 0 .5rem; }
     h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 500; margin: 0 0 1rem; }
-    .lede { color: var(--muted); max-width: 36rem; font-size: 1.1rem; }
+    .lede { color: var(--muted); max-width: 38rem; font-size: 1.1rem; }
     .cat { margin: 2.5rem 0; }
     .cat h2 {
       font-family: var(--sans); font-size: .78rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: .18em; color: var(--gold);
-      border-bottom: 1px solid var(--line); padding-bottom: .5rem; margin: 0 0 1rem;
+      text-transform: uppercase; letter-spacing: .18em; margin: 0 0 1rem;
+      border-bottom: 1px solid var(--line); padding-bottom: .5rem;
     }
+    .cat h2 a { color: var(--gold); }
+    .cat h2 a:hover { text-decoration: underline; }
     .cat ul { list-style: none; margin: 0; padding: 0; }
     .cat li { margin: 0 0 1rem; }
     .cat a { display: block; color: var(--ink); }
@@ -60,5 +87,26 @@ for (const c of categories) groups[c].sort((a, b) => a.data.title.localeCompare(
     .cat a:hover .title { text-decoration: underline; text-decoration-color: var(--gold); }
     .title { display: block; font-size: 1.35rem; }
     .teaser { display: block; color: var(--muted); font-size: .95rem; margin-top: .2rem; }
+
+    .map-wrap { margin: 5rem 0 2rem; }
+    .map-head {
+      font-family: var(--sans); font-size: .78rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .18em; color: var(--gold);
+      border-bottom: 1px solid var(--line); padding-bottom: .5rem; margin: 0 0 .8rem;
+    }
+    .map-note { color: var(--muted); font-size: .95rem; max-width: 38rem; margin: 0 0 1.4rem; }
+    .map { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .chip {
+      display: inline-flex; align-items: baseline; gap: .4rem;
+      font-family: var(--sans); font-size: .82rem; line-height: 1;
+      padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 999px;
+      color: var(--muted); background: transparent;
+    }
+    .chip:hover { border-color: var(--gold); color: var(--ink); text-decoration: none; }
+    .chip.lit { color: var(--ink); border-color: color-mix(in srgb, var(--gold) 55%, var(--line)); }
+    .chip-count {
+      font-size: .65rem; color: var(--gold); border: 1px solid var(--gold);
+      border-radius: 999px; padding: .05rem .35rem;
+    }
   </style>
 </Base>

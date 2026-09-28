@@ -2,7 +2,8 @@
 title: "Just Rhetoric"
 category: "Rhetoric"
 idea: "1b"
-excerpt: "Outside the walls of Athens, on a hot afternoon, two men wade into a stream to cool their feet. One of them is barefoot most of the time anyway. His name is Socrates, and he has…"
+subidea: "Rhetoric 1b"
+excerpt: "Outside the walls of Athens, on a hot afternoon, two men wade into a stream to cool their feet. One of them is barefoot most of the time anyway. His name is Socrates, and he has let a younger friend…"
 ---
 
 Outside the walls of Athens, on a hot afternoon, two men wade into a stream to cool their feet. One of them is barefoot most of the time anyway. His name is Socrates, and he has let a younger friend named Phaedrus talk him into leaving the city, which he almost never does, because Phaedrus has a speech in his pocket that he wants to read aloud. They find a tall plane tree, lie down in the shade, and above them the cicadas keep up their dry, endless singing. And there, in one of the most beautiful settings in all of Plato, Socrates spends the afternoon taking rhetoric apart.

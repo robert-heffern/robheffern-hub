@@ -2,7 +2,8 @@
 title: "The Fullest Thing You Own"
 category: "Space"
 idea: "1d"
-excerpt: "In a workshop in Florence, sometime around the year 1660, a group of careful men set out to squeeze water until it gave up"
+subidea: "Space 1d"
+excerpt: "In a workshop in Florence, sometime around the year 1660, a group of careful men set out to squeeze water until it gave up."
 ---
 
 In a workshop in Florence, sometime around the year 1660, a group of careful men set out to squeeze water until it gave up.

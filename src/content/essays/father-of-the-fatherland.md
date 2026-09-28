@@ -2,7 +2,8 @@
 title: "Father of the Fatherland"
 category: "Family"
 idea: "2b"
-excerpt: "In the year 2 BC, the Roman Senate gave one man a new name"
+subidea: "Family 2b"
+excerpt: "In the year 2 BC, the Roman Senate gave one man a new name."
 ---
 
 In the year 2 BC, the Roman Senate gave one man a new name.

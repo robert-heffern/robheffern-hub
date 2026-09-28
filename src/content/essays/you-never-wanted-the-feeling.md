@@ -2,7 +2,8 @@
 title: "You Never Wanted the Feeling"
 category: "Desire"
 idea: "2b"
-excerpt: "In 1954, in a lab at McGill University, a rat pressed a lever to send a small jolt of electricity into its own brain. Then it pressed it again. Then again"
+subidea: "Desire 2b"
+excerpt: "In 1954, in a lab at McGill University, a rat pressed a lever to send a small jolt of electricity into its own brain. Then it pressed it again. Then again."
 ---
 
 In 1954, in a lab at McGill University, a rat pressed a lever to send a small jolt of electricity into its own brain. Then it pressed it again. Then again.

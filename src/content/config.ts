@@ -6,6 +6,7 @@ const essays = defineCollection({
     title: z.string(),
     category: z.string(),
     idea: z.string().optional(),
+    subidea: z.string().optional(),
     excerpt: z.string().optional(),
   }),
 });

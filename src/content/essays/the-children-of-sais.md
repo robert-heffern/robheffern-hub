@@ -1,0 +1,93 @@
+---
+title: "The Children of Saïs"
+category: "Knowledge"
+idea: "10"
+subidea: "Knowledge 10"
+excerpt: "Solon was the wisest man in Greece, and an Egyptian priest called him a child to his face."
+---
+
+Solon was the wisest man in Greece, and an Egyptian priest called him a child to his face.
+
+Solon had come to Egypt, to the old temple city of Saïs, the way clever Greeks did: to learn. He was a lawgiver, a poet, one of the Seven Sages, a man his whole people looked to for wisdom. And he did what a proud, learned visitor does. He started telling the priests the ancient stories of the Greeks, the oldest things his people knew, the flood and the first men, reaching back as far as Greek memory went to show how deep his tradition ran.
+
+An old priest stopped him. In Plato's telling of it, the priest said: "O Solon, Solon, you Hellenes are never anything but children, and there is not an old man among you." Your oldest stories, he told Solon, are nursery tales. "There is no old opinion handed down among you by ancient tradition, nor any science which is hoary with age." You think you are old. You are infants who happen to be able to talk.
+
+It is a stunning thing to say to the wisest man of a great people, and the strange part is that we are all Solon in this story, and we all feel exactly what he felt. We look back at the ancients the way Solon looked back at his flood-stories, with reverence, sure that the deep past holds a wisdom of age that we can only gaze up at. The old books. The old masters. The founders. We stand in the position of the child looking up at the old man. And this essay is about a claim, made by two very careful people, that the whole feeling is pointing exactly the wrong way.
+
+## The reverence is backwards
+
+Here is the ordinary belief, and you hold it, because almost everyone does. The past is old and we are young. The ancients lived nearer the beginning of things, closer to the source, and so they had a kind of seniority we can never have. When we want the deepest wisdom we reach backward, to Aristotle, to scripture, to the founders, because older is wiser and the old ones got there first. Time, on this picture, is a river flowing away from a wise source, and we are downstream, far from the wellspring, straining to hear what the ancients said when the water was clear.
+
+Two people looked hard at that picture and said it is upside down, and one of them was Blaise Pascal.
+
+Pascal asked a simple question: what is the human race, considered as a knower? Not one person, who is born ignorant and dies and takes his learning with him. The race. And his answer was that the race is not a crowd of separate lives at all. It is one continuous mind. "The whole series of men during the course of so many centuries," he wrote, "should be considered as one self-same man, always in existence and continually learning." One man. Never dying. Adding, century after century, to everything he learned before.
+
+And once you see the race that way, the whole ancients-and-moderns picture flips over. If mankind is one man who never stops learning, then which part of his life were the Greeks? Not his old age. His childhood. "Those whom we call ancients," Pascal wrote, "were in truth new in every respect, and actually formed the childhood of man; and since we have added to their knowledge the experience of the succeeding centuries, it is in ourselves that that antiquity can be found which we revere in others." The wisdom of age we keep looking backward for is not back there. It is here. We are the old man. The ancients were the child, and we have been mistaking the child's early babble for the elder's deep memory because we counted the years the wrong way round.
+
+Francis Bacon had said the same thing, in a line that lands like a slap. We call the Greeks "the ancients," he noted, but that is a mistake in bookkeeping: "these times are the ancient times, when the world is ancient, and not those which we account ancient... by a computation backward from ourselves." The world is older now than it was then. So the truly ancient age, the one with real seniority, is ours. And the authority we hand to the old thinkers simply because they are old rests on nothing, because, as Bacon put it, "truth is rightly named the daughter of time, not of authority." Truth is the child of time itself, which keeps working, and not of any particular old man who happened to speak early.
+
+## Truth older than its discovery
+
+There is a second, stranger blade inside Pascal's argument, and it cuts straight into the question of what truth even is.
+
+We tend to treat a new truth as a new thing, a young thing, something that came into the world the day a clever person thought of it. The old truths are venerable; the new ones have to earn their place. Pascal said this is a plain confusion about what a truth is. A truth was true before anyone noticed it. It does not start existing when you discover it, any more than a mountain starts existing when you first see it over the hill. "Truth," Pascal wrote, "should always have the advantage, even when newly discovered, since it is always older than every opinion men have held about it, and only ignorance of its nature could imagine it began to be at the time it began to be known."
+
+That the earth goes around the sun was true while everyone was certain of the opposite. It was true in Solon's day. It was true before there were people to be wrong about it. So a "new" truth is never actually young. It is one of the oldest things there is, older than every mistaken opinion the human child ever held about it, and the day of its discovery is just the day the growing mind of the race finally caught up to something that had been sitting there, patiently, the whole time. This is cleanest for truths about the world we are given, the world that was already there; truths about the things we *make*, the printing press or a nation's laws, may genuinely begin on the day we make them. But about the given world, Pascal's point stands: the discovery is young, the fact is old.
+
+This gives a clean and comforting answer to the oldest question about truth: is truth eternal and fixed, or does it grow and change over time? Pascal's answer is that truth is completely fixed. It is eternal, immovable, older than everything. What grows is not the truth. What grows is us, the one long-lived man, slowly walking toward a target that never moves.
+
+It is a beautiful resolution. And a second careful thinker refused to accept it.
+
+## The truth that grows
+
+William James looked at the same question and said Pascal's fixed, waiting truth is too simple, because it is not actually how knowledge behaves when you watch it up close.
+
+When we learn something genuinely new, James pointed out, we do not just uncover a fact that was lying there whole and finished. We fit the new thing into everything we already believe, and in the fitting, both change. The new fact gets shaped to fit the old framework; the old framework gets bent to make room for the new fact. "New truths," James wrote, "are resultants of new experiences and of old truths combined and mutually modifying one another." A truth is not a stone you dig up intact. It is more like a new patch woven into an old cloth, and the whole cloth shifts a little to hold it. And so, James said flatly, "in respect of the knowledge it contains the world does genuinely change and grow." Not just our seeing of the world. The world of knowledge itself, the whole fabric of what is true-for-us, genuinely grows, the way a living thing grows, by taking new material in and rearranging itself around it.
+
+Now the two pictures face each other, and this is the real fight inside the word "truth." On Pascal's side: truth is eternal and fixed, and only our grasp of it grows. On James's side: the body of truth itself grows and changes, patched and re-patched, never finished. And the honest thing to say is that they are both describing something real, because they are talking about two different things and calling both "truth." The target, the way the world actually is, does not move; Pascal is right about that, and a science that forgot it would be lost. But the human thing we actually hold and use and hand to our children, the woven cloth of what we take to be true, really does grow and shift and get rewoven, exactly as James says. Truth as the target is a fixed and ancient star. Truth as our possession is a living, growing, unfinished thing. The old question had a boring secret: it was two questions wearing one word.
+
+That peace is the essay's own, and it is worth admitting that James would not fully sign it. He meant something more unsettling than "the target stays put while we walk toward it." He thought the human mind does not merely close the distance to a finished truth but partly *makes* the truth it then goes on to find, weaving as much as discovering. Pascal's fixed ancient star keeps him honest; James's growing cloth keeps Pascal from turning the mind into a passive eye. The truce holds only as long as you remember it is a truce.
+
+## The reverence that costs you
+
+The backwards reverence is not just a mistake in bookkeeping. It has a price, and Edward Gibbon watched it get paid.
+
+When Western Europe finally recovered the lost Greek and Roman classics, after centuries of doing without them, you would expect an explosion of new thought. The greatest books ever written, suddenly back in circulation. Instead, at first, almost nothing. Gibbon, looking at that first generation of recovered learning, delivered a devastating line: "from the first experiment, it might appear that the study of the ancients had given fetters, rather than wings, to the human mind." Fetters, not wings. Chains.
+
+Why chains? Because the recovered ancients were treated as the old wise ones, the final authorities, the peak to be imitated. And you cannot add to a peak you are busy worshipping. The reverence that told scholars to bow to Aristotle was the exact thing stopping them from becoming the old man of the race Pascal described, because the growing only happens when you treat the ancients as the *child* you have already outgrown, whose work you build on top of rather than kneel in front of. Solon's error, worshipping the deep past, is not a harmless mood. Done by a whole civilization, it stops the clock.
+
+Though not forever. The same generation that wore the ancients as fetters was also being trained by them, and the imitation turned out to be an apprenticeship: within a century or two the pupils stood up and surpassed the masters. Reverence for the old is a phase, and a useful one. It only becomes fatal when a civilization forgets to stand back up. The mind of the race only ages if each generation dares, eventually, to be the elder and not the acolyte.
+
+## But the priest was also right
+
+And now the flip flips again, because the old Egyptian priest at Saïs was not simply insulting Solon. He was making a claim, and it is the one claim that can bring this whole confident picture crashing down.
+
+Everything Pascal said depends on one assumption, hidden so deep it is easy to miss: that the race actually keeps its learning. That the one long man never forgets. That what one century discovers, the next century inherits. Only then does mankind slowly age into wisdom. Take that away and the whole thing collapses.
+
+The priest took it away. He told Solon exactly why the Greeks were permanent children, and it was not that they were born late. It was that their memory kept getting erased. Civilizations rise, learn to write, start to accumulate, and then, the priest said, catastrophe comes and "leaves only those of you who are destitute of letters and education; and so you have to begin all over again like children." Over and over. The lettered die, the illiterate survive, and the survivors start from nothing. On the priest's picture there is no one long-lived man at all. There is a child who learns a little, is knocked on the head, and wakes up remembering nothing, again and again forever. Not one mind aging toward wisdom, but the same infant, endlessly restarting.
+
+Anyone who has played a certain kind of game knows both of these in their hands. There is the game with a save file, where everything you unlock passes forward and the next run starts where the last one ended; that is Pascal's race, the one long man. And there is the other kind, where death sends you back to the very beginning with empty pockets, every hard-won thing gone, starting over as a child; that is the priest's. The entire question of whether we are the ancients or the eternal infants comes down to which kind of game human knowledge actually is.
+
+So which is it? Does the race keep its learning and grow old and wise, as Pascal swore, or does it keep getting wiped and starting over like a child, as the priest warned? The answer, which is the thread running through everything in these essays, is the unsatisfying and true one: both, in different rooms of the same house.
+
+## The room where the priest was wrong
+
+There is a piece of the priest's insult that has been sitting quietly this whole time, and it turns out to be the flaw in his logic and the rescue of the ancients at once. The thing he sneered at, specifically, was Solon's *stories*: the flood, the first men, the old Greek myths. Nursery tales, he called them, the babble of a people with no real memory. And about the stories, the priest was wrong.
+
+Because stories are the one kind of knowledge that does not need to accumulate to be great. The Greek tragedies did not need a thousand years of predecessors stacked beneath them; Aeschylus and Sophocles, writing very near the start of Greek memory, set down some of the deepest lines there are about grief and fate and how to bear a life, and later ages did not improve on them so much as fail to match them. Homer arrived early and has never been overtaken. These were not rough first drafts that time revised. In the words this series borrowed once already from Max Weber, a genuine work of art "is never surpassed." And the same is true of the hardest human wisdom, the kind that is not a theorem to be built on but a thing each person has to see for themselves.
+
+So the reverence we feel for the ancients is not simply backwards. It is backwards in one set of rooms and dead right in another. Where knowledge *accumulates*, the sciences, the crafts, the slow compounding trades, we really are the elders, and bowing to Aristotle's physics is the child worshipping his own infancy. But where knowledge does *not* accumulate, in art, in the deepest wisdom about how to live, the ancients are not our childhood at all. They are simply masters we have not beaten, and the reverence is the correct response of a later, no-wiser mind. The priest was right that Greece had no old science. He was wrong to think that made its old stories the babble of children.
+
+## Which room are you standing in
+
+Look at what actually happens to knowledge over time, and you find not two fates but three.
+
+Some of it *accumulates*. The humble craft knowledge, the fire and the grain and the working of metal, keeps its save file; it passes hand to hand, genuinely compounding. And modern experimental science, once it learned to answer to the world instead of to authority, climbed into this same room and now compounds faster than anything else we do. In here Pascal is simply right, and we are the ancients, far better equipped than any Greek.
+
+Some of it *stagnates*. This is what happened to the great speculative systems before they learned that trick: not erased, but frozen. The old philosophies and the old, pre-experimental sciences sat almost unchanged for two thousand years; the Byzantines kept every book and advanced none of them. The memory was perfectly preserved and completely still, a save file no one ever loaded to play the next level. And what decides whether a body of knowledge accumulates or freezes in place is the thing the middle essay was about: whether anything is chasing it. The crafts had the world grading every attempt, and the moderns built rivalry into the work; Byzantium had every book and no rival, and froze. Stagnation is a third fate, neither growth nor loss, and it is its own kind of failure.
+
+And some of it is truly *erased*. This is the priest's fear, and it is not a myth. After the Bronze Age collapse, Greece forgot how to write and stayed illiterate for something like four centuries. The post-Roman West lost the Greek language wholesale and had to buy it back from the Byzantines a thousand years later. Tasmania, cut off, lost even its bone tools. In those cases the letters really do wash away and the survivors really do begin again like children. And even the craft save file, so durable everywhere else, can corrupt when the people carrying it grow few enough.
+
+Truth itself lives across all three at once: the target eternal and unmoving, as Pascal said; our woven, handed-down grasp of it growing and tearing and being rewoven, as James said; and, in the worst centuries, dropped on the floor and started over. We are not simply the ancients or simply the children. We are the elders wherever the memory compounds, the stalled wherever it merely sits, and the children, over and over, wherever it breaks. And nothing in nature assigns a given piece of knowledge to one room rather than another. Whether your hard-won understanding compounds into an old man's wisdom, freezes into a preserved but useless relic, or resets to a child's babble in three generations depends entirely on whether the record is kept and kept *alive*, and that is done only when people bother to do it.
+
+Go back to Solon, standing in the temple at Saïs, stung, being called a child by a man whose people had simply remembered longer. The priest was right about Solon in one way and wrong in another: the Greeks had no old science, but their old stories were no infant's babble. And Pascal was right about the priest: that memory could be built, the child could grow into the elder, mankind could become genuinely ancient and wise. All of it is true at once, and the space between them is the only question that matters. Every generation stands where Solon stood, holding some knowledge it thinks is old and deep, and every generation is either the elder of the race, or its steward keeping a frozen relic, or its newest infant, depending on one thing and one thing only: whether what it learned gets carried forward, kept alive, and built upon, or washed away, so that the ones who come after have to begin all over again, like children.

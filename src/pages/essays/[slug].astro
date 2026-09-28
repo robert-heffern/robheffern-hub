@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { getCollection } from "astro:content";
+import syn from "../../data/syntopicon.json";
 
 export async function getStaticPaths() {
   const essays = await getCollection("essays");
@@ -9,23 +10,74 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const d = entry.data;
+
+const ideaSlug = syn.idea_slug[d.category];
+const subBlurb = d.subidea ? syn.subidea_blurb[d.subidea] : null;
+
+// outbound: where this subtopic connects
+const outbound = (d.subidea && syn.subidea_out[d.subidea]) ? syn.subidea_out[d.subidea] : [];
+
+// sibling essays under the same great idea
+const allEssays = await getCollection("essays");
+const titleBySlug = {};
+for (const e of allEssays) titleBySlug[e.slug] = e.data.title;
+const siblings = (syn.essays_by_idea[d.category] || []).filter((s) => s !== entry.slug);
+
+// which target ideas already have essays (to light them up)
+const ideaHasEssay = (name) => (syn.essays_by_idea[name] || []).length > 0;
 ---
-<Base title={`${entry.data.title} — Rob Heffern`} description={entry.data.excerpt}>
+<Base title={`${d.title} — Rob Heffern`} description={d.excerpt}>
   <article class="essay">
-    <p class="crumb"><a href="/essays/">← all essays</a></p>
-    <p class="cat-tag">{entry.data.category}</p>
-    <h1>{entry.data.title}</h1>
+    <p class="crumb"><a href="/essays/">← the Syntopicon</a></p>
+    <p class="cat-tag"><a href={`/essays/idea/${ideaSlug}/`}>{d.category}{d.idea ? ` ${d.idea}` : ""}</a></p>
+    <h1>{d.title}</h1>
+    {subBlurb && <p class="sub-blurb">{subBlurb}</p>}
     <div class="prose">
       <Content />
     </div>
-    <p class="foot-nav"><a href="/essays/">← back to the Syntopicon</a></p>
+
+    {outbound.length > 0 && (
+      <section class="xref">
+        <h2>Where this connects</h2>
+        <p class="xref-note">This subtopic threads into other great ideas. Follow one.</p>
+        <ul>
+          {outbound.map((o) => (
+            <li class={ideaHasEssay(o.idea) ? "lit" : ""}>
+              <a class="xref-idea" href={`/essays/idea/${o.slug}/`}>{o.idea}{ideaHasEssay(o.idea) ? " ✦" : ""}</a>
+              {o.blurb && <span class="xref-blurb">{o.blurb}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {siblings.length > 0 && (
+      <section class="xref">
+        <h2>More under {d.category}</h2>
+        <ul class="siblings">
+          {siblings.map((s) => (
+            <li><a href={`/essays/${s}/`}>{titleBySlug[s] || s}</a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="foot-nav">
+      <a href={`/essays/idea/${ideaSlug}/`}>See all of {d.category} →</a>
+      <span class="sep">·</span>
+      <a href="/essays/">← back to the Syntopicon</a>
+    </p>
   </article>
 
   <style>
     .essay { max-width: 40rem; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
     .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2.5rem; }
-    .cat-tag { font-family: var(--sans); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; color: var(--gold); margin: 0 0 .4rem; }
-    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 500; line-height: 1.15; margin: 0 0 2.5rem; }
+    .cat-tag { font-family: var(--sans); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; margin: 0 0 .4rem; }
+    .cat-tag a { color: var(--gold); }
+    .cat-tag a:hover { text-decoration: underline; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 500; line-height: 1.15; margin: 0 0 1rem; }
+    .sub-blurb { color: var(--muted); font-style: italic; font-size: 1.05rem; margin: 0 0 2.5rem; padding-left: 1rem; border-left: 2px solid var(--line); }
     .prose { font-size: 1.15rem; line-height: 1.75; }
     .prose :global(h2) { font-size: 1.5rem; font-weight: 500; margin: 2.6rem 0 1rem; }
     .prose :global(h3) { font-size: 1.2rem; font-weight: 600; margin: 2rem 0 .8rem; }
@@ -34,6 +86,25 @@ const { Content } = await entry.render();
     .prose :global(em) { color: #f0e7d6; }
     .prose :global(blockquote) { border-left: 2px solid var(--gold); margin: 1.5rem 0; padding: .2rem 0 .2rem 1.2rem; color: var(--muted); font-style: italic; }
     .prose :global(a) { color: var(--gold); }
-    .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+
+    .xref { margin: 3.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .xref h2 {
+      font-family: var(--sans); font-size: .78rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .18em; color: var(--gold); margin: 0 0 .5rem;
+    }
+    .xref-note { color: var(--muted); font-size: .9rem; margin: 0 0 1rem; }
+    .xref ul { list-style: none; margin: 0; padding: 0; }
+    .xref li { padding: .7rem 0; border-bottom: 1px solid var(--line); }
+    .xref-idea { font-family: var(--sans); font-size: .82rem; font-weight: 600; letter-spacing: .05em; color: var(--muted); }
+    .xref li.lit .xref-idea { color: var(--gold); }
+    .xref-idea:hover { color: var(--gold); text-decoration: none; }
+    .xref-blurb { display: block; font-size: 1.02rem; margin-top: .2rem; color: var(--ink); }
+    .siblings li { padding: .5rem 0; border: none; }
+    .siblings a { color: var(--ink); font-size: 1.1rem; }
+    .siblings a:hover { text-decoration: underline; text-decoration-color: var(--gold); }
+
+    .foot-nav { font-family: var(--sans); font-size: .85rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .foot-nav .sep { margin: 0 .6rem; opacity: .5; }
+    .foot-nav a { color: var(--gold); }
   </style>
 </Base>

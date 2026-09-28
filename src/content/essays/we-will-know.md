@@ -2,7 +2,8 @@
 title: "We Will Know"
 category: "Logic"
 idea: "5a"
-excerpt: "In September of 1930, in the city of Königsberg, an old man stood up to give a speech about the future"
+subidea: "Logic 5a"
+excerpt: "In September of 1930, in the city of Königsberg, an old man stood up to give a speech about the future."
 ---
 
 In September of 1930, in the city of Königsberg, an old man stood up to give a speech about the future.

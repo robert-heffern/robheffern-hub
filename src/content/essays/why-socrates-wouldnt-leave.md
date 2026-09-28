@@ -2,7 +2,8 @@
 title: "Why Socrates Wouldn't Leave"
 category: "Citizen"
 idea: "1"
-excerpt: "The door was open. That's the part nobody tells you"
+subidea: "Citizen 1"
+excerpt: "The door was open. That's the part nobody tells you."
 ---
 
 The door was open. That's the part nobody tells you.

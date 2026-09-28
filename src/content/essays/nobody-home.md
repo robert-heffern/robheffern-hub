@@ -2,7 +2,8 @@
 title: "Nobody Home"
 category: "Poetry"
 idea: "3"
-excerpt: "Every night for years, in a house in London, a blind man lay in the dark and made poems he could not write down"
+subidea: "Poetry 3"
+excerpt: "Every night for years, in a house in London, a blind man lay in the dark and made poems he could not write down."
 ---
 
 Every night for years, in a house in London, a blind man lay in the dark and made poems he could not write down.
