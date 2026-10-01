@@ -3,7 +3,7 @@ title: "The Empty Throne"
 category: "Government"
 idea: "1g(3)"
 subidea: "Government 1g(3)"
-excerpt: "On the Athenian stage in 424 BC, an old man sits half-asleep while two con men fight over him."
+excerpt: "We replaced kings with “the people.” But the people can never actually sit on the throne, so who is on it now?"
 ---
 
 On the Athenian stage in 424 BC, an old man sits half-asleep while two con men fight over him.

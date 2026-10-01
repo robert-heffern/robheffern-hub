@@ -3,7 +3,7 @@ title: "The War Was Never the Radical Part"
 category: "Labor"
 idea: "7c(1)"
 subidea: "Labor 7c(1)"
-excerpt: "In the spring of 494 BC, the ordinary working people of Rome did something that had no name yet. They walked out."
+excerpt: "That society splits into warring classes is the oldest bipartisan idea in the West. Marx's real shock wasn't the war. It was the claim it could end."
 ---
 
 In the spring of 494 BC, the ordinary working people of Rome did something that had no name yet. They walked out.

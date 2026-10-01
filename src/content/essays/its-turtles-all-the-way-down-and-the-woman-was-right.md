@@ -3,7 +3,7 @@ title: "It's Turtles All the Way Down — and the Woman Was Right"
 category: "Infinity"
 idea: "2c"
 subidea: "Infinity 2c"
-excerpt: "There's an old story that gets told about a lot of famous people, which is usually a sign that it never happened to any of them. It goes like this."
+excerpt: "A woman tells a scientist the world rests on a turtle, and under it, turtles all the way down. She's been the punchline for a century. She was right."
 ---
 
 There's an old story that gets told about a lot of famous people, which is usually a sign that it never happened to any of them. It goes like this.

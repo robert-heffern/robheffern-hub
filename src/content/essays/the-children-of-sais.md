@@ -3,7 +3,7 @@ title: "The Children of Saïs"
 category: "Knowledge"
 idea: "10"
 subidea: "Knowledge 10"
-excerpt: "Solon was the wisest man in Greece, and an Egyptian priest called him a child to his face."
+excerpt: "An Egyptian priest told the wisest man in Greece that the Greeks were children. What the old cultures had that made him say it."
 ---
 
 Solon was the wisest man in Greece, and an Egyptian priest called him a child to his face.

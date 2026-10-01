@@ -3,7 +3,7 @@ title: "Only a Word"
 category: "Universal and Particular"
 idea: "2a"
 subidea: "Universal and Particular 2a"
-excerpt: "An old man is about to take a young man apart, and the young man has no idea it's coming."
+excerpt: "An old man is about to take a young one apart, and the kid doesn't see it coming. Whether the words for kinds of things name anything real."
 ---
 
 An old man is about to take a young man apart, and the young man has no idea it's coming.

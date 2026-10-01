@@ -3,7 +3,7 @@ title: "The Man in the Jar"
 category: "Citizen"
 idea: "8"
 subidea: "Citizen 8"
-excerpt: "Sometime around 350 BC, a man was living in a large clay jar in the marketplace of Corinth. The jar was the kind used to store wine or grain, tipped on its side, and he slept in it. He owned a cloak,…"
+excerpt: "A man who owned nothing but a cloak and slept in a barrel called himself a citizen of the world. What that phrase promises, and what it can't deliver."
 ---
 
 Sometime around 350 BC, a man was living in a large clay jar in the marketplace of Corinth. The jar was the kind used to store wine or grain, tipped on its side, and he slept in it. He owned a cloak, a staff, and a bag for bread. He had once owned more. Back in his home city of Sinope, on the Black Sea, he or his father had handled the coinage, and he had been caught defacing it, chiseling the faces off the coins to ruin them. For that he was thrown out of the city. He never got another one.

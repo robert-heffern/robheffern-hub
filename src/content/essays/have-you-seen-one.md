@@ -3,7 +3,7 @@ title: "Have You Seen One?"
 category: "Metaphysics"
 idea: "3b"
 subidea: "Metaphysics 3b"
-excerpt: "In 1897, at a meeting of the Imperial Academy of Sciences in Vienna, Ludwig Boltzmann finished a talk and sat down, and Ernst Mach stood up."
+excerpt: "“Have you ever seen an atom?” was a knockout question in 1897. Why the line between real science and empty metaphysics keeps moving."
 ---
 
 In 1897, at a meeting of the Imperial Academy of Sciences in Vienna, Ludwig Boltzmann finished a talk and sat down, and Ernst Mach stood up.

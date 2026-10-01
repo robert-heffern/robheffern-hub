@@ -3,7 +3,7 @@ title: "Somebody Always Eats It"
 category: "Wealth"
 idea: "7c"
 subidea: "Wealth 7c"
-excerpt: "In 1100, the dining room of the King of England was Westminster Hall. Not a hall in a building with a dining room in it. The dining room was the hall, and Adam Smith, writing about it almost seven…"
+excerpt: "The king's hall was his dining room, and somebody always ate the wealth. The three things we do with property turn out to be one thing."
 ---
 
 In 1100, the dining room of the King of England was Westminster Hall. Not a hall in a building with a dining room in it. The dining room was the hall, and Adam Smith, writing about it almost seven centuries later, notes that for William Rufus it "might frequently, perhaps, not be too large for his company."

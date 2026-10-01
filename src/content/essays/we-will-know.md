@@ -3,7 +3,7 @@ title: "We Will Know"
 category: "Logic"
 idea: "5a"
 subidea: "Logic 5a"
-excerpt: "In September of 1930, in the city of Königsberg, an old man stood up to give a speech about the future."
+excerpt: "An old man promised that in mathematics there is nothing we cannot know. The next morning a young man quietly proved him wrong forever."
 ---
 
 In September of 1930, in the city of Königsberg, an old man stood up to give a speech about the future.

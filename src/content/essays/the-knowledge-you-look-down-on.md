@@ -3,7 +3,7 @@ title: "The Knowledge You Look Down On"
 category: "Knowledge"
 idea: "10"
 subidea: "Knowledge 10"
-excerpt: "There is a story about the most brilliant man in the ancient world being ashamed of the best thing he ever did."
+excerpt: "The smartest man in the ancient world was ashamed of his best invention, and we still look down on knowing-how."
 ---
 
 There is a story about the most brilliant man in the ancient world being ashamed of the best thing he ever did.

@@ -3,7 +3,7 @@ title: "An Image of the Image"
 category: "Soul"
 idea: "4d(3)"
 subidea: "Soul 4d(3)"
-excerpt: "Rome, sometime around the year 260. A philosopher named Plotinus is teaching in a crowded room. His lectures are open to anyone who wants to come, and people do come: senators, doctors, a poet or…"
+excerpt: "The heaven most people picture, a soul finally free of its body, is the exact view the early church argued against. What they said instead."
 ---
 
 Rome, sometime around the year 260. A philosopher named Plotinus is teaching in a crowded room. His lectures are open to anyone who wants to come, and people do come: senators, doctors, a poet or two, curious rich women, students who follow him around the city. He talks without notes. Once, when a student kept asking how the soul is joined to the body, he spent three straight days answering. He is, by every account, one of the most brilliant minds of the age.

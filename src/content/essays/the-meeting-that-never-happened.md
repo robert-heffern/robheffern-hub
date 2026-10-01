@@ -3,7 +3,7 @@ title: "The Meeting That Never Happened"
 category: "Custom and Convention"
 idea: "1"
 subidea: "Custom and Convention 1"
-excerpt: "Sometime in the seventh century BC, an Egyptian king ran what may be the first controlled experiment in recorded history."
+excerpt: "We say language and law began as agreements. But you can't agree on anything until you already share a language, so the first agreement could never have happened."
 ---
 
 Sometime in the seventh century BC, an Egyptian king ran what may be the first controlled experiment in recorded history.

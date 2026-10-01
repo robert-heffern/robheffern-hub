@@ -3,7 +3,7 @@ title: "The Clock That Reads Nothing"
 category: "Quantity"
 idea: "5b"
 subidea: "Quantity 5b"
-excerpt: "The sun stood still over Gibeon for the better part of a day."
+excerpt: "The sun stood still for a day, the story goes. Chase what a clock actually measures and you reach Einstein, where there's no single time to read."
 ---
 
 The sun stood still over Gibeon for the better part of a day.

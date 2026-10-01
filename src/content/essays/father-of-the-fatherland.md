@@ -3,7 +3,7 @@ title: "Father of the Fatherland"
 category: "Family"
 idea: "2b"
 subidea: "Family 2b"
-excerpt: "In the year 2 BC, the Roman Senate gave one man a new name."
+excerpt: "Rome gave one man the title “father of the country.” What it means to make the state a family, and who that leaves as the children."
 ---
 
 In the year 2 BC, the Roman Senate gave one man a new name.

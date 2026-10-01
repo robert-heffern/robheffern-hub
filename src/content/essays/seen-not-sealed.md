@@ -3,7 +3,7 @@ title: "Seen, Not Sealed"
 category: "Will"
 idea: "7c"
 subidea: "Will 7c"
-excerpt: "There is a young man alone in a temple, and he is talking himself out of his own life."
+excerpt: "A young man alone in a temple is talking himself out of his life. Whether a choice is ever truly free, caught mid-act."
 ---
 
 There is a young man alone in a temple, and he is talking himself out of his own life.

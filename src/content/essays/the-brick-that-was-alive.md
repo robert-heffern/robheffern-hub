@@ -3,7 +3,7 @@ title: "The Brick That Was Alive"
 category: "Animal"
 idea: "3a"
 subidea: "Animal 3a"
-excerpt: "One evening in 1837, in Berlin, two young scientists sat over coffee and solved biology."
+excerpt: "We're taught the body is built from cells like a wall from bricks. But the brick turns out to be alive, and that quietly breaks the whole picture."
 ---
 
 One evening in 1837, in Berlin, two young scientists sat over coffee and solved biology.

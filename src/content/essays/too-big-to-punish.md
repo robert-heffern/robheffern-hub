@@ -3,7 +3,7 @@ title: "Too Big to Punish"
 category: "Emotion"
 idea: "2b"
 subidea: "Emotion 2b"
-excerpt: "Around 1606, on a stage in London, an old man stands in a courtyard and cannot finish his sentence."
+excerpt: "Anger feels like the rawest thing in us. It's actually the most assembled, a late emotion that needs a story before it can fire."
 ---
 
 Around 1606, on a stage in London, an old man stands in a courtyard and cannot finish his sentence.

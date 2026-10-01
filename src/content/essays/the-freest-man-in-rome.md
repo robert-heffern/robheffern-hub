@@ -3,7 +3,7 @@ title: "The Freest Man in Rome"
 category: "Liberty"
 idea: "3b"
 subidea: "Liberty 3b"
-excerpt: "There is a story about a Roman slave named Epictetus and his master. The master, for sport or for spite, took hold of the slave's leg and began to twist it. Epictetus did not cry out. He looked up…"
+excerpt: "A slave whose master was breaking his leg said he was freer than the master. What freedom is, if it isn't doing whatever you want."
 ---
 
 There is a story about a Roman slave named Epictetus and his master. The master, for sport or for spite, took hold of the slave's leg and began to twist it. Epictetus did not cry out. He looked up and said, calmly, that if the master kept twisting, the leg would break. The master kept twisting. The leg broke. And Epictetus, still calm, said only: "Did I not tell you that it would break?"

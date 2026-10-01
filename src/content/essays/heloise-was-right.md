@@ -3,7 +3,7 @@ title: "Héloïse Was Right"
 category: "Love"
 idea: "2d"
 subidea: "Love 2d"
-excerpt: "In Paris, around the year 1117, a brilliant young woman did something that still sounds strange eight centuries later. The most famous teacher in the city was in love with her. He wanted to marry…"
+excerpt: "Offered marriage by the man she loved, she refused it as a betrayal of love. Eight centuries later her argument still stings."
 ---
 
 In Paris, around the year 1117, a brilliant young woman did something that still sounds strange eight centuries later. The most famous teacher in the city was in love with her. He wanted to marry her. She told him no.

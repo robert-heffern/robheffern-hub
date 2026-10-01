@@ -3,7 +3,7 @@ title: "The Load-Bearing Wall"
 category: "God"
 idea: "4f"
 subidea: "God 4f"
-excerpt: "A rich man runs up to Jesus in the road, kneels in the dust, and opens with a compliment. \"Good Master,\" he says, \"what shall I do that I may inherit eternal life?\" It is a polite thing to say. It is…"
+excerpt: "“God is good” sounds like the gentlest thing you can say about God. It's the claim that carries all the weight, and the one likeliest to give way."
 ---
 
 A rich man runs up to Jesus in the road, kneels in the dust, and opens with a compliment. "Good Master," he says, "what shall I do that I may inherit eternal life?" It is a polite thing to say. It is the kind of thing you say to a teacher you admire.

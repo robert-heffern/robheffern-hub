@@ -3,7 +3,7 @@ title: "You Were Never There"
 category: "Memory and Imagination"
 idea: "1c"
 subidea: "Memory and Imagination 1c"
-excerpt: "When Jean Piaget was a boy, he had a memory he could see. He was about two years old, strapped into his pram, being wheeled along a busy avenue near the Champs-Élysées in Paris. A man lunged out of…"
+excerpt: "Piaget remembered his own kidnapping in vivid detail. It never happened. What that says about every memory you trust."
 ---
 
 When Jean Piaget was a boy, he had a memory he could see. He was about two years old, strapped into his pram, being wheeled along a busy avenue near the Champs-Élysées in Paris. A man lunged out of the crowd and tried to snatch him. His nurse threw herself in the way and fought the man off. Piaget remembered the scuffle. He remembered the scratches the man's nails left on the nurse's face. He remembered a policeman in a short cloak arriving with a white baton, and the man running off. He could place himself in the scene, looking out from the pram at the whole thing.

@@ -3,7 +3,7 @@ title: "The Astrologer on the Cliff"
 category: "Prophecy"
 idea: "5"
 subidea: "Prophecy 5"
-excerpt: "The house stood on rocks above the sea, on the island of Rhodes, and the path up to it was steep and narrow and had no rail."
+excerpt: "Even the critics who admitted fortune-telling sometimes works condemned it anyway. What knowing your future does to you."
 ---
 
 The house stood on rocks above the sea, on the island of Rhodes, and the path up to it was steep and narrow and had no rail.

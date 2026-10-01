@@ -3,9 +3,7 @@ title: "The Preface Copernicus Never Wrote"
 category: "Custom and Convention"
 idea: "9b"
 subidea: "Custom and Convention 9b"
-excerpt: "In the spring of 1543, a book came off a printing press in Nuremberg that
-would eventually move the Earth. It was called On the Revolutions of the
-Heavenly Spheres, and its author, a Polish churchman…"
+excerpt: "A note slipped into Copernicus's book told readers not to believe it. Who wrote it, and how the lie kept the peace for fifty years."
 ---
 
 In the spring of 1543, a book came off a printing press in Nuremberg that

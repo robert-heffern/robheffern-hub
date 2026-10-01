@@ -3,7 +3,7 @@ title: "Bad Soil"
 category: "Knowledge"
 idea: "10"
 subidea: "Knowledge 10"
-excerpt: "For a thousand years, the richest library in the world sat in a city at peace, in the hands of people who could read every word of it, and almost nothing new came out."
+excerpt: "The greatest library in the world sat a thousand years in peaceful hands that could read every word, and produced almost nothing new. Why."
 ---
 
 For a thousand years, the richest library in the world sat in a city at peace, in the hands of people who could read every word of it, and almost nothing new came out.

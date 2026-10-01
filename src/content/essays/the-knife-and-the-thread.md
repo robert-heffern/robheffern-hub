@@ -3,7 +3,7 @@ title: "The Knife and the Thread"
 category: "Monarchy"
 idea: "4b"
 subidea: "Monarchy 4b"
-excerpt: "If you had to name the single happiest stretch of human history, when would you pick?"
+excerpt: "Name the happiest stretch of human history. The surprising answer, and the thin thread that held it, one bad heir away from ruin."
 ---
 
 If you had to name the single happiest stretch of human history, when would you pick?

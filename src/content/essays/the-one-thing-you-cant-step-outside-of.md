@@ -3,7 +3,7 @@ title: "The One Thing You Can't Step Outside Of"
 category: "Idea"
 idea: "2d"
 subidea: "Idea 2d"
-excerpt: "In November 1619, a young French soldier was stuck indoors somewhere in southern Germany, waiting out the winter with the army he'd signed up for. There was no fighting to do. So he shut himself in a…"
+excerpt: "Shut in a warm room for a winter, Descartes tried to doubt everything. The one thing he couldn't get behind, and why the senses can't be the whole story."
 ---
 
 In November 1619, a young French soldier was stuck indoors somewhere in southern Germany, waiting out the winter with the army he'd signed up for. There was no fighting to do. So he shut himself in a small room warmed by a big stove and spent the whole day alone, doing nothing but thinking. He was twenty-three years old. His name was René Descartes.

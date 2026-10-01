@@ -3,7 +3,7 @@ title: "Where You Belong"
 category: "Wealth"
 idea: "8d"
 subidea: "Wealth 8d"
-excerpt: "Around the year 400, a man in Rome got up, took a small token out of his clothing, walked to the public ovens, and climbed a particular flight of steps. Not any flight. His."
+excerpt: "To get bread from the public ovens you climbed your own steps, not anyone's. How helping the poor quietly became a law about who belongs."
 ---
 
 Around the year 400, a man in Rome got up, took a small token out of his clothing, walked to the public ovens, and climbed a particular flight of steps. Not any flight. His.

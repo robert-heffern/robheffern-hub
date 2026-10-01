@@ -3,7 +3,7 @@ title: "The Bottom of Everything"
 category: "Principle"
 idea: "2a(1)"
 subidea: "Principle 2a(1)"
-excerpt: "London, around 1728. A boy of thirteen is about to see for the first time in his life."
+excerpt: "A boy blind from birth is about to see for the first time. What he can't yet understand shows that the base of all knowledge isn't itself knowledge."
 ---
 
 London, around 1728. A boy of thirteen is about to see for the first time in his life.

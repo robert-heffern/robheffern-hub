@@ -3,7 +3,7 @@ title: "Nobody Home"
 category: "Poetry"
 idea: "3"
 subidea: "Poetry 3"
-excerpt: "Every night for years, in a house in London, a blind man lay in the dark and made poems he could not write down."
+excerpt: "A blind man composed a masterpiece in the dark and dictated it each morning. Where a poem is when nobody is writing it down."
 ---
 
 Every night for years, in a house in London, a blind man lay in the dark and made poems he could not write down.

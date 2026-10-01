@@ -3,7 +3,7 @@ title: "The Simple Light"
 category: "Opposition"
 idea: "2e"
 subidea: "Opposition 2e"
-excerpt: "Dante Alighieri spent his last years in exile, finishing a poem that walks one man through Hell, up the mountain of Purgatory, and into Heaven. Giovanni Boccaccio tells a story that the final…"
+excerpt: "Dante ends his journey staring into a light where every opposite folds together. Whether all contradictions really dissolve at the top."
 ---
 
 Dante Alighieri spent his last years in exile, finishing a poem that walks one man through Hell, up the mountain of Purgatory, and into Heaven. Giovanni Boccaccio tells a story that the final thirteen cantos were missing when Dante died in Ravenna in 1321. Months later, the story goes, Dante appeared to his son Jacopo in a dream and showed him a niche in the wall of his old bedroom, hidden behind a mat. There they were, moldy with damp. It is probably too good to be true. It fits anyway, because the last canto is about a man who sees something and cannot bring it back.

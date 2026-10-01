@@ -3,7 +3,7 @@ title: "Ten Chairs"
 category: "Sense"
 idea: "4b"
 subidea: "Sense 4b"
-excerpt: "In the winter of 1879 Francis Galton began handing out a questionnaire, and the first question was about breakfast."
+excerpt: "Asked to picture their breakfast table, some people see it in full color and some see nothing at all. What a plain fact even is, once you look."
 ---
 
 In the winter of 1879 Francis Galton began handing out a questionnaire, and the first question was about breakfast.

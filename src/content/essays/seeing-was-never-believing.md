@@ -3,7 +3,7 @@ title: "Seeing Was Never Believing"
 category: "Sense"
 idea: "5c"
 subidea: "Sense 5c"
-excerpt: "For about sixteen hundred years, \"black swan\" was a way of saying impossible."
+excerpt: "For sixteen hundred years “black swan” meant impossible. What one bird did to the idea that seeing is proof."
 ---
 
 For about sixteen hundred years, "black swan" was a way of saying *impossible*.

@@ -3,7 +3,7 @@ title: "The Fullest Thing You Own"
 category: "Space"
 idea: "1d"
 subidea: "Space 1d"
-excerpt: "In a workshop in Florence, sometime around the year 1660, a group of careful men set out to squeeze water until it gave up."
+excerpt: "Men in Florence tried to squeeze water until it broke. The hunt for empty space, and why nothing was the hardest thing to find."
 ---
 
 In a workshop in Florence, sometime around the year 1660, a group of careful men set out to squeeze water until it gave up.

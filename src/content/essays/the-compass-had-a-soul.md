@@ -3,7 +3,7 @@ title: "The Compass Had a Soul"
 category: "Life and Death"
 idea: "2"
 subidea: "Life and Death 2"
-excerpt: "In the year 1600, the most careful scientist in England published a book arguing that a compass needle is alive."
+excerpt: "England's most careful scientist argued a compass needle was alive. The line between living and dead isn't a switch, it's a slope."
 ---
 
 In the year 1600, the most careful scientist in England published a book arguing that a compass needle is alive.

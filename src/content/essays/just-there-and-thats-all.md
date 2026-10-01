@@ -3,7 +3,7 @@ title: "Just There, and That's All"
 category: "Necessity and Contingency"
 idea: "2a"
 subidea: "Necessity and Contingency 2a"
-excerpt: "On the evening of January 28, 1948, BBC radio's Third Programme carried a debate between two of the most formidable minds in Britain. On one side sat Bertrand Russell: seventy-five years old,…"
+excerpt: "Does the universe need a reason to exist, or is it just there? One 1948 radio debate drew the line as sharply as it's ever been drawn."
 ---
 
 On the evening of January 28, 1948, BBC radio's Third Programme carried a debate between two of the most formidable minds in Britain. On one side sat Bertrand Russell: seventy-five years old, co-author of *Principia Mathematica*, two years away from a Nobel Prize. On the other sat Frederick Copleston, a Jesuit priest who was then in the middle of writing what would become the standard English-language history of philosophy. The question on the table was whether God exists.

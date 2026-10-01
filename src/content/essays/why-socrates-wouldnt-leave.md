@@ -3,7 +3,7 @@ title: "Why Socrates Wouldn't Leave"
 category: "Citizen"
 idea: "1"
 subidea: "Citizen 1"
-excerpt: "The door was open. That's the part nobody tells you."
+excerpt: "The cell door was open and the guards were bribed. Why he drank the poison instead of walking out."
 ---
 
 The door was open. That's the part nobody tells you.

@@ -3,7 +3,7 @@ title: "Tiger or Tea"
 category: "Being"
 idea: "8c"
 subidea: "Being 8c"
-excerpt: "At some point in the late 1600s, John Locke went for a walk in St. James's Park in London and saw a bird that should not have existed."
+excerpt: "We assume every kind of thing has a hidden essence that makes it what it is. Chemistry proved Locke half right and half wrong about ever seeing it."
 ---
 
 At some point in the late 1600s, John Locke went for a walk in St. James's Park in London and saw a bird that should not have existed.
