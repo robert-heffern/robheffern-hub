@@ -24,6 +24,14 @@ const coming = ["NRL", "AFL", "Figure Skating"];
       </p>
     </header>
 
+    <section id="equinox" class="equinox" hidden>
+      <span class="eq-dot" aria-hidden="true"></span>
+      <span class="eq-main">
+        <strong id="eq-title"></strong>
+        <span id="eq-sub" class="eq-sub"></span>
+      </span>
+    </section>
+
     <section class="grid">
       {sports.map((s) => (
         <a class="sport" href={s.href}>
@@ -46,6 +54,24 @@ const coming = ["NRL", "AFL", "Figure Skating"];
     .kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: .28em; font-size: .72rem; color: var(--muted); margin: 0 0 .5rem; }
     h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 500; margin: 0 0 1rem; }
     .lede { color: var(--muted); max-width: 36rem; font-size: 1.1rem; }
+
+    .equinox {
+      display: flex; align-items: center; gap: .85rem;
+      margin: 0 0 2rem; padding: .85rem 1.1rem;
+      border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+      font-family: var(--sans);
+    }
+    .equinox .eq-dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--muted); flex: none; }
+    .equinox .eq-main { display: flex; flex-direction: column; gap: .15rem; }
+    .equinox #eq-title { font-size: .98rem; font-weight: 600; }
+    .equinox .eq-sub { font-size: .82rem; color: var(--muted); }
+    .equinox.is-upcoming .eq-dot { background: var(--gold); }
+    .equinox.is-equinox { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+    .equinox.is-equinox .eq-dot { background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: eqpulse 2s ease-in-out infinite; }
+    .equinox.is-super { background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 16%, var(--panel)), var(--panel)); }
+    .equinox.is-super #eq-title { color: var(--gold); }
+    @keyframes eqpulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
     .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
     .sport {
       display: flex; align-items: center; gap: 1rem;
@@ -61,4 +87,94 @@ const coming = ["NRL", "AFL", "Figure Skating"];
     .go { font-family: var(--sans); font-size: .72rem; color: var(--gold); white-space: nowrap; }
     .coming { color: var(--muted); font-family: var(--sans); font-size: .85rem; margin-top: 2.5rem; text-align: center; }
   </style>
+
+  <script is:inline>
+    // Sports Equinox watcher. Reads ESPN's public scoreboard (keyless, CORS-open)
+    // in the visitor's browser. Shows a strip only when all four major leagues
+    // (MLB, NFL, NBA, NHL) play today — a Sports Equinox — or within the next 7
+    // days, or a Super Equinox when college football joins them. Degrades to
+    // hidden on any error; NFL-gated lookahead keeps it to a handful of fetches.
+    (function () {
+      var BIG = { mlb: "baseball/mlb", nfl: "football/nfl", nba: "basketball/nba", nhl: "hockey/nhl" };
+      var CFB = "football/college-football";
+
+      function etYMD(offsetDays) {
+        var d = new Date(Date.now() + offsetDays * 86400000);
+        return new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"
+        }).format(d).replace(/-/g, "");
+      }
+      function etLabel(ymd) {
+        var d = new Date(ymd.slice(0,4) + "-" + ymd.slice(4,6) + "-" + ymd.slice(6,8) + "T12:00:00");
+        return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+      }
+      var TODAY = etYMD(0);
+
+      function slate(path, ymd) {
+        var key = "eq:" + path + ":" + ymd;
+        if (ymd !== TODAY) {
+          try { var c = sessionStorage.getItem(key); if (c) return Promise.resolve(JSON.parse(c)); } catch (e) {}
+        }
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, 6000);
+        return fetch("https://site.api.espn.com/apis/site/v2/sports/" + path + "/scoreboard?dates=" + ymd, { signal: ctrl.signal })
+          .then(function (r) { clearTimeout(timer); if (!r.ok) throw 0; return r.json(); })
+          .then(function (j) {
+            var ev = (j && j.events) || [], live = 0;
+            for (var i = 0; i < ev.length; i++) {
+              var st = ev[i] && ev[i].status && ev[i].status.type && ev[i].status.type.state;
+              if (st === "in") live++;
+            }
+            var out = { count: ev.length, live: live, ok: true };
+            if (ymd !== TODAY) { try { sessionStorage.setItem(key, JSON.stringify(out)); } catch (e) {} }
+            return out;
+          })
+          .catch(function () { clearTimeout(timer); return { count: 0, live: 0, ok: false }; });
+      }
+
+      function show(cls, title, sub) {
+        var el = document.getElementById("equinox");
+        if (!el) return;
+        el.className = "equinox " + cls;
+        document.getElementById("eq-title").textContent = title;
+        document.getElementById("eq-sub").textContent = sub;
+        el.hidden = false;
+      }
+
+      Promise.all([slate(BIG.mlb, TODAY), slate(BIG.nfl, TODAY), slate(BIG.nba, TODAY), slate(BIG.nhl, TODAY), slate(CFB, TODAY)])
+        .then(function (r) {
+          var mlb = r[0], nfl = r[1], nba = r[2], nhl = r[3], cfb = r[4];
+          if (!(mlb.ok || nfl.ok || nba.ok || nhl.ok)) return; // can't tell — stay hidden
+          var big4 = mlb.count > 0 && nfl.count > 0 && nba.count > 0 && nhl.count > 0;
+          var sup = big4 && cfb.count > 0;
+          var liveNow = mlb.live + nfl.live + nba.live + nhl.live + (sup ? cfb.live : 0);
+          var liveStr = liveNow > 0 ? " " + liveNow + " game" + (liveNow === 1 ? "" : "s") + " live right now." : "";
+          if (sup) { show("is-equinox is-super", "🌟 Super Equinox — today", "All four major leagues and college football are playing." + liveStr); return; }
+          if (big4) { show("is-equinox", "⚡ Sports Equinox — today", "All four major leagues are playing at once." + liveStr); return; }
+          lookahead(1);
+        });
+
+      function lookahead(off) {
+        if (off > 7) return; // nothing within a week — stay hidden
+        var ymd = etYMD(off);
+        slate(BIG.nfl, ymd).then(function (n) {
+          if (!n.ok || n.count === 0) return lookahead(off + 1); // NFL gates a big-four equinox
+          Promise.all([slate(BIG.mlb, ymd), slate(BIG.nba, ymd), slate(BIG.nhl, ymd)]).then(function (x) {
+            if (x[0].count > 0 && x[1].count > 0 && x[2].count > 0) {
+              slate(CFB, ymd).then(function (cf) {
+                var sup = cf.count > 0;
+                var when = off === 1 ? "tomorrow" : "in " + off + " days";
+                var lineup = "MLB · NFL · NBA · NHL" + (sup ? " · CFB" : "");
+                show(sup ? "is-upcoming is-super" : "is-upcoming",
+                     (sup ? "🌟 Super Equinox " : "⚡ Sports Equinox ") + when,
+                     etLabel(ymd) + " — " + lineup + " all scheduled.");
+              });
+            } else {
+              lookahead(off + 1);
+            }
+          });
+        });
+      }
+    })();
+  </script>
 </Base>
