@@ -231,12 +231,13 @@ import Base from "../../layouts/Base.astro";
         var now=document.getElementById("z-now");
         if(now){
           var up=[];
-          (ev.equinoxes||[]).forEach(function(d){ if(d>TODAY) up.push([d,(ev.superEquinoxes||[]).indexOf(d)>=0?"a Super Equinox":"a Sports Equinox"]); });
-          if(per&&per.date>TODAY) up.push([per.date,"Perihelion"]);
-          (ev.eclipses||[]).forEach(function(d){ if(d>TODAY) up.push([d,"a Total Eclipse"]); });
-          up.sort(function(a,b){return a[0]<b[0]?-1:1;});
-          if(up.length){ var nd=new Date(up[0][0]+"T12:00:00"); var dd=Math.round((nd-new Date(TODAY+"T12:00:00"))/86400000);
-            now.textContent="Next up: "+up[0][1]+" in "+dd+" day"+(dd===1?"":"s")+" ("+nd.toLocaleDateString("en-US",{month:"long",day:"numeric"})+").";
+          var sup={}; (ev.superEquinoxes||[]).forEach(function(d){sup[d]=1;});
+          var eqs=(ev.equinoxes||[]).slice().sort();
+          if(eqs.length){
+            var parts=eqs.map(function(d){ var past=d<TODAY; return (sup[d]?"★":"")+new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})+(past?" (past)":""); });
+            now.textContent=eqs.length+" Sports Equinox"+(eqs.length===1?"":"es")+" in the year: "+parts.join(" · ")+(Object.keys(sup).length?"   ★ = Super Equinox.":".");
+          } else {
+            now.textContent="No Sports Equinox falls in view yet — the postseason schedule is still filling in.";
           }
         }
       }
