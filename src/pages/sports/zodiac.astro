@@ -114,12 +114,27 @@ import Base from "../../layouts/Base.astro";
           svg.appendChild(mk("line",{x1:t0[0].toFixed(1),y1:t0[1].toFixed(1),x2:t1[0].toFixed(1),y2:t1[1].toFixed(1),stroke:muted,"stroke-width":1,opacity:.35}));
         }
 
-        // season bands
+        // Pick the ONE season to show per league: the ongoing one if we're in it;
+        // otherwise flip from the just-finished to the upcoming at the Turn (offseason midpoint).
+        function pickSeason(L){
+          var ss=(L.seasons||[]).slice().sort(function(a,b){return a.start<b.start?-1:1;});
+          if(!ss.length) return null;
+          for(var i=0;i<ss.length;i++){ if(ss[i].start<=TODAY && TODAY<=ss[i].end) return ss[i]; } // ongoing wins
+          var prev=null,next=null;
+          ss.forEach(function(s){ if(s.end<TODAY) prev=s; if(!next && s.start>TODAY) next=s; });
+          if(prev && next){
+            var turn=new Date((new Date(prev.end+"T12:00:00").getTime()+new Date(next.start+"T12:00:00").getTime())/2);
+            return (new Date(TODAY+"T12:00:00") < turn) ? prev : next;   // before the Turn: still mourning last; after: waiting on next
+          }
+          return next || prev;
+        }
+        var picked={};
+        ORDER.forEach(function(lg){ var L=leagues[lg]; if(L) picked[lg]=pickSeason(L); });
+
+        // season bands — one arc per league
         ORDER.forEach(function(lg){
-          var L=leagues[lg]; if(!L) return;
-          (L.seasons||[]).forEach(function(s){
-            svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, L.label+" season: "+s.start+" → "+s.end));
-          });
+          var L=leagues[lg], s=picked[lg]; if(!L||!s) return;
+          svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, L.label+" season: "+s.start+" → "+s.end));
         });
 
         // daily spikes, stacked outward by league
@@ -155,11 +170,15 @@ import Base from "../../layouts/Base.astro";
           pt.textContent="PERIHELION"; svg.appendChild(pt);
         }
 
-        // First / Last Light + the Turn, per league
+        // First / Last Light (from the shown season) + the Turn, per league
         ORDER.forEach(function(lg){
-          var L=leagues[lg]; if(!L) return;
-          if(L.firstLight){ var a=ang(L.firstLight), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5); svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light (season opens) — "+L.firstLight)); }
-          if(L.lastLight){ var a2=ang(L.lastLight), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5); svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light (season closes) — "+L.lastLight)); }
+          var L=leagues[lg], s=picked[lg]; if(!L) return;
+          if(s){
+            var a=ang(s.start), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5);
+            svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light (season opens) — "+s.start));
+            var a2=ang(s.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
+            svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light (season closes) — "+s.end));
+          }
           if(L.offseasonMidpoint){ var a3=ang(L.offseasonMidpoint), tp=pol(a3,BAND[lg]); svg.appendChild(mk("circle",{cx:tp[0].toFixed(1),cy:tp[1].toFixed(1),r:2.4,fill:"none",stroke:L.color,"stroke-width":1}, L.label+" — the Turn (midway through the offseason) — "+L.offseasonMidpoint)); }
         });
 
