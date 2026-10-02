@@ -88,16 +88,7 @@ import Base from "../../layouts/Base.astro";
         var BAND={mlb:178, nhl:170, nba:162, nfl:154};
         var muted="#a99a83", line="#352e26", gold="#c8a24a", ink="#ece3d4", bg="#14110f";
 
-        // dedupe days by month-day, keeping the occurrence nearest to today (window > 1 yr)
-        var byMD={}, tdt=new Date(TODAY+"T12:00:00");
-        (data.days||[]).forEach(function(d){
-          var md=d.date.slice(5);
-          var cur=byMD[md];
-          if(!cur || Math.abs(new Date(d.date+"T12:00:00")-tdt) < Math.abs(new Date(cur.date+"T12:00:00")-tdt)) byMD[md]=d;
-        });
-        var days=Object.keys(byMD).map(function(k){return byMD[k];});
-        var maxTot=1; days.forEach(function(d){ if(d.total>maxTot) maxTot=d.total; });
-        var scale=SPIKE_MAX/maxTot;
+        var refYear2 = new Date(TODAY+"T12:00:00").getFullYear();
 
         var svg=mk("svg",{viewBox:"0 0 "+SZ+" "+SZ, role:"img", "aria-label":"The sporting year as a wheel"});
 
@@ -137,18 +128,44 @@ import Base from "../../layouts/Base.astro";
           svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, L.label+" season: "+s.start+" → "+s.end));
         });
 
-        // daily spikes, stacked outward by league
-        days.forEach(function(d){
-          if(!d.total) return;
-          var a=ang(d.date), past=d.date<TODAY, r=SPIKE0;
-          var tip=d.date+" — "+d.total+" games ("+ORDER.filter(function(lg){return d[lg]>0;}).map(function(lg){return d[lg]+" "+leagues[lg].label;}).join(", ")+")";
+        // Aggregate games by calendar day — but only from each league's SHOWN season,
+        // so (e.g.) next year's data never bleeds in until the Turn flips the season.
+        var agg={}; // "MM-DD" -> {leagues:{lg:{count,date}}, total, sample}
+        (data.days||[]).forEach(function(d){
           ORDER.forEach(function(lg){
-            var c=d[lg]||0; if(!c) return;
-            var len=c*scale, p0=pol(a,r), p1=pol(a,r+len);
-            svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:leagues[lg].color,"stroke-width":1.5,"stroke-linecap":"round",opacity:past?.9:.4}, tip));
-            r+=len;
+            var s=picked[lg]; if(!s) return;
+            if(d.date>=s.start && d.date<=s.end && (d[lg]||0)>0){
+              var md=d.date.slice(5);
+              if(!agg[md]) agg[md]={leagues:{},total:0,sample:d.date};
+              agg[md].leagues[lg]={count:d[lg],date:d.date};
+              agg[md].total+=d[lg];
+              if(d.date>agg[md].sample) agg[md].sample=d.date;
+            }
           });
         });
+        var maxTot=1; for(var mk0 in agg){ if(agg[mk0].total>maxTot) maxTot=agg[mk0].total; }
+        var scale=SPIKE_MAX/maxTot;
+        function mdA(md){ return ang(refYear2+"-"+md); }
+        function fmtMD(md){ return new Date(refYear2+"-"+md+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}); }
+        function tipFor(md){ var info=agg[md]; if(!info) return fmtMD(md)+" — no major-league games"; return fmtMD(md)+" — "+info.total+" game"+(info.total===1?"":"s")+" ("+ORDER.filter(function(lg){return info.leagues[lg];}).map(function(lg){return info.leagues[lg].count+" "+leagues[lg].label;}).join(", ")+")"; }
+
+        // transparent hover targets for EVERY calendar day (so any day pops a tooltip)
+        for(var dd=0; dd<365; dd++){
+          var dobj=new Date(refYear2,0,1+dd);
+          var md=("0"+(dobj.getMonth()+1)).slice(-2)+"-"+("0"+dobj.getDate()).slice(-2);
+          var ah=mdA(md), h0=pol(ah,R_RIM), h1=pol(ah,SPIKE0+SPIKE_MAX);
+          svg.appendChild(mk("line",{x1:h0[0].toFixed(1),y1:h0[1].toFixed(1),x2:h1[0].toFixed(1),y2:h1[1].toFixed(1),stroke:"transparent","stroke-width":4}, tipFor(md)));
+        }
+        // colored spikes, stacked outward, current season only
+        for(var md2 in agg){
+          var info=agg[md2], a2=mdA(md2), r=SPIKE0, tip=tipFor(md2);
+          ORDER.forEach(function(lg){
+            var e=info.leagues[lg]; if(!e) return;
+            var len=e.count*scale, p0=pol(a2,r), p1=pol(a2,r+len), past=e.date<TODAY;
+            svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:leagues[lg].color,"stroke-width":1.6,"stroke-linecap":"round",opacity:past?.9:.45}, tip));
+            r+=len;
+          });
+        }
 
         function nearestMD(ds){ // map an event date to the displayed occurrence angle
           return ang(ds);
@@ -165,9 +182,6 @@ import Base from "../../layouts/Base.astro";
           var pp=pol(ang(per.date),R_RIM);
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:6,fill:gold}, "Perihelion — the fullest sky of the year ("+per.count+" games, "+per.date+")"));
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:10,fill:"none",stroke:gold,"stroke-width":1,opacity:.6}));
-          var plp=pol(ang(per.date), R_RIM-16);
-          var pt=mk("text",{x:plp[0].toFixed(1),y:plp[1].toFixed(1),"text-anchor":"middle","dominant-baseline":"middle","font-family":"var(--sans)","font-size":8,fill:gold});
-          pt.textContent="PERIHELION"; svg.appendChild(pt);
         }
 
         // First / Last Light (from the shown season) + the Turn, per league
@@ -179,7 +193,14 @@ import Base from "../../layouts/Base.astro";
             var a2=ang(s.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
             svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light (season closes) — "+s.end));
           }
-          if(L.offseasonMidpoint){ var a3=ang(L.offseasonMidpoint), tp=pol(a3,BAND[lg]); svg.appendChild(mk("circle",{cx:tp[0].toFixed(1),cy:tp[1].toFixed(1),r:2.4,fill:"none",stroke:L.color,"stroke-width":1}, L.label+" — the Turn (midway through the offseason) — "+L.offseasonMidpoint)); }
+          if(s){ // the Turn = midpoint of this season's offseason (end → next start), computed per league
+            var es=new Date(s.end+"T12:00:00"), ss=new Date(s.start+"T12:00:00");
+            var ns=new Date(ss); ns.setFullYear(es.getFullYear()); if(ns<=es) ns.setFullYear(es.getFullYear()+1);
+            var mid=new Date((es.getTime()+ns.getTime())/2);
+            var mdT=("0"+(mid.getMonth()+1)).slice(-2)+"-"+("0"+mid.getDate()).slice(-2);
+            var at=ang(refYear2+"-"+mdT), tp=pol(at,BAND[lg]);
+            svg.appendChild(mk("circle",{cx:tp[0].toFixed(1),cy:tp[1].toFixed(1),r:2.6,fill:"none",stroke:L.color,"stroke-width":1.2}, L.label+" — the Turn (midway through the offseason), around "+mid.toLocaleDateString("en-US",{month:"long",day:"numeric"})));
+          }
         });
 
         // TODAY marker
