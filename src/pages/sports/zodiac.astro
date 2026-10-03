@@ -172,13 +172,15 @@ import Base from "../../layouts/Base.astro";
         (ev.eclipses||[]).forEach(function(d){ var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:3.4,fill:bg,stroke:muted,"stroke-width":1}, "Total Eclipse — no games ("+d+")")); });
         (ev.equinoxes||[]).forEach(function(d){ var sup=(ev.superEquinoxes||[]).indexOf(d)>=0; var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:sup?5:3.6,fill:gold,stroke:sup?ink:"none","stroke-width":sup?1.2:0}, (sup?"Super Equinox":"Sports Equinox")+" — "+d)); });
 
-        // First / Last Light
+        // First / Last Light — per arc, skipping artificial Jan 1 / Dec 31 year edges
         present.forEach(function(lg){
-          var L=leagues[lg], s=(L.seasons||[])[0]; if(!s) return;
-          var a=ang(s.start), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5);
-          svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light — "+s.start));
-          var e=(L.seasons||[])[L.seasons.length-1], a2=ang(e.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
-          svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light — "+e.end));
+          var L=leagues[lg];
+          (L.seasons||[]).forEach(function(s){
+            if(s.start.slice(5) > "01-10"){ var a=ang(s.start), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5);
+              svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light — "+s.start)); }
+            if(s.end.slice(5) < "12-20"){ var a2=ang(s.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
+              svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light — "+s.end)); }
+          });
         });
 
         // today marker (only if viewing the current year)
