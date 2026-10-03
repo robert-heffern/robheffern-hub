@@ -31,9 +31,11 @@ import Base from "../../layouts/Base.astro";
 
     <div class="z-glossary">
       <p><strong>Perihelion</strong> — the single fullest day of the year, the most games played at once.
+      <strong>Equinox</strong> — all four major leagues play the same day; a <strong>Super Equinox</strong> adds college football. (Only possible once all four majors exist.)
+      <strong>Total Eclipse</strong> — the Equinox's opposite: a dark day inside the season when all four majors are idle at once, like the All-Star break. (Also only once all four exist.)
       <strong>First / Last Light</strong> — a league's season opens or closes.
-      <strong>Equinox</strong> — all four major leagues play the same day (appears once more leagues are wired in).
-      Each league is only drawn in the years it existed, so the wheel thins as you travel back toward baseball's lone early seasons.</p>
+      <strong>The Turn</strong> — the midpoint of a league's offseason, marked where its seasons change over.
+      Each league is only drawn in the years it existed, so the wheel thins as you travel back toward baseball's lone early seasons — and the winter toggle re-anchors the wheel to Aug–Jul so a whole winter season reads as one arc.</p>
     </div>
   </main>
 
@@ -238,25 +240,66 @@ import Base from "../../layouts/Base.astro";
           });
         });
 
-        // Perihelion
-        var per=ev.perihelion;
-        if(per && per.date){
+        // ---- the sky's events, computed from the day data so they behave the same in
+        //      the calendar-year view, the winter-spanning view, and early single-league
+        //      years. Events are big-4 based (the "sky"), independent of the toggles. ----
+        var big4here = present.filter(function(lg){ return BIG4.indexOf(lg)>=0; });
+        var b4day={}, b4set={}, cfbday={};
+        big4here.forEach(function(lg){ (leagues[lg].days||[]).forEach(function(x){
+          b4day[x.date]=(b4day[x.date]||0)+x.count; (b4set[x.date]=b4set[x.date]||{})[lg]=1; }); });
+        if(present.indexOf("cfb")>=0){ (leagues.cfb.days||[]).forEach(function(x){ cfbday[x.date]=x.count; }); }
+
+        // Perihelion — the single fullest big-4 day
+        var per={date:null,count:-1};
+        Object.keys(b4day).forEach(function(ds){ if(b4day[ds]>per.count) per={date:ds,count:b4day[ds]}; });
+
+        // Equinox / Super Equinox — only possible once all four majors exist
+        var equ=[], sup=[];
+        if(big4here.length===4){
+          Object.keys(b4set).sort().forEach(function(ds){
+            if(BIG4.every(function(lg){ return b4set[ds][lg]; })){ equ.push(ds); if((cfbday[ds]||0)>0) sup.push(ds); }
+          });
+        }
+
+        // Total Eclipse — the Equinox's twin: a dark day INSIDE a big-4 season arc when
+        //   every major is idle at once (the All-Star break, a holiday). Only meaningful
+        //   once all four majors exist, so — like the Equinox — it isn't marked before then,
+        //   which also keeps early single-league wheels clean. Arc-bounded: the empty
+        //   offseason never counts.
+        var eclSet={};
+        if(big4here.length===4){
+          big4here.forEach(function(lg){ (leagues[lg].seasons||[]).forEach(function(s){
+            var a=new Date(s.start+"T12:00:00").getTime(), b=new Date(s.end+"T12:00:00").getTime();
+            for(var t=a;t<=b;t+=86400000){ var ds=isoOf(new Date(t)); if(!b4day[ds]) eclSet[ds]=1; }
+          }); });
+        }
+        var ecl=Object.keys(eclSet).sort();
+
+        // Perihelion glyph
+        if(per.date){
           var pp=pol(ang(per.date),R_RIM);
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:6,fill:gold}, "Perihelion — the fullest day of "+LAB+" ("+per.count+" games, "+per.date+")"));
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:10,fill:"none",stroke:gold,"stroke-width":1,opacity:.6}));
         }
-        // Equinoxes / eclipses
-        (ev.eclipses||[]).forEach(function(d){ var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:3.4,fill:bg,stroke:muted,"stroke-width":1}, "Total Eclipse — no games ("+d+")")); });
-        (ev.equinoxes||[]).forEach(function(d){ var sup=(ev.superEquinoxes||[]).indexOf(d)>=0; var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:sup?5:3.6,fill:gold,stroke:sup?ink:"none","stroke-width":sup?1.2:0}, (sup?"Super Equinox":"Sports Equinox")+" — "+d)); });
+        // Eclipse + Equinox glyphs
+        ecl.forEach(function(d){ var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:3.4,fill:bg,stroke:muted,"stroke-width":1}, "Total Eclipse — every major league idle ("+d+")")); });
+        equ.forEach(function(d){ var isup=sup.indexOf(d)>=0; var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:isup?5:3.6,fill:gold,stroke:isup?ink:"none","stroke-width":isup?1.2:0}, (isup?"Super Equinox — all four majors + college football":"Sports Equinox — all four majors play")+" ("+d+")")); });
 
-        // First / Last Light — skip ticks that sit on the artificial window edges
+        // First / Last Light (season opens / closes) + the Turn (offseason midpoint).
+        // Ticks on the artificial window edges are skipped; the Turn sits in each
+        // in-window gap between a league's consecutive arcs.
         shown.forEach(function(lg){
-          var L=leagues[lg];
-          (L.seasons||[]).forEach(function(s){
+          var L=leagues[lg], arcs=L.seasons||[];
+          arcs.forEach(function(s,ai){
             if(frac(s.start) > 0.03){ var a=ang(s.start), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5);
               svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light — "+s.start)); }
             if(frac(s.end) < 0.97){ var a2=ang(s.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
               svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light — "+s.end)); }
+            if(ai < arcs.length-1){
+              var g0=new Date(s.end+"T12:00:00").getTime(), g1=new Date(arcs[ai+1].start+"T12:00:00").getTime();
+              var mid=isoOf(new Date((g0+g1)/2)), ma=ang(mid), cm=pol(ma,BAND[lg]);
+              svg.appendChild(mk("circle",{cx:cm[0].toFixed(1),cy:cm[1].toFixed(1),r:2.8,fill:bg,stroke:L.color,"stroke-width":1.2,opacity:.95}, L.label+" Turn — offseason midpoint ("+mid+")"));
+            }
           });
         });
 
@@ -287,6 +330,8 @@ import Base from "../../layouts/Base.astro";
         var leg=document.getElementById("z-legend"); leg.innerHTML="";
         shown.forEach(function(lg){ var L=leagues[lg]; var s=document.createElement("span"); s.innerHTML='<i style="background:'+L.color+';border-radius:2px"></i>'+L.label; leg.appendChild(s); });
         var pe=document.createElement("span"); pe.innerHTML='<i style="background:'+gold+';border-radius:50%"></i>Perihelion'; leg.appendChild(pe);
+        if(equ.length){ var eq=document.createElement("span"); eq.innerHTML='<i style="background:'+gold+';border-radius:50%;box-shadow:0 0 0 1px '+ink+'"></i>Equinox'; leg.appendChild(eq); }
+        if(ecl.length){ var ec=document.createElement("span"); ec.innerHTML='<i style="background:'+bg+';border-radius:50%;box-shadow:inset 0 0 0 1px '+muted+'"></i>Eclipse'; leg.appendChild(ec); }
 
         // lede summary
         var now=document.getElementById("z-now");
@@ -294,8 +339,9 @@ import Base from "../../layouts/Base.astro";
           if(shown.length){
             var names=shown.map(function(lg){return leagues[lg].label;}).join(", ");
             var txt=LAB+": "+shown.length+" league"+(shown.length===1?"":"s")+" shown ("+names+").";
-            if(per&&per.date){ txt+=" Fullest day: "+new Date(per.date+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"})+", "+per.count+" games."; }
-            var eqs=(ev.equinoxes||[]); if(eqs.length){ txt+=" "+eqs.length+" Sports Equinox"+(eqs.length===1?"":"es")+"."; }
+            if(per.date){ txt+=" Fullest day: "+new Date(per.date+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"})+", "+per.count+" games."; }
+            if(equ.length){ txt+=" "+equ.length+" Equinox"+(equ.length===1?"":"es")+(sup.length?" ("+sup.length+" Super)":"")+"."; }
+            if(ecl.length){ txt+=" "+ecl.length+" Eclipse"+(ecl.length===1?"":"s")+"."; }
             now.textContent=txt;
           } else { now.textContent=LAB+": pick a league to show."; }
         }
