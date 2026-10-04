@@ -18,6 +18,7 @@ import Base from "../../layouts/Base.astro";
       <button id="z-prev" aria-label="Previous year">◀</button>
       <input id="z-year" type="number" inputmode="numeric" />
       <button id="z-next" aria-label="Next year">▶</button>
+      <button id="z-play" class="z-play" aria-label="Play through the years">▶ Play the years</button>
       <span id="z-range" class="z-range"></span>
     </div>
 
@@ -50,6 +51,9 @@ import Base from "../../layouts/Base.astro";
     .z-picker button { background: var(--panel); color: var(--gold); border: 1px solid var(--line); border-radius: 8px; width: 2.2rem; height: 2.2rem; font-size: 1rem; cursor: pointer; }
     .z-picker button:hover { border-color: var(--gold); }
     .z-picker input { width: 5.5rem; text-align: center; font-size: 1.3rem; font-family: var(--serif); background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: .3rem; }
+    .z-play { width: auto !important; height: 2.2rem; padding: 0 .9rem; font-family: var(--sans); font-size: .8rem; background: var(--panel); color: var(--gold); border: 1px solid color-mix(in srgb, var(--gold) 40%, var(--line)); border-radius: 8px; cursor: pointer; white-space: nowrap; }
+    .z-play:hover { border-color: var(--gold); }
+    .z-play.playing { background: color-mix(in srgb, var(--gold) 12%, var(--panel)); color: var(--ink); }
     .z-range { color: var(--muted); font-size: .78rem; }
     .z-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem 1.4rem; margin: 0 0 1rem; font-family: var(--sans); }
     .z-leagues { display: flex; flex-wrap: wrap; gap: .4rem; }
@@ -83,8 +87,11 @@ import Base from "../../layouts/Base.astro";
       var inp = document.getElementById("z-year");
       var rangeEl = document.getElementById("z-range");
       var winterBox = document.getElementById("z-winter");
+      var playBtn = document.getElementById("z-play");
       var cache = {};
+      var YEARS = [];
       var MINY = 1871, MAXY = 2025, cur = 2025;
+      var playing = false, playTimer = null;
       var winter = false;         // winter-spanning (Aug–Jul) view
       var selected = {};          // league -> shown? (big4 default on, others off)
 
@@ -102,15 +109,38 @@ import Base from "../../layouts/Base.astro";
       }
 
       fetch(BASE + "index.json").then(function(r){ if(!r.ok) throw 0; return r.json(); })
-        .then(function(ix){ MINY=ix.min; MAXY=ix.max; cur=MAXY; rangeEl.textContent="("+MINY+"–"+MAXY+")"; inp.min=MINY; inp.max=MAXY; inp.value=cur; show(); })
+        .then(function(ix){ YEARS=ix.years||[]; MINY=ix.min; MAXY=ix.max; cur=MAXY; rangeEl.textContent="("+MINY+"–"+MAXY+")"; inp.min=MINY; inp.max=MAXY; inp.value=cur; show(); })
         .catch(function(){ wheel.innerHTML='<p class="z-note">The sky is clouded over just now.</p>'; });
 
       function clamp(y){ return Math.max(MINY, Math.min(MAXY, y)); }
       function go(y){ y=clamp(y); cur=y; inp.value=y; show(); }
-      document.getElementById("z-prev").onclick=function(){ go(cur-1); };
-      document.getElementById("z-next").onclick=function(){ go(cur+1); };
-      inp.onchange=function(){ var v=parseInt(inp.value,10); if(!isNaN(v)) go(v); };
+      document.getElementById("z-prev").onclick=function(){ stopPlay(); go(cur-1); };
+      document.getElementById("z-next").onclick=function(){ stopPlay(); go(cur+1); };
+      inp.onchange=function(){ stopPlay(); var v=parseInt(inp.value,10); if(!isNaN(v)) go(v); };
       winterBox.onchange=function(){ winter=winterBox.checked; show(); };
+
+      // ---- Play: sweep the years through the live wheel (the GIF, but native) ----
+      var STEP=430, HOLD=1600;   // ms per year, and the pause on the final year
+      function stopPlay(){ playing=false; if(playTimer){ clearTimeout(playTimer); playTimer=null; } playBtn.classList.remove("playing"); playBtn.textContent="▶ Play the years"; }
+      function tick(){
+        if(!playing) return;
+        var atEnd = cur>=MAXY;
+        var next = atEnd ? MINY : cur+1;
+        go(next);
+        playTimer=setTimeout(tick, (next===MAXY)?HOLD:STEP);
+      }
+      function startPlay(){
+        playing=true; playBtn.classList.add("playing"); playBtn.textContent="⏸ Pause";
+        if(cur>=MAXY) go(MINY);                     // restart from the beginning
+        // warm the cache so the sweep doesn't stutter, then run
+        var need=YEARS.filter(function(y){ return !cache[y]; });
+        var run=function(){ if(playing) playTimer=setTimeout(tick, STEP); };
+        if(!need.length){ run(); return; }
+        playBtn.textContent="⏳ loading…";
+        Promise.all(need.map(function(y){ return fetch(BASE+y+".json").then(function(r){return r.ok?r.json():null;}).then(function(d){ if(d) cache[y]=d; }).catch(function(){}); }))
+          .then(function(){ if(playing){ playBtn.textContent="⏸ Pause"; run(); } });
+      }
+      playBtn.onclick=function(){ playing?stopPlay():startPlay(); };
 
       // fetch any years we still need, then build + render the current view
       function show(){
