@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capitals</title>
+<meta name="description" content="A neural net that learned casing as a transformation — and what it does when you feed it things that have no case.">
+<style>
+  :root{
+    --paper:#f7f4ee; --ink:#20201c; --muted:#6b675e; --line:#ddd7cb;
+    --card:#fffefb; --accent:#9a5b34; --glyph:#20201c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#171613; --ink:#eae6dc; --muted:#9a948a; --line:#332f28;
+      --card:#1e1c18; --accent:#d59c6b; --glyph:#eae6dc;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#171613; --ink:#eae6dc; --muted:#9a948a; --line:#332f28;
+    --card:#1e1c18; --accent:#d59c6b; --glyph:#eae6dc;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:56px 20px 80px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 36px}
+  h2{font-size:24px;margin:52px 0 6px;letter-spacing:-0.01em}
+  .lede{color:var(--muted);margin:0 0 22px}
+  p{margin:0 0 16px}
+  section{border-top:1px solid var(--line);padding-top:8px}
+  a{color:var(--accent)}
+  .note{font-size:14px;color:var(--muted)}
+
+  /* glyph tiles rendered from PNG masks, recolored with currentColor */
+  .g{display:inline-block;width:var(--s,72px);height:var(--s,72px);
+    background:var(--glyph);
+    -webkit-mask:var(--src) center/contain no-repeat;
+    mask:var(--src) center/contain no-repeat;vertical-align:middle}
+  .pair{display:inline-flex;align-items:center;gap:6px;margin:4px 10px 4px 0}
+  .arrow{color:var(--muted);font-size:20px}
+  .row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:14px 0 6px}
+  .cap{font-size:13px;color:var(--muted);text-align:center;display:block;margin-top:4px}
+  .cell{text-align:center}
+  .script-name{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+  /* telephone strip */
+  .tel{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:10px 0}
+  .tel .g{--s:52px}
+  .tel .arrow{font-size:14px}
+
+  /* live box */
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px;margin:16px 0}
+  .liverow{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+  canvas#pad{background:#000;border-radius:10px;touch-action:none;cursor:crosshair;
+    image-rendering:pixelated}
+  .outwrap{display:flex;gap:16px;flex-wrap:wrap}
+  .outcell{text-align:center}
+  canvas.out{width:120px;height:120px;background:transparent;image-rendering:auto}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  button{font:inherit;font-size:15px;background:var(--accent);color:#fff;border:0;
+    border-radius:9px;padding:8px 15px;cursor:pointer}
+  button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  input[type=text]{font:inherit;font-size:16px;padding:8px 11px;border:1px solid var(--line);
+    border-radius:9px;background:var(--paper);color:var(--ink);width:120px}
+  .status{font-size:13px;color:var(--muted);min-height:18px;margin-top:10px}
+  .telout{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .telout canvas{width:56px;height:56px}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;
+    font-size:14px;color:var(--muted)}
+  .methodfig{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+  .methodfig .col{text-align:center;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <h1>Capitals</h1>
+  <p class="tag">A small project about which letters we choose to make big.</p>
+
+  <p>Every letter you know comes in two sizes. <b>A</b> and <b>a</b> are the same
+  letter wearing different clothes, and somewhere in your head is a rule that turns
+  one into the other. I tried to teach that rule to a small neural network — not as
+  a lookup table of "A goes with a," but as a <i>transformation</i> you could point
+  at any shape. Then I pointed it at shapes that have no capital at all.</p>
+
+  <!-- ================= WORKS ================= -->
+  <section>
+    <h2>It learned the shape of "make it bigger"</h2>
+    <p class="lede">Same letter, both cases — produced by the model, not looked up.
+    The striking part: it works in alphabets you may not be able to read. Nobody told
+    it these were related; it generalized the <i>idea</i> of casing across scripts.</p>
+
+    <div class="row">
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_latin_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_latin_up.png)"></span></div><span class="script-name">Latin</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></div><span class="script-name">Greek</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></div><span class="script-name">Cyrillic</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_cyrYa_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrYa_up.png)"></span></div><span class="script-name">Cyrillic</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></div><span class="script-name">Armenian</span></div>
+    </div>
+    <p class="note">The model was trained on about 94,000 letter pairs rendered from
+    431 fonts across twelve bicameral scripts — never a single hand-labeled example.</p>
+  </section>
+
+  <!-- ================= LIVE BOX ================= -->
+  <section>
+    <h2>Try it yourself</h2>
+    <p class="lede">Draw a letter, or type any character, and watch the model case it
+    both ways. Then hit <b>iterate</b> to keep applying the rule and watch it drift.</p>
+
+    <div class="box">
+      <div class="liverow">
+        <div>
+          <canvas id="pad" width="256" height="256"></canvas>
+          <div class="controls">
+            <input type="text" id="typed" maxlength="2" placeholder="or type: 3 ! ж">
+            <button id="convert">Convert</button>
+            <button id="clear" class="ghost">Clear</button>
+          </div>
+        </div>
+        <div class="outwrap">
+          <div class="outcell"><canvas class="out" id="outLower" width="64" height="64"></canvas><div class="cap">lowercase</div></div>
+          <div class="outcell"><canvas class="out" id="outUpper" width="64" height="64"></canvas><div class="cap">UPPERCASE</div></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="iterate" class="ghost">Iterate ▸ (case telephone)</button>
+      </div>
+      <div class="telout" id="telout"></div>
+      <div class="status" id="status">Loading model…</div>
+    </div>
+    <p class="note">Everything runs in your browser — the model is a 5&nbsp;MB file your
+    device downloads once. Nothing you draw is uploaded, stored, or seen by anyone but you.</p>
+  </section>
+
+  <!-- ================= CURIOSITIES ================= -->
+  <section>
+    <h2>So what's the capital of a 3?</h2>
+    <p class="lede">This is the question everyone asks. The honest answer is funnier
+    than a trick: the model mostly <i>hedges</i>. It only ever saw real letters, so when
+    you hand it something with no capital, it shrugs — nudges the shape and hands it back.
+    That shrug is the model telling you a 3 has no case.</p>
+
+    <div class="row">
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/c3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/c3_out.png)"></span></div><span class="cap">3 → a slightly bolder 3</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/cex_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cex_out.png)"></span></div><span class="cap">! → barely budges</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/camp_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/camp_out.png)"></span></div><span class="cap">&amp; → gets ideas</span></div>
+    </div>
+
+    <p>Every so often it commits to something, and those are the good ones:</p>
+    <div class="row">
+      <div class="cell"><div class="pair"><span class="g" style="--s:88px;--src:url(img/c9_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:88px;--src:url(img/c9_out.png)"></span></div><span class="cap">the "capital" of 9, apparently, is a G</span></div>
+    </div>
+
+    <h2 style="margin-top:40px">And the capital of a capital?</h2>
+    <p class="lede">Ask for the uppercase of an <b>A</b> that's already uppercase and you
+    get… an <b>A</b>. The model knows A is already as big as it gets. There's no
+    secret bigger letter hiding past the end of the alphabet — I checked.</p>
+    <div class="row">
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/eA_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/eA_out.png)"></span></div><span class="cap">UPPER(A) = A</span></div>
+      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/ea_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ea_out.png)"></span></div><span class="cap">lower(a) = a</span></div>
+    </div>
+  </section>
+
+  <!-- ================= TELEPHONE ================= -->
+  <section>
+    <h2>Case telephone</h2>
+    <p class="lede">Here's where it gets strange. Apply the rule over and over —
+    up, down, up, down — and small errors compound. A letter stays itself for a while,
+    then wanders off into glyphs that were never in any alphabet.</p>
+
+    <div class="tel">
+      <span class="g" style="--src:url(img/t_a_0.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_1.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_2.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_3.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_4.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_5.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_a_6.png)"></span>
+    </div>
+    <span class="cap" style="text-align:left">starting from <b>a</b></span>
+
+    <div class="tel" style="margin-top:18px">
+      <span class="g" style="--src:url(img/t_3_0.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_1.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_2.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_3.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_4.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_5.png)"></span><span class="arrow">→</span>
+      <span class="g" style="--src:url(img/t_3_6.png)"></span>
+    </div>
+    <span class="cap" style="text-align:left">starting from <b>3</b> — watch it give up on being a number</span>
+  </section>
+
+  <!-- ================= METHODS ================= -->
+  <section>
+    <h2>How it works</h2>
+    <p class="lede">The part for the engineers in the room.</p>
+
+    <p><b>The data makes itself.</b> Instead of collecting hand-drawn letters, I render
+    both cases of every letter from thousands of fonts. Each font gives a perfectly
+    matched, same-style pair — <span class="g" style="--s:28px;--src:url(img/x_latin_lo.png)"></span>
+    and <span class="g" style="--s:28px;--src:url(img/x_latin_up.png)"></span> in the same hand —
+    across every alphabet that has upper- and lowercase, all at once. Unicode's own case
+    tables supply the ground truth, so the pairing is never guessed. That's ~94,000 clean
+    pairs over 431 fonts and twelve scripts, generated in minutes.</p>
+
+    <p><b>It's a hybrid.</b> A conditional U-Net does the real work: image in, a direction
+    flag (make-it-upper / make-it-lower), image out. Because it learns casing as an
+    operation on pixels rather than a dictionary of letters, it applies to inputs it was
+    never trained on — which is the whole reason a 3 produces anything at all. A separate
+    classifier recognizes known letters and reports its confidence, so the system can tell
+    the difference between "I know this letter" and "I'm improvising."</p>
+
+    <p><b>Honest testing.</b> The validation set is split by <i>font family</i>, not by
+    sample — the model is scored only on typefaces it never saw during training. Good
+    scores there mean it learned casing, not that it memorized specific glyphs.</p>
+
+    <p><b>It runs on your phone.</b> Trained on a laptop GPU, exported to ONNX, quantized to
+    a 5&nbsp;MB file, and executed in your browser with onnxruntime-web. No server does any
+    of the thinking — which is also why nothing you draw ever leaves your device.</p>
+
+    <div class="methodfig">
+      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></div>Greek</div>
+      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></div>Cyrillic</div>
+      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></div>Armenian</div>
+    </div>
+  </section>
+
+  <footer>
+    Built by Rob Heffern. The model, the data pipeline, and this page all run on open
+    tools; the whole thing is a small study in teaching a machine a rule we never think about.
+  </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.wasm.min.js"></script>
+<script>
+const SIZE=64;
+ort.env.wasm.wasmPaths="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
+ort.env.wasm.numThreads=1;   // no SharedArrayBuffer -> no COOP/COEP headers needed
+let sess=null;
+const statusEl=document.getElementById("status");
+
+ort.InferenceSession.create("models/transform.onnx").then(s=>{
+  sess=s; statusEl.textContent="Ready. Draw a letter, or type one, then Convert.";
+}).catch(e=>{ statusEl.textContent="Could not load the model file (models/transform.onnx)."; });
+
+/* ---------- drawing pad ---------- */
+const pad=document.getElementById("pad"), pctx=pad.getContext("2d");
+function clearPad(){pctx.fillStyle="#000";pctx.fillRect(0,0,pad.width,pad.height);
+  pctx.strokeStyle="#fff";pctx.lineWidth=20;pctx.lineCap="round";pctx.lineJoin="round";}
+clearPad();
+let drawing=false,lx=0,ly=0;
+function pos(e){const r=pad.getBoundingClientRect();const t=e.touches?e.touches[0]:e;
+  return [(t.clientX-r.left)*pad.width/r.width,(t.clientY-r.top)*pad.height/r.height];}
+function dn(e){drawing=true;[lx,ly]=pos(e);e.preventDefault();}
+function mv(e){if(!drawing)return;const[x,y]=pos(e);pctx.beginPath();pctx.moveTo(lx,ly);
+  pctx.lineTo(x,y);pctx.stroke();[lx,ly]=[x,y];e.preventDefault();}
+function up(){drawing=false;}
+pad.addEventListener("mousedown",dn);pad.addEventListener("mousemove",mv);
+window.addEventListener("mouseup",up);
+pad.addEventListener("touchstart",dn,{passive:false});
+pad.addEventListener("touchmove",mv,{passive:false});pad.addEventListener("touchend",up);
+document.getElementById("clear").onclick=()=>{clearPad();document.getElementById("typed").value="";
+  clearOut();document.getElementById("telout").innerHTML="";};
+
+/* ---------- typed character ---------- */
+function renderTyped(ch){
+  clearPad();
+  pctx.save();pctx.fillStyle="#fff";pctx.textAlign="center";pctx.textBaseline="middle";
+  pctx.font='180px "Iowan Old Style",Palatino,Georgia,serif';
+  pctx.fillText(ch,pad.width/2,pad.height/2+10);pctx.restore();
+}
+
+/* ---------- normalize (mirror of preprocess.py) ---------- */
+function normalize(){
+  const d=pctx.getImageData(0,0,pad.width,pad.height).data,W=pad.width,H=pad.height;
+  const g=new Float32Array(W*H);
+  for(let i=0;i<W*H;i++)g[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];
+  let bs=0,bn=0;
+  for(let x=0;x<W;x++){bs+=g[x]+g[(H-1)*W+x];bn+=2;}
+  for(let y=0;y<H;y++){bs+=g[y*W]+g[y*W+W-1];bn+=2;}
+  if(bs/bn>127)for(let i=0;i<W*H;i++)g[i]=255-g[i];
+  return crop(g,W,H);
+}
+function crop(g,W,H){
+  let x0=W,y0=H,x1=-1,y1=-1;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(g[y*W+x]>32){
+    if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  const out=new Float32Array(SIZE*SIZE);if(x1<0)return out;
+  const cw=x1-x0+1,ch=y1-y0+1,inner=Math.round(SIZE*0.72),s=inner/Math.max(cw,ch);
+  const nw=Math.max(1,Math.round(cw*s)),nh=Math.max(1,Math.round(ch*s));
+  const ox=Math.floor((SIZE-nw)/2),oy=Math.floor((SIZE-nh)/2);
+  for(let yy=0;yy<nh;yy++)for(let xx=0;xx<nw;xx++){
+    const sx=x0+Math.floor(xx/s),sy=y0+Math.floor(yy/s);
+    out[(oy+yy)*SIZE+(ox+xx)]=g[sy*W+sx]/255;}
+  return out;
+}
+/* renormalize a model output (0..1) for iteration stability */
+function renorm(arr){
+  const g=new Float32Array(SIZE*SIZE);for(let i=0;i<arr.length;i++)g[i]=arr[i]*255;
+  return crop(g,SIZE,SIZE);
+}
+
+async function run(x,dir){
+  const img=new ort.Tensor("float32",x,[1,1,SIZE,SIZE]);
+  const d=new ort.Tensor("float32",new Float32Array([dir]),[1]);
+  const o=await sess.run({image:img,direction:d});
+  return o.out.data;
+}
+/* draw with a mild contrast boost so soft output reads crisp */
+function drawTile(canvas,arr){
+  const ctx=canvas.getContext("2d"),im=ctx.createImageData(SIZE,SIZE);
+  const css=getComputedStyle(document.body).getPropertyValue("--glyph").trim();
+  const m=css.match(/#?([0-9a-f]{6})/i);let r=32,gg=32,b=28;
+  if(m){r=parseInt(m[1].substr(0,2),16);gg=parseInt(m[1].substr(2,2),16);b=parseInt(m[1].substr(4,2),16);}
+  for(let i=0;i<SIZE*SIZE;i++){
+    let v=arr[i];v=Math.max(0,Math.min(1,(v-0.45)*2.2+0.5)); // contrast
+    im.data[i*4]=r;im.data[i*4+1]=gg;im.data[i*4+2]=b;im.data[i*4+3]=Math.round(v*255);}
+  ctx.clearRect(0,0,SIZE,SIZE);ctx.putImageData(im,0,0);
+}
+function clearOut(){for(const id of["outLower","outUpper"]){
+  const c=document.getElementById(id);c.getContext("2d").clearRect(0,0,SIZE,SIZE);}}
+
+let lastInput=null;
+async function convert(){
+  if(!sess){statusEl.textContent="Model still loading…";return;}
+  const typed=document.getElementById("typed").value;
+  if(typed) renderTyped(typed);
+  const x=normalize();lastInput=x;
+  drawTile(document.getElementById("outLower"),await run(x,0));
+  drawTile(document.getElementById("outUpper"),await run(x,1));
+  document.getElementById("telout").innerHTML="";
+  statusEl.textContent="There you go. Try Iterate to run the telephone.";
+}
+document.getElementById("convert").onclick=convert;
+document.getElementById("typed").addEventListener("keydown",e=>{if(e.key==="Enter")convert();});
+
+async function iterate(){
+  if(!sess||!lastInput){statusEl.textContent="Draw or type something, then Convert first.";return;}
+  const host=document.getElementById("telout");host.innerHTML="";
+  let cur=lastInput;addFrame(host,cur);
+  for(let i=0;i<8;i++){
+    const dir=i%2===0?1:0;
+    cur=renorm(await run(cur,dir));
+    addFrame(host,cur,i%2===0?"↑":"↓");
+  }
+  statusEl.textContent="That's the case telephone — each step re-cases the last.";
+}
+function addFrame(host,arr,label){
+  if(host.children.length){const a=document.createElement("span");a.className="arrow";
+    a.textContent="→";a.style.fontSize="13px";host.appendChild(a);}
+  const c=document.createElement("canvas");c.width=c.height=SIZE;c.className="out";
+  c.style.width=c.style.height="56px";host.appendChild(c);drawTile(c,arr);
+}
+document.getElementById("iterate").onclick=iterate;
+</script>
+</body>
+</html>
