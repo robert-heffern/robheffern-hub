@@ -6,214 +6,77 @@
 <title>Capitals</title>
 <meta name="description" content="A neural net that learned casing as a transformation — and what it does when you feed it things that have no case.">
 <style>
-  :root{
-    --paper:#f7f4ee; --ink:#20201c; --muted:#6b675e; --line:#ddd7cb;
-    --card:#fffefb; --accent:#9a5b34; --glyph:#20201c;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --paper:#171613; --ink:#eae6dc; --muted:#9a948a; --line:#332f28;
-      --card:#1e1c18; --accent:#d59c6b; --glyph:#eae6dc;
-    }
-  }
-  :root[data-theme="dark"]{
-    --paper:#171613; --ink:#eae6dc; --muted:#9a948a; --line:#332f28;
-    --card:#1e1c18; --accent:#d59c6b; --glyph:#eae6dc;
-  }
+  :root{--paper:#f7f4ee;--ink:#20201c;--muted:#6b675e;--line:#ddd7cb;--card:#fffefb;--accent:#9a5b34;--glyph:#20201c;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}}
+  :root[data-theme="dark"]{--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    -webkit-font-smoothing:antialiased}
-  .wrap{max-width:720px;margin:0 auto;padding:56px 20px 80px}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:52px 20px 80px}
   h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
-  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 36px}
-  h2{font-size:24px;margin:52px 0 6px;letter-spacing:-0.01em}
-  .lede{color:var(--muted);margin:0 0 22px}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 30px}
+  h2{font-size:24px;margin:50px 0 6px;letter-spacing:-0.01em}
+  .lede{color:var(--muted);margin:0 0 20px}
   p{margin:0 0 16px}
   section{border-top:1px solid var(--line);padding-top:8px}
   a{color:var(--accent)}
   .note{font-size:14px;color:var(--muted)}
-
-  /* glyph tiles rendered from PNG masks, recolored with currentColor */
-  .g{display:inline-block;width:var(--s,72px);height:var(--s,72px);
-    background:var(--glyph);
-    -webkit-mask:var(--src) center/contain no-repeat;
-    mask:var(--src) center/contain no-repeat;vertical-align:middle}
+  .g{display:inline-block;width:var(--s,72px);height:var(--s,72px);background:var(--glyph);-webkit-mask:var(--src) center/contain no-repeat;mask:var(--src) center/contain no-repeat;vertical-align:middle}
   .pair{display:inline-flex;align-items:center;gap:6px;margin:4px 10px 4px 0}
   .arrow{color:var(--muted);font-size:20px}
   .row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:14px 0 6px}
   .cap{font-size:13px;color:var(--muted);text-align:center;display:block;margin-top:4px}
   .cell{text-align:center}
   .script-name{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-
-  /* telephone strip */
-  .tel{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:10px 0}
-  .tel .g{--s:52px}
-  .tel .arrow{font-size:14px}
-
-  /* live box */
-  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:20px;margin:16px 0}
+  .grid{display:flex;flex-wrap:wrap;gap:12px 16px;margin:14px 0}
+  .mini .g{--s:28px}.mini .arrow{font-size:12px}.mini .pair{gap:3px;margin:3px 6px 3px 0}
+  .trip{display:inline-flex;align-items:center;gap:8px}
+  .tcol{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
+  .tlab{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:16px 0}
   .liverow{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
-  canvas#pad{background:#000;border-radius:10px;touch-action:none;cursor:crosshair;
-    image-rendering:pixelated}
-  .outwrap{display:flex;gap:16px;flex-wrap:wrap}
-  .outcell{text-align:center}
+  canvas#pad{background:#000;border-radius:10px;touch-action:none;cursor:crosshair;image-rendering:pixelated}
+  .outwrap{display:flex;gap:16px;flex-wrap:wrap}.outcell{text-align:center}
   canvas.out{width:120px;height:120px;background:transparent;image-rendering:auto}
   .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
-  button{font:inherit;font-size:15px;background:var(--accent);color:#fff;border:0;
-    border-radius:9px;padding:8px 15px;cursor:pointer}
+  button{font:inherit;font-size:15px;background:var(--accent);color:#fff;border:0;border-radius:9px;padding:8px 15px;cursor:pointer}
   button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-  input[type=text]{font:inherit;font-size:16px;padding:8px 11px;border:1px solid var(--line);
-    border-radius:9px;background:var(--paper);color:var(--ink);width:120px}
-  select{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);
-    border-radius:9px;background:var(--paper);color:var(--ink)}
+  input[type=text]{font:inherit;font-size:16px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);width:120px}
+  select{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)}
   .status{font-size:13px;color:var(--muted);min-height:18px;margin-top:10px}
-  .telout{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:12px}
-  .telout canvas{width:56px;height:56px}
-  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;
-    font-size:14px;color:var(--muted)}
-  .methodfig{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
-  .methodfig .col{text-align:center;font-size:12px;color:var(--muted)}
-  .grid{display:flex;flex-wrap:wrap;gap:12px 16px;margin:14px 0}
-  .mini .g{--s:28px}
-  .mini .arrow{font-size:12px}
-  .mini .pair{gap:3px;margin:3px 6px 3px 0}
-  .hd{display:flex;gap:5px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 2px}
-  .hdcol{text-align:center}
-  .hdcol .g{--s:46px;display:block}
-  .stepnum{font-size:10px;color:var(--muted);margin-top:2px}
+  .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  .ctl label{font-size:14px;color:var(--muted)}
   .slider{width:100%;max-width:520px;margin:10px 0}
   .bigout{width:150px;height:150px;image-rendering:auto;background:transparent}
   .kv{font-variant-numeric:tabular-nums}
-  .xgrid{display:flex;flex-wrap:wrap;gap:8px 10px;margin:12px 0}
-  .xcell{display:flex;flex-direction:column;align-items:center;gap:1px}
-  .xcell canvas{width:42px;height:42px}
-  .xcell .arrow{font-size:11px;line-height:1}
-  .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
-  .ctl label{font-size:14px;color:var(--muted)}
-  .weirdgrid{display:flex;flex-wrap:wrap;gap:14px 18px;margin:12px 0}
-  .witem{text-align:center}
-  .wlabel{font-size:12px;color:var(--muted);max-width:120px;margin-top:2px;line-height:1.3}
   fieldset{border:1px solid var(--line);border-radius:9px;padding:6px 12px;margin:0}
   fieldset label{margin-right:12px}
+  .row2{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .xcomp{background:var(--glyph);-webkit-mask:var(--src) top left/contain no-repeat;mask:var(--src) top left/contain no-repeat;width:100%;max-width:460px;margin-top:4px}
+  .weirdgrid{display:flex;flex-wrap:wrap;gap:14px 18px;margin:12px 0}
+  .witem{text-align:center}.wlabel{font-size:12px;color:var(--muted);max-width:120px;margin-top:2px;line-height:1.3}
+  .methodfig{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}.methodfig .col{text-align:center;font-size:12px;color:var(--muted)}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;font-size:14px;color:var(--muted)}
 </style>
 </head>
 <body>
 <main class="wrap">
-
   <h1>Capitals</h1>
   <p class="tag">A small project about which letters we choose to make big.</p>
+  <p>Every letter you know comes in two sizes. <b>A</b> and <b>a</b> are the same letter wearing
+  different clothes, and somewhere in your head is a rule that turns one into the other. I taught
+  that rule to a small neural network — not as a lookup table of "A goes with a," but as a
+  <i>transformation</i> you can point at any shape. Then I pointed it at shapes that have no
+  capital at all. Draw something and see.</p>
 
-  <p>Every letter you know comes in two sizes. <b>A</b> and <b>a</b> are the same
-  letter wearing different clothes, and somewhere in your head is a rule that turns
-  one into the other. I tried to teach that rule to a small neural network — not as
-  a lookup table of "A goes with a," but as a <i>transformation</i> you could point
-  at any shape. Then I pointed it at shapes that have no capital at all.</p>
-
-  <!-- ================= WORKS ================= -->
+  <!-- LIVE BOX -->
   <section>
-    <h2>It learned the shape of "make it bigger"</h2>
-    <p class="lede">Same letter, both cases — produced by the model, not looked up.
-    The striking part: it works in alphabets you may not be able to read. Nobody told
-    it these were related; it generalized the <i>idea</i> of casing across scripts.</p>
-
-    <div class="row">
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_latin_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_latin_up.png)"></span></div><span class="script-name">Latin</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></div><span class="script-name">Greek</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></div><span class="script-name">Cyrillic</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_cyrYa_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrYa_up.png)"></span></div><span class="script-name">Cyrillic</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></div><span class="script-name">Armenian</span></div>
-    </div>
-    <p class="note">The model was trained on about 94,000 letter pairs rendered from
-    431 fonts across twelve bicameral scripts — never a single hand-labeled example.</p>
-  </section>
-
-  <section>
-    <h2>Run it into the ground</h2>
-    <p class="lede">Casing a letter once is tidy. Casing its own output over and over is
-    where it gets interesting. Drag the slider and watch a letter get re-cased again and
-    again — either always toward UPPERCASE, or alternating up/down like a game of
-    telephone. Spoiler: nearly everything ends up as the same gray ghost.</p>
+    <h2>Try it</h2>
+    <p class="lede">Draw a letter or type any character, and the model cases it both ways. Switch
+    the <b>casing style</b> to run a single-script specialist instead of the generalist — draw a
+    Latin <i>a</i>, pick <b>Greek only</b>, and watch it try to Hellenize it.</p>
     <div class="box">
       <div class="ctl">
-        <label>Seed: <input type="text" id="it-seed" maxlength="2" value="a" style="width:60px"></label>
-        <fieldset>
-          <label><input type="radio" name="it-mode" value="upper" checked> keep uppercasing</label>
-          <label><input type="radio" name="it-mode" value="alt"> alternate up / down</label>
-        </fieldset>
-        <button id="it-mine" class="ghost">use my drawing</button>
-      </div>
-      <div class="row2">
-        <div style="text-align:center"><canvas id="it-out" class="bigout" width="64" height="64"></canvas>
-          <div class="cap">step <span id="it-n" class="kv">0</span></div></div>
-        <div style="flex:1;min-width:260px">
-          <input type="range" id="it-slider" class="slider" min="0" max="160" value="0">
-          <div class="muted-s" id="it-status">drag to iterate</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Casing across borders</h2>
-    <p class="lede">Each single-script model learned casing from only <i>one</i> alphabet.
-    So what happens when you make the Greek model capitalize Armenian? Or ask the Latin
-    model to shout in Cyrillic? Pick an alphabet and a model and watch one script get
-    dragged through another's idea of "bigger."</p>
-    <div class="box">
-      <div class="ctl">
-        <label>Alphabet: <select id="xa-script">
-          <option value="latin">Latin</option>
-          <option value="greek">Greek</option>
-          <option value="cyrillic">Cyrillic</option>
-          <option value="armenian" selected>Armenian</option>
-        </select></label>
-        <label>cased by the <select id="xa-regime">
-          <option value="greek" selected>Greek</option>
-          <option value="latin">Latin</option>
-          <option value="cyrillic">Cyrillic</option>
-          <option value="armenian">Armenian</option>
-          <option value="cursive_cyrillic">Cyrillic cursive</option>
-          <option value="cursive_latin">Latin cursive</option>
-          <option value="all">generalist</option>
-        </select> model</label>
-        <button id="xa-go">Run</button>
-      </div>
-      <div id="xa-grid" class="muted-s">pick two and hit Run</div>
-    </div>
-  </section>
-
-  <section>
-    <h2>The whole alphabet</h2>
-    <p class="lede">All twenty-six, lowercase to capital, every one produced by the model.
-    No cherry-picking — this is the full set.</p>
-    <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/l26_a_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_a_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_b_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_b_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_c_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_c_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_d_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_d_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_e_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_e_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_f_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_f_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_g_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_g_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_h_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_h_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_i_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_i_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_j_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_j_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_k_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_k_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_l_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_l_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_m_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_m_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_n_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_n_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_o_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_o_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_p_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_p_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_q_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_q_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_r_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_r_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_s_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_s_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_t_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_t_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_u_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_u_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_v_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_v_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_w_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_w_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_x_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_x_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_y_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_y_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/l26_z_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/l26_z_up.png)"></span></span></div>
-  </section>
-
-  <section>
-    <h2>The letters other languages kept</h2>
-    <p class="lede">English dropped most of these, but other Latin-script languages still
-    use them — and the model cases them correctly, including pairs it saw far less often
-    than <i>a/A</i>.</p>
-    <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/str_thorn_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_thorn_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_eth_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_eth_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ae_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ae_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_oe_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_oe_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_eng_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_eng_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_oslash_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_oslash_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_aring_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_aring_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_cced_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_cced_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ntilde_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ntilde_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_gbreve_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_gbreve_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_scedil_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_scedil_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_zcaron_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_zcaron_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_dstroke_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_dstroke_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_hstroke_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_hstroke_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ss_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ss_up.png)"></span></span></div>
-    <p class="note" style="margin-top:14px">Push further, into letters that have been
-    extinct for centuries — long-s, wynn, yogh — and it stops knowing and starts improvising:</p>
-    <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/str_longs_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_longs_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_wynn_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_wynn_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_yogh_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_yogh_up.png)"></span></span></div>
-  </section>
-
-  <!-- ================= LIVE BOX ================= -->
-  <section>
-    <h2>Try it yourself</h2>
-    <p class="lede">Draw a letter, or type any character, and watch the model case it
-    both ways. Then hit <b>iterate</b> to keep applying the rule and watch it drift.
-    Switch the <b>casing style</b> to run a single-script specialist instead of the
-    generalist — draw a Latin <i>a</i>, pick <b>Greek only</b>, and watch it try to
-    Hellenize it.</p>
-
-    <div class="box">
-      <div class="controls" style="margin-top:0;margin-bottom:16px">
-        <label for="regime" style="color:var(--muted);font-size:14px">Casing style:</label>
+        <label>Casing style:</label>
         <select id="regime">
           <option value="all">All scripts (the generalist)</option>
           <option value="latin">Latin only</option>
@@ -231,6 +94,7 @@
             <input type="text" id="typed" maxlength="2" placeholder="or type: 3 ! ж">
             <button id="convert">Convert</button>
             <button id="clear" class="ghost">Clear</button>
+            <button id="share" class="ghost">Copy a link to this</button>
           </div>
         </div>
         <div class="outwrap">
@@ -238,432 +102,289 @@
           <div class="outcell"><canvas class="out" id="outUpper" width="64" height="64"></canvas><div class="cap">UPPERCASE</div></div>
         </div>
       </div>
-      <div class="controls">
-        <button id="iterate" class="ghost">Iterate ▸ (case telephone)</button>
-        <button id="share" class="ghost">Copy a link to this</button>
-      </div>
-      <div class="telout" id="telout"></div>
       <div class="status" id="status">Loading model…</div>
     </div>
-    <p class="note">Everything runs in your browser — the model is a 5&nbsp;MB file your
-    device downloads once. Nothing you draw is uploaded, stored, or seen by anyone but you.</p>
+    <p class="note">Everything runs in your browser. Nothing you draw is uploaded, stored, or seen
+    by anyone but you.</p>
   </section>
 
-  <!-- ================= CURIOSITIES ================= -->
+  <!-- HEAT DEATH SLIDER -->
+  <section>
+    <h2>Run it into the ground</h2>
+    <p class="lede">Casing a letter once is tidy. Casing its own output over and over is where it
+    gets strange: drag the slider and watch a letter get re-cased again and again. Keep pushing it
+    one direction, or alternate up and down. Spoiler — almost everything ends up as the same gray
+    ghost.</p>
+    <div class="box">
+      <div class="ctl">
+        <label>Letter: <select id="it-seed"></select></label>
+        <fieldset>
+          <label><input type="radio" name="it-mode" value="upper" checked> uppercase</label>
+          <label><input type="radio" name="it-mode" value="lower"> lowercase</label>
+          <label><input type="radio" name="it-mode" value="alt"> alternate</label>
+        </fieldset>
+        <button id="it-mine" class="ghost">use my drawing</button>
+      </div>
+      <div class="row2">
+        <div style="text-align:center"><canvas id="it-out" class="bigout" width="64" height="64"></canvas>
+          <div class="cap">step <span id="it-n" class="kv">0</span></div></div>
+        <div style="flex:1;min-width:260px">
+          <input type="range" id="it-slider" class="slider" min="0" max="72" value="0">
+          <div class="note" id="it-status">drag to iterate — presets are instant</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CROSS-APPLY (precomputed) -->
+  <section>
+    <h2>Casing across borders</h2>
+    <p class="lede">Each single-script model learned casing from only <i>one</i> alphabet. So what
+    happens when the Greek model capitalizes Armenian, or the Latin model shouts in Cyrillic? Pick
+    an alphabet and a model and watch one script get dragged through another's idea of "bigger."</p>
+    <div class="box">
+      <div class="ctl">
+        <label>Alphabet: <select id="xa-alpha">
+          <option value="armenian" selected>Armenian</option>
+          <option value="latin">Latin</option>
+          <option value="greek">Greek</option>
+          <option value="cyrillic">Cyrillic</option>
+        </select></label>
+        <label>cased by the <select id="xa-regime">
+          <option value="greek" selected>Greek</option>
+          <option value="latin">Latin</option>
+          <option value="cyrillic">Cyrillic</option>
+          <option value="armenian">Armenian</option>
+          <option value="cursive_cyrillic">Cyrillic cursive</option>
+          <option value="cursive_latin">Latin cursive</option>
+          <option value="all">generalist</option>
+        </select> model</label>
+      </div>
+      <div class="cap" style="text-align:left;margin-top:8px">the alphabet, as written:</div>
+      <div class="xcomp" id="xa-in"></div>
+      <div class="cap" style="text-align:left;margin-top:14px">the model's capitals for it:</div>
+      <div class="xcomp" id="xa-out"></div>
+    </div>
+  </section>
+
+  <!-- HERO cross-script -->
+  <section>
+    <h2>It learned the shape of "make it bigger"</h2>
+    <p class="lede">Same letter, both cases — produced by the model, not looked up. The striking
+    part: it works in alphabets you may not be able to read.</p>
+    <div class="row">
+      <div class="cell"><span class="pair"><span class="g" style="--src:url(img/x_latin_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_latin_up.png)"></span></span><span class="script-name">Latin</span></div>
+      <div class="cell"><span class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></span><span class="script-name">Greek</span></div>
+      <div class="cell"><span class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></span><span class="script-name">Cyrillic</span></div>
+      <div class="cell"><span class="pair"><span class="g" style="--src:url(img/x_cyrYa_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrYa_up.png)"></span></span><span class="script-name">Cyrillic</span></div>
+      <div class="cell"><span class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></span><span class="script-name">Armenian</span></div>
+    </div>
+    <p class="note">Trained on ~94,000 letter pairs rendered from 431 fonts across twelve bicameral
+    scripts — never a single hand-labeled example.</p>
+  </section>
+
+  <!-- STRANGE LATIN -->
+  <section>
+    <h2>The letters other languages kept</h2>
+    <p class="lede">English dropped most of these, but other Latin-script languages still use them —
+    and the model cases them correctly.</p>
+    <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/str_thorn_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_thorn_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_eth_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_eth_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ae_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ae_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_oe_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_oe_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_eng_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_eng_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_oslash_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_oslash_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_aring_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_aring_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_cced_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_cced_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ntilde_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ntilde_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_gbreve_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_gbreve_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_scedil_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_scedil_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_zcaron_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_zcaron_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_dstroke_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_dstroke_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_hstroke_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_hstroke_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_ss_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_ss_up.png)"></span></span></div>
+    <p class="note" style="margin-top:14px">Push into letters extinct for centuries — long-s, wynn,
+    yogh — and it stops knowing and starts improvising:</p>
+    <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/str_longs_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_longs_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_wynn_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_wynn_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/str_yogh_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/str_yogh_up.png)"></span></span></div>
+  </section>
+
+  <!-- NUMBERS + PUNCTUATION (merged with capital-of-3) -->
   <section>
     <h2>So what's the capital of a 3?</h2>
-    <p class="lede">This is the question everyone asks. The honest answer is funnier
-    than a trick: the model mostly <i>hedges</i>. It only ever saw real letters, so when
-    you hand it something with no capital, it shrugs — nudges the shape and hands it back.
-    That shrug is the model telling you a 3 has no case.</p>
-
-    <div class="row">
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/c3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/c3_out.png)"></span></div><span class="cap">3 → a slightly bolder 3</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/cex_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cex_out.png)"></span></div><span class="cap">! → barely budges</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/camp_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/camp_out.png)"></span></div><span class="cap">&amp; → gets ideas</span></div>
-    </div>
-
-    <p>Every so often it commits to something, and those are the good ones:</p>
-    <div class="row">
-      <div class="cell"><div class="pair"><span class="g" style="--s:88px;--src:url(img/c9_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:88px;--src:url(img/c9_out.png)"></span></div><span class="cap">the "capital" of 9, apparently, is a G</span></div>
-    </div>
-
-    <h2 style="margin-top:40px">And the capital of a capital?</h2>
-    <p class="lede">Ask for the uppercase of an <b>A</b> that's already uppercase and you
-    get… an <b>A</b>. The model knows A is already as big as it gets. There's no
-    secret bigger letter hiding past the end of the alphabet — I checked.</p>
-    <div class="row">
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/eA_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/eA_out.png)"></span></div><span class="cap">UPPER(A) = A</span></div>
-      <div class="cell"><div class="pair"><span class="g" style="--src:url(img/ea_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ea_out.png)"></span></div><span class="cap">lower(a) = a</span></div>
-    </div>
+    <p class="lede">The question everyone asks. The honest answer is funnier than a trick: none of
+    these have a capital <i>or</i> a lowercase, so the model mostly hedges — a nudge here, a
+    thickening there. But a few it commits to (the 9 still insists its capital is a G). Here's every
+    number and mark, pushed both ways.</p>
+    <div class="row"><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num0_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num0_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num0_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num1_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num1_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num1_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num2_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num2_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num2_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num3_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num3_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num3_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num4_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num4_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num4_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num5_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num5_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num5_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num6_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num6_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num6_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num7_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num7_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num7_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num8_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num8_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num8_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_num9_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_num9_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_num9_lo.png)"></span></span></div></div></div>
+    <div class="row" style="margin-top:14px"><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_ex_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_ex_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_ex_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_q_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_q_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_q_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_at_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_at_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_at_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_hash_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_hash_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_hash_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_dol_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_dol_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_dol_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_pct_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_pct_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_pct_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_amp_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_amp_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_amp_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_star_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_star_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_star_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_plus_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_plus_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_plus_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_eq_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_eq_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_eq_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_lt_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_lt_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_lt_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_gt_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_gt_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_gt_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_tilde_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_tilde_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_tilde_lo.png)"></span></span></div></div><div class="cell"><div class="trip"><span class="g" style="--s:40px;--src:url(img/n2_sect_in.png)"></span><span class="tcol"><span class="tlab">UP</span><span class="g" style="--s:40px;--src:url(img/n2_sect_up.png)"></span></span><span class="tcol"><span class="tlab">low</span><span class="g" style="--s:40px;--src:url(img/n2_sect_lo.png)"></span></span></div></div></div>
   </section>
 
-  <section>
-    <h2>Every number and mark, "capitalized"</h2>
-    <p class="lede">None of these have a capital. The model does its best anyway. Mostly it
-    hedges — a nudge here, a thickening there — but a few it commits to (the 9 is still
-    convinced it becomes a G).</p>
-    <div class="row"><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num0_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num0_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num1_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num1_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num2_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num2_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num3_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num3_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num4_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num4_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num5_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num5_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num6_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num6_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num7_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num7_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num8_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num8_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_num9_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_num9_up.png)"></span></div></div></div>
-    <div class="row" style="margin-top:12px"><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_ex_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_ex_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_q_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_q_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_at_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_at_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_hash_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_hash_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_dol_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_dol_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_pct_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_pct_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_amp_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_amp_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_star_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_star_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_plus_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_plus_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_eq_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_eq_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_lt_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_lt_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_gt_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_gt_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_tilde_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_tilde_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_semi_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_semi_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_colon_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_colon_up.png)"></span></div></div><div class="cell"><div class="pair"><span class="g" style="--s:40px;--src:url(img/np_sect_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:40px;--src:url(img/np_sect_up.png)"></span></div></div></div>
-  </section>
-
+  <!-- HALL OF WEIRD -->
   <section>
     <h2>The hall of the weird</h2>
-    <p class="lede">I let the model loose on every letter, number, and mark, then ranked them
-    by how violently it transformed each one — surfacing the glyphs where it strays furthest
-    from anything sensible. These are its strangest confident guesses.</p>
-    <div class="weirdgrid"><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_armenian_0571_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_armenian_0571_out.png)"></span></div><div class="wlabel">ձ (armenian) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_armenian_0573_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_armenian_0573_out.png)"></span></div><div class="wlabel">ճ (armenian) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_greek_03bd_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_greek_03bd_out.png)"></span></div><div class="wlabel">ν (greek) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_latin_0065_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_latin_0065_out.png)"></span></div><div class="wlabel">e (latin) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_cyrillic_0435_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_cyrillic_0435_out.png)"></span></div><div class="wlabel">е (cyrillic) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wc_latin_0068_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_latin_0068_out.png)"></span></div><div class="wlabel">h (latin) → the model’s idea of its capital</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0039_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0039_out.png)"></span></div><div class="wlabel">9 → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0031_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0031_out.png)"></span></div><div class="wlabel">1 → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0025_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0025_out.png)"></span></div><div class="wlabel">% → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0023_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0023_out.png)"></span></div><div class="wlabel"># → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0040_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0040_out.png)"></span></div><div class="wlabel">@ → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_002a_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_002a_out.png)"></span></div><div class="wlabel">* → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0021_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0021_out.png)"></span></div><div class="wlabel">! → ?</div></div><div class="witem"><div class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0026_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0026_out.png)"></span></div><div class="wlabel">& → ?</div></div></div>
+    <p class="lede">I let the model loose on every letter, number, and mark, then ranked them by how
+    violently it transformed each one. These are its strangest confident guesses.</p>
+    <div class="weirdgrid"><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_armenian_0571_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_armenian_0571_out.png)"></span></span><div class="wlabel">ձ (armenian) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_armenian_0573_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_armenian_0573_out.png)"></span></span><div class="wlabel">ճ (armenian) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_greek_03bd_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_greek_03bd_out.png)"></span></span><div class="wlabel">ν (greek) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_latin_0065_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_latin_0065_out.png)"></span></span><div class="wlabel">e (latin) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_cyrillic_0435_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_cyrillic_0435_out.png)"></span></span><div class="wlabel">е (cyrillic) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wc_latin_0068_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wc_latin_0068_out.png)"></span></span><div class="wlabel">h (latin) → the model’s idea of its capital</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0039_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0039_out.png)"></span></span><div class="wlabel">9 → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0031_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0031_out.png)"></span></span><div class="wlabel">1 → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0025_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0025_out.png)"></span></span><div class="wlabel">% → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0023_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0023_out.png)"></span></span><div class="wlabel"># → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0040_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0040_out.png)"></span></span><div class="wlabel">@ → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_002a_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_002a_out.png)"></span></span><div class="wlabel">* → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0021_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0021_out.png)"></span></span><div class="wlabel">! → ?</div></div><div class="witem"><span class="pair"><span class="g" style="--s:58px;--src:url(img/wn_0026_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:58px;--src:url(img/wn_0026_out.png)"></span></span><div class="wlabel">& → ?</div></div></div>
     <div class="ctl" style="margin-top:8px">
       <button id="sp-go">Surprise me</button>
       <div style="text-align:center"><canvas id="sp-in" class="out" width="64" height="64" style="width:64px;height:64px"></canvas></div>
       <span class="arrow">→</span>
       <div style="text-align:center"><canvas id="sp-out" class="out" width="64" height="64" style="width:64px;height:64px"></canvas></div>
-      <span class="muted-s" id="sp-label"></span>
+      <span class="note" id="sp-label"></span>
     </div>
   </section>
 
+  <!-- CASELESS -->
   <section>
     <h2>Scripts with no capitals</h2>
-    <p class="lede">Most of the world's writing systems never invented a capital/small
-    distinction at all. Hand the model Japanese, Hebrew, Arabic, or Devanagari and ask for
-    the "uppercase," and it does the only honest thing: almost nothing. There's no bigger
-    version to reach for, so it hands the glyph back.</p>
+    <p class="lede">Most of the world's writing systems never invented a capital/small distinction.
+    Hand the model Japanese, Hebrew, Arabic, or Devanagari and it does the only honest thing: almost
+    nothing. There's no bigger version to reach for, so it hands the glyph back.</p>
     <div class="row"><div class="cell"><div class="grid mini" style="margin:0"><span class="pair"><span class="g" style="--src:url(img/cl_jp1_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_jp1_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_jp2_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_jp2_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_jp3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_jp3_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_jp4_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_jp4_up.png)"></span></span></div><span class="cap">Japanese</span></div></div>
     <div class="row"><div class="cell"><div class="grid mini" style="margin:0"><span class="pair"><span class="g" style="--src:url(img/cl_heb1_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_heb1_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_heb2_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_heb2_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_heb3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_heb3_up.png)"></span></span></div><span class="cap">Hebrew</span></div>
       <div class="cell"><div class="grid mini" style="margin:0"><span class="pair"><span class="g" style="--src:url(img/cl_ara1_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_ara1_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_ara2_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_ara2_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_ara3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_ara3_up.png)"></span></span></div><span class="cap">Arabic</span></div>
       <div class="cell"><div class="grid mini" style="margin:0"><span class="pair"><span class="g" style="--src:url(img/cl_dev1_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_dev1_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_dev2_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_dev2_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/cl_dev3_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/cl_dev3_up.png)"></span></span></div><span class="cap">Devanagari</span></div></div>
   </section>
 
+  <!-- CURSIVE -->
   <section>
     <h2>Cursive throws it a curveball</h2>
-    <p class="lede">Russian cursive is famously disorienting: lowercase <b>т</b> is written
-    like an <i>m</i>, <b>и</b> like a <i>u</i>, <b>п</b> like an <i>n</i>. The model has to
-    find the capital of a shape that looks like a completely different letter.</p>
+    <p class="lede">Russian cursive is famously disorienting: lowercase <b>т</b> is written like an
+    <i>m</i>, <b>и</b> like a <i>u</i>, <b>п</b> like an <i>n</i>. The model has to find the capital
+    of a shape that looks like a completely different letter.</p>
     <div class="row"><div class="cell"><span class="pair"><span class="g" style="--s:56px;--src:url(img/ccyr_t_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:56px;--src:url(img/ccyr_t_up.png)"></span></span><span class="cap">cursive т (looks like m)</span></div><div class="cell"><span class="pair"><span class="g" style="--s:56px;--src:url(img/ccyr_i_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:56px;--src:url(img/ccyr_i_up.png)"></span></span><span class="cap">cursive и (looks like u)</span></div><div class="cell"><span class="pair"><span class="g" style="--s:56px;--src:url(img/ccyr_p_in.png)"></span><span class="arrow">→</span><span class="g" style="--s:56px;--src:url(img/ccyr_p_up.png)"></span></span><span class="cap">cursive п (looks like n)</span></div></div>
     <div class="grid mini" style="margin-top:4px"><span class="pair"><span class="g" style="--src:url(img/ccyr_a_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_a_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_b_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_b_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_v_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_v_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_g_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_g_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_d_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_d_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_zh_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_zh_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_l_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_l_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_m_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_m_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_u_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_u_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/ccyr_ch_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/ccyr_ch_up.png)"></span></span></div>
-    <p class="note" style="margin-top:16px">Fancy Latin script fonts are harder still — all
-    those connected flourishes are far from the clean type it trained on, and it shows:</p>
+    <p class="note" style="margin-top:16px">Fancy Latin script fonts are harder still — all those
+    connected flourishes are far from the clean type it trained on, and it shows:</p>
     <div class="grid mini"><span class="pair"><span class="g" style="--src:url(img/clat_a_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_a_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/clat_b_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_b_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/clat_c_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_c_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/clat_d_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_d_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/clat_e_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_e_up.png)"></span></span><span class="pair"><span class="g" style="--src:url(img/clat_f_in.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/clat_f_up.png)"></span></span></div>
   </section>
 
-  <!-- ================= HEATDEATH ================= -->
-  <section>
-    <h2>The heat death of the alphabet</h2>
-    <p class="lede">Apply "make it a capital" once and you get a capital. Apply it to its own
-    output, again and again, and something unexpected happens: every letter, in every script,
-    slowly melts toward the same gray smear. There's a single attractor at the end of casing,
-    and it isn't a letter at all. (Numbers above each frame = times the rule was applied.)</p>
-    <div class="hd"><div class="hdcol"><span class="g" style="--src:url(img/hd_a_0.png)"></span><div class="stepnum">0</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_1.png)"></span><div class="stepnum">1</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_2.png)"></span><div class="stepnum">2</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_3.png)"></span><div class="stepnum">3</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_5.png)"></span><div class="stepnum">5</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_10.png)"></span><div class="stepnum">10</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_25.png)"></span><div class="stepnum">25</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_100.png)"></span><div class="stepnum">100</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_a_1000.png)"></span><div class="stepnum">1000</div></div></div><span class="cap" style="text-align:left">starting from <b>a</b></span>
-    <div style="height:16px"></div>
-    <div class="hd"><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_0.png)"></span><div class="stepnum">0</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_1.png)"></span><div class="stepnum">1</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_2.png)"></span><div class="stepnum">2</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_3.png)"></span><div class="stepnum">3</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_5.png)"></span><div class="stepnum">5</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_10.png)"></span><div class="stepnum">10</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_25.png)"></span><div class="stepnum">25</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_100.png)"></span><div class="stepnum">100</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_zh_1000.png)"></span><div class="stepnum">1000</div></div></div><span class="cap" style="text-align:left">starting from <b>ж</b></span>
-    <div style="height:16px"></div>
-    <div class="hd"><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_0.png)"></span><div class="stepnum">0</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_1.png)"></span><div class="stepnum">1</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_2.png)"></span><div class="stepnum">2</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_3.png)"></span><div class="stepnum">3</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_5.png)"></span><div class="stepnum">5</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_10.png)"></span><div class="stepnum">10</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_25.png)"></span><div class="stepnum">25</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_100.png)"></span><div class="stepnum">100</div></div><div class="hdcol"><span class="g" style="--src:url(img/hd_ja_1000.png)"></span><div class="stepnum">1000</div></div></div><span class="cap" style="text-align:left">starting from <b>あ</b></span>
-    <p class="note" style="margin-top:14px">Why: each pass is slightly soft, and the softness
-    compounds faster than the model can sharpen it back. Iterated casing is really a blur
-    operator with one fixed point. You can trigger the same collapse on your own drawing with
-    the <b>iterate</b> button above.</p>
-  </section>
-
+  <!-- TWO THINGS -->
   <section>
     <h2>The two things everyone draws</h2>
-    <p class="lede">Let's be adults about this. You put a drawing box on the open internet,
-    and within about four seconds someone draws a swastika, and within five, a penis. It is
-    as reliable as gravity.</p>
-    <p>So here is the section about them. There are no pictures in it. Not out of primness —
-    the model would earnestly hunt for the capital of either one, and the result is honestly
-    kind of funny — but because this page runs in <i>your</i> browser and shows only what
-    <i>you</i> draw. Nothing you make here is uploaded, saved, or shown to anyone else, which
-    means the one person who has to look at your swastika is you. Draw whatever you like. I
-    just don't have to host it.</p>
-    <p class="note">The grown-up version of the point: there's no server in the loop, so
-    there's nothing to moderate and nothing to leak. The box is a mirror, not a megaphone.</p>
+    <p class="lede">Let's be adults about this. You put a drawing box on the open internet, and within
+    about four seconds someone draws a swastika, and within five, a penis. It is as reliable as
+    gravity.</p>
+    <p>So here is the section about them. There are no pictures in it. Not out of primness — the model
+    would earnestly hunt for the capital of either one, and the result is honestly kind of funny —
+    but because this page runs in <i>your</i> browser and shows only what <i>you</i> draw. Nothing
+    you make here is uploaded, saved, or shown to anyone else, which means the one person who has to
+    look at your swastika is you. Draw whatever you like. I just don't have to host it.</p>
+    <p class="note">The grown-up version: there's no server in the loop, so there's nothing to
+    moderate and nothing to leak. The box is a mirror, not a megaphone.</p>
   </section>
 
-  <!-- ================= METHODS ================= -->
+  <!-- METHODS -->
   <section>
     <h2>How it works</h2>
     <p class="lede">The part for the engineers in the room.</p>
-
-    <p><b>The data makes itself.</b> Instead of collecting hand-drawn letters, I render
-    both cases of every letter from thousands of fonts. Each font gives a perfectly
-    matched, same-style pair — <span class="g" style="--s:28px;--src:url(img/x_latin_lo.png)"></span>
-    and <span class="g" style="--s:28px;--src:url(img/x_latin_up.png)"></span> in the same hand —
-    across every alphabet that has upper- and lowercase, all at once. Unicode's own case
-    tables supply the ground truth, so the pairing is never guessed. That's ~94,000 clean
-    pairs over 431 fonts and twelve scripts, generated in minutes.</p>
-
-    <p><b>It's a hybrid.</b> A conditional U-Net does the real work: image in, a direction
-    flag (make-it-upper / make-it-lower), image out. Because it learns casing as an
-    operation on pixels rather than a dictionary of letters, it applies to inputs it was
-    never trained on — which is the whole reason a 3 produces anything at all. A separate
-    classifier recognizes known letters and reports its confidence, so the system can tell
-    the difference between "I know this letter" and "I'm improvising."</p>
-
-    <p><b>Honest testing.</b> The validation set is split by <i>font family</i>, not by
-    sample — the model is scored only on typefaces it never saw during training. Good
-    scores there mean it learned casing, not that it memorized specific glyphs.</p>
-
-    <p><b>It runs on your phone.</b> Trained on a laptop GPU, exported to ONNX, quantized to
-    a 5&nbsp;MB file, and executed in your browser with onnxruntime-web. No server does any
-    of the thinking — which is also why nothing you draw ever leaves your device.</p>
-
+    <p><b>The data makes itself.</b> Instead of collecting hand-drawn letters, I render both cases of
+    every letter from thousands of fonts. Each font gives a perfectly matched, same-style pair —
+    <span class="g" style="--s:28px;--src:url(img/x_latin_lo.png)"></span> and <span class="g" style="--s:28px;--src:url(img/x_latin_up.png)"></span> in the same
+    hand — across every alphabet with upper- and lowercase at once. Unicode's own case tables supply
+    the ground truth, so the pairing is never guessed. ~94,000 clean pairs over 431 fonts and twelve
+    scripts, generated in minutes.</p>
+    <p><b>It's a conditional U-Net.</b> Image in, a direction flag (upper / lower), image out. Because
+    it learns casing as an operation on pixels rather than a dictionary of letters, it applies to
+    inputs it was never trained on — which is the whole reason a 3 produces anything at all. There
+    are seven of them: a generalist trained on every script, plus specialists for Latin, Cyrillic,
+    Greek, Armenian, and two cursive sets — which is what the "casing style" selector swaps between.</p>
+    <p><b>Honest testing.</b> The validation set is split by <i>font family</i>, not by sample — each
+    model is scored only on typefaces it never saw during training.</p>
+    <p><b>It runs on your phone.</b> Trained on a laptop GPU, exported to ONNX, quantized to ~5 MB
+    each, executed in your browser with onnxruntime-web. No server does any of the thinking — which
+    is also why nothing you draw ever leaves your device.</p>
     <div class="methodfig">
-      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></div>Greek</div>
-      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></div>Cyrillic</div>
-      <div class="col"><div class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></div>Armenian</div>
+      <div class="col"><span class="pair"><span class="g" style="--src:url(img/x_greek_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_greek_up.png)"></span></span>Greek</div>
+      <div class="col"><span class="pair"><span class="g" style="--src:url(img/x_cyrD_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_cyrD_up.png)"></span></span>Cyrillic</div>
+      <div class="col"><span class="pair"><span class="g" style="--src:url(img/x_arm_lo.png)"></span><span class="arrow">→</span><span class="g" style="--src:url(img/x_arm_up.png)"></span></span>Armenian</div>
     </div>
   </section>
 
-  <footer>
-    Built by Rob Heffern. The model, the data pipeline, and this page all run on open
-    tools; the whole thing is a small study in teaching a machine a rule we never think about.
-  </footer>
-
+  <footer>Built by Rob Heffern. The model, the data pipeline, and this page all run on open tools.</footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.wasm.min.js"></script>
 <script>
 const SIZE=64;
 ort.env.wasm.wasmPaths="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
-ort.env.wasm.numThreads=1;   // no SharedArrayBuffer -> no COOP/COEP headers needed
+ort.env.wasm.numThreads=1;
 const statusEl=document.getElementById("status");
+const MODELS={all:"models/transform.onnx",latin:"models/transform_latin.onnx",cyrillic:"models/transform_cyrillic.onnx",greek:"models/transform_greek.onnx",armenian:"models/transform_armenian.onnx",cursive_cyrillic:"models/transform_cursive_cyrillic.onnx",cursive_latin:"models/transform_cursive_latin.onnx"};
+const sessions={}; let regime="all";
+async function sessFor(name){ if(sessions[name]) return sessions[name]; const s=await ort.InferenceSession.create(MODELS[name]); sessions[name]=s; return s; }
+async function getSess(){ return sessFor(regime); }
+async function runWith(name,x,dir){ const s=await sessFor(name); const img=new ort.Tensor("float32",x,[1,1,SIZE,SIZE]); const d=new ort.Tensor("float32",new Float32Array([dir]),[1]); return (await s.run({image:img,direction:d})).out.data; }
+async function run(x,dir){ return runWith(regime,x,dir); }
+getSess().then(()=>{statusEl.textContent="Ready. Draw a letter, or type one, then Convert.";}).catch(()=>{statusEl.textContent="Could not load the model.";});
+document.getElementById("regime").addEventListener("change",async e=>{regime=e.target.value;try{await getSess();statusEl.textContent="Loaded "+regime+". Draw or type, then Convert.";}catch{statusEl.textContent="Could not load the "+regime+" model.";}});
 
-const MODELS={
-  all:"models/transform.onnx",
-  latin:"models/transform_latin.onnx",
-  cyrillic:"models/transform_cyrillic.onnx",
-  greek:"models/transform_greek.onnx",
-  armenian:"models/transform_armenian.onnx",
-  cursive_cyrillic:"models/transform_cursive_cyrillic.onnx",
-  cursive_latin:"models/transform_cursive_latin.onnx",
-};
-const sessions={};       // lazily-loaded ort sessions, cached per regime
-let regime="all";
-async function getSess(){
-  if(sessions[regime]) return sessions[regime];
-  statusEl.textContent="Loading the "+regime+" model…";
-  const s=await ort.InferenceSession.create(MODELS[regime]);
-  sessions[regime]=s;
-  return s;
-}
-getSess().then(()=>{statusEl.textContent="Ready. Draw a letter, or type one, then Convert.";})
-  .catch(e=>{statusEl.textContent="Could not load the model.";});
-document.getElementById("regime").addEventListener("change",async e=>{
-  regime=e.target.value;
-  try{ await getSess(); statusEl.textContent="Loaded "+regime+". Draw or type, then Convert."; }
-  catch(err){ statusEl.textContent="Could not load the "+regime+" model."; }
-});
-
-/* ---------- drawing pad ---------- */
-const pad=document.getElementById("pad"), pctx=pad.getContext("2d");
-function clearPad(){pctx.fillStyle="#000";pctx.fillRect(0,0,pad.width,pad.height);
-  pctx.strokeStyle="#fff";pctx.lineWidth=20;pctx.lineCap="round";pctx.lineJoin="round";}
+/* pad */
+const pad=document.getElementById("pad"),pctx=pad.getContext("2d");
+function clearPad(){pctx.fillStyle="#000";pctx.fillRect(0,0,pad.width,pad.height);pctx.strokeStyle="#fff";pctx.lineWidth=20;pctx.lineCap="round";pctx.lineJoin="round";}
 clearPad();
 let drawing=false,lx=0,ly=0;
-function pos(e){const r=pad.getBoundingClientRect();const t=e.touches?e.touches[0]:e;
-  return [(t.clientX-r.left)*pad.width/r.width,(t.clientY-r.top)*pad.height/r.height];}
+function pos(e){const r=pad.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return [(t.clientX-r.left)*pad.width/r.width,(t.clientY-r.top)*pad.height/r.height];}
 function dn(e){drawing=true;[lx,ly]=pos(e);e.preventDefault();}
-function mv(e){if(!drawing)return;const[x,y]=pos(e);pctx.beginPath();pctx.moveTo(lx,ly);
-  pctx.lineTo(x,y);pctx.stroke();[lx,ly]=[x,y];e.preventDefault();}
+function mv(e){if(!drawing)return;const[x,y]=pos(e);pctx.beginPath();pctx.moveTo(lx,ly);pctx.lineTo(x,y);pctx.stroke();[lx,ly]=[x,y];e.preventDefault();}
 function up(){drawing=false;}
-pad.addEventListener("mousedown",dn);pad.addEventListener("mousemove",mv);
-window.addEventListener("mouseup",up);
-pad.addEventListener("touchstart",dn,{passive:false});
-pad.addEventListener("touchmove",mv,{passive:false});pad.addEventListener("touchend",up);
-document.getElementById("clear").onclick=()=>{clearPad();document.getElementById("typed").value="";
-  clearOut();document.getElementById("telout").innerHTML="";};
+pad.addEventListener("mousedown",dn);pad.addEventListener("mousemove",mv);window.addEventListener("mouseup",up);
+pad.addEventListener("touchstart",dn,{passive:false});pad.addEventListener("touchmove",mv,{passive:false});pad.addEventListener("touchend",up);
+document.getElementById("clear").onclick=()=>{clearPad();document.getElementById("typed").value="";for(const id of["outLower","outUpper"])document.getElementById(id).getContext("2d").clearRect(0,0,SIZE,SIZE);};
 
-/* ---------- typed character ---------- */
-function renderTyped(ch){
-  clearPad();
-  pctx.save();pctx.fillStyle="#fff";pctx.textAlign="center";pctx.textBaseline="middle";
-  pctx.font='180px "Iowan Old Style",Palatino,Georgia,serif';
-  pctx.fillText(ch,pad.width/2,pad.height/2+10);pctx.restore();
-}
-
-/* ---------- normalize (mirror of preprocess.py) ---------- */
-function normalize(){
-  const d=pctx.getImageData(0,0,pad.width,pad.height).data,W=pad.width,H=pad.height;
-  const g=new Float32Array(W*H);
-  for(let i=0;i<W*H;i++)g[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];
-  let bs=0,bn=0;
-  for(let x=0;x<W;x++){bs+=g[x]+g[(H-1)*W+x];bn+=2;}
-  for(let y=0;y<H;y++){bs+=g[y*W]+g[y*W+W-1];bn+=2;}
-  if(bs/bn>127)for(let i=0;i<W*H;i++)g[i]=255-g[i];
-  return crop(g,W,H);
-}
-function crop(g,W,H){
-  let x0=W,y0=H,x1=-1,y1=-1;
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(g[y*W+x]>32){
-    if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
-  const out=new Float32Array(SIZE*SIZE);if(x1<0)return out;
-  const cw=x1-x0+1,ch=y1-y0+1,inner=Math.round(SIZE*0.72),s=inner/Math.max(cw,ch);
-  const nw=Math.max(1,Math.round(cw*s)),nh=Math.max(1,Math.round(ch*s));
-  const ox=Math.floor((SIZE-nw)/2),oy=Math.floor((SIZE-nh)/2);
-  for(let yy=0;yy<nh;yy++)for(let xx=0;xx<nw;xx++){
-    const sx=x0+Math.floor(xx/s),sy=y0+Math.floor(yy/s);
-    out[(oy+yy)*SIZE+(ox+xx)]=g[sy*W+sx]/255;}
-  return out;
-}
-/* renormalize a model output (0..1) for iteration stability */
-function renorm(arr){
-  const g=new Float32Array(SIZE*SIZE);for(let i=0;i<arr.length;i++)g[i]=arr[i]*255;
-  return crop(g,SIZE,SIZE);
-}
-
-async function run(x,dir){
-  const s=await getSess();
-  const img=new ort.Tensor("float32",x,[1,1,SIZE,SIZE]);
-  const d=new ort.Tensor("float32",new Float32Array([dir]),[1]);
-  const o=await s.run({image:img,direction:d});
-  return o.out.data;
-}
-/* draw with a mild contrast boost so soft output reads crisp */
-function drawTile(canvas,arr){
-  const ctx=canvas.getContext("2d"),im=ctx.createImageData(SIZE,SIZE);
-  const css=getComputedStyle(document.body).getPropertyValue("--glyph").trim();
-  const m=css.match(/#?([0-9a-f]{6})/i);let r=32,gg=32,b=28;
-  if(m){r=parseInt(m[1].substr(0,2),16);gg=parseInt(m[1].substr(2,2),16);b=parseInt(m[1].substr(4,2),16);}
-  for(let i=0;i<SIZE*SIZE;i++){
-    let v=arr[i];v=Math.max(0,Math.min(1,(v-0.45)*2.2+0.5)); // contrast
-    im.data[i*4]=r;im.data[i*4+1]=gg;im.data[i*4+2]=b;im.data[i*4+3]=Math.round(v*255);}
-  ctx.clearRect(0,0,SIZE,SIZE);ctx.putImageData(im,0,0);
-}
-function clearOut(){for(const id of["outLower","outUpper"]){
-  const c=document.getElementById(id);c.getContext("2d").clearRect(0,0,SIZE,SIZE);}}
+function renderTyped(ch){clearPad();pctx.save();pctx.fillStyle="#fff";pctx.textAlign="center";pctx.textBaseline="middle";pctx.font='180px "Iowan Old Style",Palatino,Georgia,serif';pctx.fillText(ch,pad.width/2,pad.height/2+10);pctx.restore();}
+function crop(g,W,H){let x0=W,y0=H,x1=-1,y1=-1;for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(g[y*W+x]>32){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}const out=new Float32Array(SIZE*SIZE);if(x1<0)return out;const cw=x1-x0+1,ch=y1-y0+1,inner=Math.round(SIZE*0.72),s=inner/Math.max(cw,ch);const nw=Math.max(1,Math.round(cw*s)),nh=Math.max(1,Math.round(ch*s));const ox=Math.floor((SIZE-nw)/2),oy=Math.floor((SIZE-nh)/2);for(let yy=0;yy<nh;yy++)for(let xx=0;xx<nw;xx++){const sx=x0+Math.floor(xx/s),sy=y0+Math.floor(yy/s);out[(oy+yy)*SIZE+(ox+xx)]=g[sy*W+sx]/255;}return out;}
+function normalizeCtx(ctx,W,H){const d=ctx.getImageData(0,0,W,H).data;const g=new Float32Array(W*H);for(let i=0;i<W*H;i++)g[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];let bs=0,bn=0;for(let x=0;x<W;x++){bs+=g[x]+g[(H-1)*W+x];bn+=2;}for(let y=0;y<H;y++){bs+=g[y*W]+g[y*W+W-1];bn+=2;}if(bs/bn>127)for(let i=0;i<W*H;i++)g[i]=255-g[i];return crop(g,W,H);}
+function normalize(){return normalizeCtx(pctx,pad.width,pad.height);}
+function renorm(a){const g=new Float32Array(SIZE*SIZE);for(let i=0;i<a.length;i++)g[i]=a[i]*255;return crop(g,SIZE,SIZE);}
+function charToInput(ch){const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d");x.fillStyle="#000";x.fillRect(0,0,256,256);x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";x.font='190px "Iowan Old Style",Palatino,Georgia,serif';x.fillText(ch,128,138);return normalizeCtx(x,256,256);}
+function drawTile(canvas,arr){const ctx=canvas.getContext("2d"),im=ctx.createImageData(SIZE,SIZE);const css=getComputedStyle(document.body).getPropertyValue("--glyph").trim();const m=css.match(/#?([0-9a-f]{6})/i);let r=32,gg=32,b=28;if(m){r=parseInt(m[1].substr(0,2),16);gg=parseInt(m[1].substr(2,2),16);b=parseInt(m[1].substr(4,2),16);}for(let i=0;i<SIZE*SIZE;i++){let v=arr[i];v=Math.max(0,Math.min(1,(v-0.45)*2.2+0.5));im.data[i*4]=r;im.data[i*4+1]=gg;im.data[i*4+2]=b;im.data[i*4+3]=Math.round(v*255);}ctx.clearRect(0,0,SIZE,SIZE);ctx.putImageData(im,0,0);}
+function loadImg(u){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u;});}
 
 let lastInput=null;
-async function convert(){
-  const typed=document.getElementById("typed").value;
-  if(typed) renderTyped(typed);
-  const x=normalize();lastInput=x;
-  drawTile(document.getElementById("outLower"),await run(x,0));
-  drawTile(document.getElementById("outUpper"),await run(x,1));
-  document.getElementById("telout").innerHTML="";
-  statusEl.textContent="There you go. Try Iterate to run the telephone.";
-}
+async function convert(){const typed=document.getElementById("typed").value;if(typed)renderTyped(typed);const x=normalize();lastInput=x;drawTile(document.getElementById("outLower"),await run(x,0));drawTile(document.getElementById("outUpper"),await run(x,1));statusEl.textContent="There you go. Try the slider and cross-apply sections below.";}
 document.getElementById("convert").onclick=convert;
 document.getElementById("typed").addEventListener("keydown",e=>{if(e.key==="Enter")convert();});
 
-async function iterate(){
-  if(!lastInput){statusEl.textContent="Draw or type something, then Convert first.";return;}
-  const host=document.getElementById("telout");host.innerHTML="";
-  let cur=lastInput;addFrame(host,cur);
-  for(let i=0;i<8;i++){
-    const dir=i%2===0?1:0;
-    cur=renorm(await run(cur,dir));
-    addFrame(host,cur,i%2===0?"↑":"↓");
-  }
-  statusEl.textContent="That's the case telephone — each step re-cases the last.";
+/* ===== iteration slider (precomputed presets + live drawing) ===== */
+let itMan=null, itMode="upper", itSrc="preset", itSeed="a", itSpriteImg=null, itLive=[];
+async function itInit(){
+  itMan=await (await fetch("spr/manifest.json")).json();
+  const sel=document.getElementById("it-seed");
+  sel.innerHTML=itMan.seeds.map(s=>`<option value="${s.slug}">${s.ch}</option>`).join("");
+  document.getElementById("it-slider").max=itMan.frames-1;
+  sel.addEventListener("change",async e=>{itSeed=e.target.value;itSrc="preset";await itLoadSprite();itShow(+document.getElementById("it-slider").value);});
+  document.querySelectorAll('input[name=it-mode]').forEach(r=>r.addEventListener("change",async e=>{itMode=e.target.value;if(itSrc==="preset"){await itLoadSprite();}else{itLive=[itLive[0]];}itShow(+document.getElementById("it-slider").value);}));
+  document.getElementById("it-slider").addEventListener("input",e=>itShow(+e.target.value));
+  document.getElementById("it-mine").onclick=()=>{if(!lastInput){document.getElementById("it-status").textContent="draw something up top and hit Convert first";return;}itSrc="drawing";itLive=[lastInput];document.getElementById("it-slider").value=0;itShow(0);document.getElementById("it-status").textContent="using your drawing — heads up, this computes live and is slow";};
+  await itLoadSprite(); itShow(0);
 }
-function addFrame(host,arr,label){
-  if(host.children.length){const a=document.createElement("span");a.className="arrow";
-    a.textContent="→";a.style.fontSize="13px";host.appendChild(a);}
-  const c=document.createElement("canvas");c.width=c.height=SIZE;c.className="out";
-  c.style.width=c.style.height="56px";host.appendChild(c);drawTile(c,arr);
-}
-document.getElementById("iterate").onclick=iterate;
-
-/* ===== shared helpers for the new interactive sections ===== */
-async function sessFor(name){
-  if(sessions[name]) return sessions[name];
-  const s=await ort.InferenceSession.create(MODELS[name]); sessions[name]=s; return s;
-}
-async function runWith(name,x,dir){
-  const s=await sessFor(name);
-  const img=new ort.Tensor("float32",x,[1,1,SIZE,SIZE]);
-  const d=new ort.Tensor("float32",new Float32Array([dir]),[1]);
-  return (await s.run({image:img,direction:d})).out.data;
-}
-function normalizeCtx(ctx,W,H){
-  const d=ctx.getImageData(0,0,W,H).data;const g=new Float32Array(W*H);
-  for(let i=0;i<W*H;i++)g[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];
-  let bs=0,bn=0;
-  for(let x=0;x<W;x++){bs+=g[x]+g[(H-1)*W+x];bn+=2;}
-  for(let y=0;y<H;y++){bs+=g[y*W]+g[y*W+W-1];bn+=2;}
-  if(bs/bn>127)for(let i=0;i<W*H;i++)g[i]=255-g[i];
-  return crop(g,W,H);
-}
-function charToInput(ch){
-  const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d");
-  x.fillStyle="#000";x.fillRect(0,0,256,256);x.fillStyle="#fff";x.textAlign="center";
-  x.textBaseline="middle";x.font='190px "Iowan Old Style",Palatino,Georgia,serif';
-  x.fillText(ch,128,138);return normalizeCtx(x,256,256);
-}
-function loadGray(url){return new Promise((res,rej)=>{const im=new Image();
-  im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=SIZE;
-    const x=c.getContext("2d");x.drawImage(im,0,0,SIZE,SIZE);
-    const d=x.getImageData(0,0,SIZE,SIZE).data;const f=new Float32Array(SIZE*SIZE);
-    for(let i=0;i<SIZE*SIZE;i++)f[i]=d[i*4]/255;res(f);};
-  im.onerror=rej;im.src=url;});}
-
-/* ===== iteration slider ===== */
-let itFrames=[], itSeed=null, itMode="upper";
-function itReset(seedArr){ itSeed=seedArr; itFrames=[seedArr]; }
-async function itEnsure(n){
-  const st=document.getElementById("it-status");
-  while(itFrames.length<=n){
-    const i=itFrames.length-1;
-    const dir = itMode==="upper" ? 1 : (i%2===0?1:0);
-    itFrames.push(renorm(await runWith("all",itFrames[i],dir)));
-    if(itFrames.length%20===0){ st.textContent="computing step "+itFrames.length+"…"; await new Promise(r=>setTimeout(r,0)); }
-  }
-}
+async function itLoadSprite(){ itSpriteImg=await loadImg(`spr/it_${itSeed}_${itMode}.png`); }
+function spriteFrame(img,step){const c=document.createElement("canvas");c.width=c.height=SIZE;const x=c.getContext("2d");x.drawImage(img,step*SIZE,0,SIZE,SIZE,0,0,SIZE,SIZE);const d=x.getImageData(0,0,SIZE,SIZE).data;const f=new Float32Array(SIZE*SIZE);for(let i=0;i<SIZE*SIZE;i++)f[i]=d[i*4]/255;return f;}
 async function itShow(n){
-  await itEnsure(n);
-  drawTile(document.getElementById("it-out"), itFrames[n]);
+  const st=document.getElementById("it-status");
+  let arr;
+  if(itSrc==="preset"){ arr=spriteFrame(itSpriteImg,n); if(st.textContent.indexOf("drawing")<0) st.textContent = n>=40?"…and there's the ghost. Same for almost any letter.":"drag to iterate — presets are instant"; }
+  else{
+    while(itLive.length<=n){const i=itLive.length-1;const dir=itMode==="upper"?1:(itMode==="lower"?0:(i%2===0?1:0));st.textContent="computing step "+(i+1)+"… (slow for drawings)";await new Promise(r=>setTimeout(r,0));itLive.push(renorm(await runWith("all",itLive[i],dir)));}
+    arr=itLive[n]; st.textContent="your drawing, step "+n;
+  }
+  drawTile(document.getElementById("it-out"),arr);
   document.getElementById("it-n").textContent=n;
-  document.getElementById("it-status").textContent = n>=80 ? "…and there's the ghost. Same for almost any letter." : "drag to iterate";
 }
-function itSeedFromBox(){
-  const ch=document.getElementById("it-seed").value || "a";
-  itReset(charToInput(ch)); document.getElementById("it-slider").value=0; itShow(0);
+
+/* ===== cross-apply (precomputed, just swap images) ===== */
+let xaMan=null;
+async function xaShow(){
+  if(!xaMan) xaMan=await (await fetch("xc/manifest.json")).json();
+  const alpha=document.getElementById("xa-alpha").value, reg=document.getElementById("xa-regime").value;
+  const dim=xaMan[alpha].dim;
+  for(const el of [document.getElementById("xa-in"),document.getElementById("xa-out")]){
+    el.style.aspectRatio=dim[0]+" / "+dim[1]; el.style.maxWidth=dim[0]+"px";
+  }
+  document.getElementById("xa-in").style.setProperty("--src","url(xc/xin_"+alpha+".png)");
+  document.getElementById("xa-out").style.setProperty("--src","url(xc/xout_"+alpha+"_"+reg+".png)");
 }
-document.getElementById("it-seed").addEventListener("change",itSeedFromBox);
-document.getElementById("it-mine").onclick=()=>{ if(lastInput){itReset(lastInput);document.getElementById("it-slider").value=0;itShow(0);} else {document.getElementById("it-status").textContent="draw something up top and hit Convert first";} };
-document.querySelectorAll('input[name=it-mode]').forEach(r=>r.addEventListener("change",e=>{itMode=e.target.value;itFrames=[itSeed];document.getElementById("it-slider").value=0;itShow(0);}));
-document.getElementById("it-slider").addEventListener("input",e=>itShow(+e.target.value));
+document.getElementById("xa-alpha").addEventListener("change",xaShow);
+document.getElementById("xa-regime").addEventListener("change",xaShow);
 
-/* ===== cross-apply ===== */
-let xaManifest=null;
-document.getElementById("xa-go").onclick=async()=>{
-  const host=document.getElementById("xa-grid");
-  host.className="muted-s"; host.textContent="loading…";
-  try{
-    if(!xaManifest) xaManifest=await (await fetch("xa/manifest.json")).json();
-    const script=document.getElementById("xa-script").value;
-    const regime=document.getElementById("xa-regime").value;
-    const items=xaManifest[script]||[];
-    host.textContent="computing "+items.length+" letters…";
-    const grid=document.createElement("div"); grid.className="xgrid";
-    const cells=[];
-    for(const it of items){
-      const x=await loadGray(it.file);
-      const out=await runWith(regime,x,1);
-      const cell=document.createElement("div");cell.className="xcell";
-      const ci=document.createElement("canvas");ci.width=ci.height=SIZE;drawTile(ci,x);
-      const ar=document.createElement("span");ar.className="arrow";ar.textContent="↓";
-      const co=document.createElement("canvas");co.width=co.height=SIZE;drawTile(co,out);
-      cell.appendChild(ci);cell.appendChild(ar);cell.appendChild(co);cells.push(cell);
-    }
-    host.className=""; host.innerHTML=""; grid.append(...cells); host.appendChild(grid);
-  }catch(err){ host.className="muted-s"; host.textContent="couldn't run that combo."; }
-};
-
-/* ===== surprise me ===== */
+/* ===== surprise ===== */
 const SURPRISE="3 7 9 4 ! ? @ & # % * = + § ¶ € £ ¥ © ® ™ ъ ы ж ф э δ ξ ψ λ θ ր ղ ձ ç þ æ œ ø å".split(" ").filter(Boolean);
-document.getElementById("sp-go").onclick=async()=>{
-  const ch=SURPRISE[Math.floor(Math.random()*SURPRISE.length)];
-  const x=charToInput(ch);
-  drawTile(document.getElementById("sp-in"),x);
-  drawTile(document.getElementById("sp-out"),await runWith("all",x,1));
-  document.getElementById("sp-label").textContent='"'+ch+'" → its "capital"';
-};
+document.getElementById("sp-go").onclick=async()=>{const ch=SURPRISE[Math.floor(Math.random()*SURPRISE.length)];const x=charToInput(ch);drawTile(document.getElementById("sp-in"),x);drawTile(document.getElementById("sp-out"),await runWith("all",x,1));document.getElementById("sp-label").textContent='"'+ch+'" → its "capital"';};
 
-/* ===== shareable permalink ===== */
-function encIn(x){const b=new Uint8Array(SIZE*SIZE/8);
-  for(let i=0;i<SIZE*SIZE;i++) if(x[i]>0.35) b[i>>3]|=(1<<(i&7));
-  let s="";for(const v of b)s+=String.fromCharCode(v);
-  return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
-function decIn(str){const s=atob(str.replace(/-/g,"+").replace(/_/g,"/"));
-  const x=new Float32Array(SIZE*SIZE);
-  for(let i=0;i<SIZE*SIZE;i++){const v=s.charCodeAt(i>>3)||0;x[i]=(v>>(i&7))&1;}
-  return x;}
-document.getElementById("share").onclick=async()=>{
-  if(!lastInput){statusEl.textContent="draw or type something and Convert first.";return;}
-  const url=location.origin+location.pathname+"#g="+encIn(lastInput);
-  try{ await navigator.clipboard.writeText(url); statusEl.textContent="link copied — anyone who opens it sees your glyph re-cased."; }
-  catch(e){ statusEl.textContent=url; }
-};
-async function fromHash(){
-  const m=location.hash.match(/g=([A-Za-z0-9_-]+)/); if(!m) return;
-  try{ lastInput=decIn(m[1]);
-    drawTile(document.getElementById("outLower"),await run(lastInput,0));
-    drawTile(document.getElementById("outUpper"),await run(lastInput,1));
-    statusEl.textContent="someone shared this glyph with you ↑";
-  }catch(e){}
-}
-window.addEventListener("load",()=>{ itSeedFromBox(); fromHash(); });
+/* ===== share ===== */
+function encIn(x){const b=new Uint8Array(SIZE*SIZE/8);for(let i=0;i<SIZE*SIZE;i++)if(x[i]>0.35)b[i>>3]|=(1<<(i&7));let s="";for(const v of b)s+=String.fromCharCode(v);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function decIn(str){const s=atob(str.replace(/-/g,"+").replace(/_/g,"/"));const x=new Float32Array(SIZE*SIZE);for(let i=0;i<SIZE*SIZE;i++){const v=s.charCodeAt(i>>3)||0;x[i]=(v>>(i&7))&1;}return x;}
+document.getElementById("share").onclick=async()=>{if(!lastInput){statusEl.textContent="draw or type something and Convert first.";return;}const url=location.origin+location.pathname+"#g="+encIn(lastInput);try{await navigator.clipboard.writeText(url);statusEl.textContent="link copied — anyone who opens it sees your glyph re-cased.";}catch{statusEl.textContent=url;}};
+async function fromHash(){const m=location.hash.match(/g=([A-Za-z0-9_-]+)/);if(!m)return;try{lastInput=decIn(m[1]);drawTile(document.getElementById("outLower"),await run(lastInput,0));drawTile(document.getElementById("outUpper"),await run(lastInput,1));statusEl.textContent="someone shared this glyph with you ↑";}catch{}}
+
+window.addEventListener("load",()=>{itInit();xaShow();fromHash();});
 </script>
 </body>
 </html>
