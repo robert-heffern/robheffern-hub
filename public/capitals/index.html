@@ -85,7 +85,9 @@
           <option value="armenian">Armenian only (dreamy)</option>
           <option value="cursive_cyrillic">Cyrillic cursive (dreamiest)</option>
           <option value="cursive_latin">Latin cursive (dreamy)</option>
+          <option value="letterizer">Can't help itself</option>
         </select>
+        <div class="note">"Can't help itself" is the odd one out: it ignores what you draw and forces it onto the nearest letter it knows, then cases that. The other regimes leave a non-letter alone.</div>
       </div>
       <div class="liverow">
         <div>
@@ -158,6 +160,7 @@
           <option value="cursive_cyrillic">Cyrillic cursive</option>
           <option value="cursive_latin">Latin cursive</option>
           <option value="all">generalist</option>
+          <option value="letterizer">Can't help itself</option>
         </select> model</label>
       </div>
       <div class="cap" style="text-align:left;margin-top:8px">the alphabet, as written:</div>
@@ -296,7 +299,7 @@ const SIZE=64;
 ort.env.wasm.wasmPaths="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
 ort.env.wasm.numThreads=1;
 const statusEl=document.getElementById("status");
-const MODELS={all:"models/transform.onnx",latin:"models/transform_latin.onnx",cyrillic:"models/transform_cyrillic.onnx",greek:"models/transform_greek.onnx",armenian:"models/transform_armenian.onnx",cursive_cyrillic:"models/transform_cursive_cyrillic.onnx",cursive_latin:"models/transform_cursive_latin.onnx"};
+const MODELS={all:"models/transform.onnx",latin:"models/transform_latin.onnx",cyrillic:"models/transform_cyrillic.onnx",greek:"models/transform_greek.onnx",armenian:"models/transform_armenian.onnx",cursive_cyrillic:"models/transform_cursive_cyrillic.onnx",cursive_latin:"models/transform_cursive_latin.onnx",letterizer:"models/letterizer.onnx"};
 const sessions={}; let regime="all";
 async function sessFor(name){ if(sessions[name]) return sessions[name]; const s=await ort.InferenceSession.create(MODELS[name]); sessions[name]=s; return s; }
 async function getSess(){ return sessFor(regime); }
