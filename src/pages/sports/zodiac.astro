@@ -162,7 +162,7 @@ import Base from "../../layouts/Base.astro";
         if(!winter){
           var d=cache[cur]; if(!d) return null;
           return { winter:false, year:cur, label:""+cur, anchorISO:cur+"-01-01", winDays:yearLen(cur),
-                   leagues:d.leagues||{}, present:d.leaguesPresent||Object.keys(d.leagues||{}), events:d.events||{} };
+                   leagues:d.leagues||{}, present:d.leaguesPresent||Object.keys(d.leagues||{}), events:d.events||{}, today:d.today||null };
         }
         var a=cache[cur], b=cache[cur+1]; if(!a||!b) return null;
         var lo=cur+"-08-01", hi=(cur+1)+"-08-01";                 // [lo, hi)
@@ -194,6 +194,10 @@ import Base from "../../layouts/Base.astro";
       function render(view) {
         var leagues = view.leagues, present = view.present, ev = view.events || {};
         var TODAY = etToday();
+        // The live current-year file carries `today`; days after it are scheduled, not played.
+        var liveCut = view.today || null;
+        function isFut(ds){ return liveCut && ds > liveCut; }
+        var GHOST = 0.24;   // opacity for scheduled / future marks
 
         // default selection: big-4 on, others (CFB/NRL) off; remember user's choice across years
         present.forEach(function(lg){ if(!(lg in selected)) selected[lg] = BIG4.indexOf(lg)>=0; });
@@ -234,11 +238,19 @@ import Base from "../../layouts/Base.astro";
           svg.appendChild(mk("line",{x1:t0[0].toFixed(1),y1:t0[1].toFixed(1),x2:t1[0].toFixed(1),y2:t1[1].toFixed(1),stroke:muted,"stroke-width":1,opacity:.35}));
         }
 
-        // season bands
+        // season bands — split at "today" so the scheduled (future) tail reads as a ghost
         shown.forEach(function(lg){
           var L=leagues[lg];
           (L.seasons||[]).forEach(function(s){
-            svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, L.label+": "+s.start+" → "+s.end));
+            var tip=L.label+": "+s.start+" → "+s.end;
+            if(!liveCut || s.end<=liveCut){
+              svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, tip));
+            } else if(s.start>liveCut){
+              svg.appendChild(mk("path",{d:arcCCW(s.start,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:GHOST,"stroke-dasharray":"2 3"}, tip+" (scheduled)"));
+            } else {
+              svg.appendChild(mk("path",{d:arcCCW(s.start,liveCut,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:.5}, tip+" (through today)"));
+              svg.appendChild(mk("path",{d:arcCCW(liveCut,s.end,BAND[lg]),fill:"none",stroke:L.color,"stroke-width":5,"stroke-linecap":"round",opacity:GHOST,"stroke-dasharray":"2 3"}, tip+" (scheduled ahead)"));
+            }
           });
         });
 
@@ -248,7 +260,8 @@ import Base from "../../layouts/Base.astro";
           var parts=[], tot=0;
           shown.forEach(function(lg){ var c=perLg[lg][ds]; if(c){ parts.push(c+" "+leagues[lg].label); tot+=c; } });
           var lbl=new Date(ds+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"});
-          return tot? lbl+" — "+tot+" game"+(tot===1?"":"s")+" ("+parts.join(", ")+")" : lbl+" — no games";
+          var sched=isFut(ds)?" · scheduled":"";
+          return tot? lbl+" — "+tot+" game"+(tot===1?"":"s")+" ("+parts.join(", ")+")"+sched : lbl+" — no games";
         }
 
         // transparent hover targets for every day in the window
@@ -261,11 +274,11 @@ import Base from "../../layouts/Base.astro";
         // spikes, stacked outward by league
         var dayKeys={}; shown.forEach(function(lg){ (leagues[lg].days||[]).forEach(function(x){ dayKeys[x.date]=1; }); });
         Object.keys(dayKeys).forEach(function(ds){
-          var a=ang(ds), r=SPIKE0, tip=tipFor(ds);
+          var a=ang(ds), r=SPIKE0, tip=tipFor(ds), op=isFut(ds)?GHOST:.9;
           shown.forEach(function(lg){
             var c=perLg[lg][ds]; if(!c) return;
             var len=c*scale, p0=pol(a,r), p1=pol(a,r+len);
-            svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:leagues[lg].color,"stroke-width":1.6,"stroke-linecap":"round",opacity:.9}, tip));
+            svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:leagues[lg].color,"stroke-width":1.6,"stroke-linecap":"round",opacity:op}, tip));
             r+=len;
           });
         });
@@ -279,9 +292,9 @@ import Base from "../../layouts/Base.astro";
           b4day[x.date]=(b4day[x.date]||0)+x.count; (b4set[x.date]=b4set[x.date]||{})[lg]=1; }); });
         if(present.indexOf("cfb")>=0){ (leagues.cfb.days||[]).forEach(function(x){ cfbday[x.date]=x.count; }); }
 
-        // Perihelion — the single fullest big-4 day
+        // Perihelion — the single fullest big-4 day (played days only; a scheduled day can't claim it)
         var per={date:null,count:-1};
-        Object.keys(b4day).forEach(function(ds){ if(b4day[ds]>per.count) per={date:ds,count:b4day[ds]}; });
+        Object.keys(b4day).forEach(function(ds){ if(b4day[ds]>per.count && !isFut(ds)) per={date:ds,count:b4day[ds]}; });
 
         // Equinox / Super Equinox — only possible once all four majors exist
         var equ=[], sup=[];
@@ -300,7 +313,7 @@ import Base from "../../layouts/Base.astro";
         if(big4here.length===4){
           big4here.forEach(function(lg){ (leagues[lg].seasons||[]).forEach(function(s){
             var a=new Date(s.start+"T12:00:00").getTime(), b=new Date(s.end+"T12:00:00").getTime();
-            for(var t=a;t<=b;t+=86400000){ var ds=isoOf(new Date(t)); if(!b4day[ds]) eclSet[ds]=1; }
+            for(var t=a;t<=b;t+=86400000){ var ds=isoOf(new Date(t)); if(!b4day[ds] && !isFut(ds)) eclSet[ds]=1; }
           }); });
         }
         var ecl=Object.keys(eclSet).sort();
@@ -311,9 +324,18 @@ import Base from "../../layouts/Base.astro";
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:6,fill:gold}, "Perihelion — the fullest day of "+LAB+" ("+per.count+" games, "+per.date+")"));
           svg.appendChild(mk("circle",{cx:pp[0].toFixed(1),cy:pp[1].toFixed(1),r:10,fill:"none",stroke:gold,"stroke-width":1,opacity:.6}));
         }
-        // Eclipse + Equinox glyphs
+        // Eclipse + Equinox glyphs. Upcoming (scheduled) equinoxes are drawn ghosted with a countdown.
+        function daysAway(d){ return Math.round((new Date(d+"T12:00:00")-new Date((liveCut||TODAY)+"T12:00:00"))/86400000); }
         ecl.forEach(function(d){ var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:3.4,fill:bg,stroke:muted,"stroke-width":1}, "Total Eclipse — every major league idle ("+d+")")); });
-        equ.forEach(function(d){ var isup=sup.indexOf(d)>=0; var p=pol(ang(d),R_RIM); svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:isup?5:3.6,fill:gold,stroke:isup?ink:"none","stroke-width":isup?1.2:0}, (isup?"Super Equinox — all four majors + college football":"Sports Equinox — all four majors play")+" ("+d+")")); });
+        equ.forEach(function(d){
+          var isup=sup.indexOf(d)>=0, future=isFut(d), p=pol(ang(d),R_RIM);
+          var base=(isup?"Super Equinox — all four majors + college football":"Sports Equinox — all four majors play");
+          var tip= future ? (base+" — upcoming, "+d+" (in "+daysAway(d)+" day"+(daysAway(d)===1?"":"s")+")") : (base+" ("+d+")");
+          var el=mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:isup?5:3.6,fill:future?"none":gold,stroke:(future||isup)?(future?gold:ink):"none","stroke-width":(future||isup)?1.2:0,opacity:future?0.95:1}, tip);
+          if(future) el.setAttribute("stroke-dasharray","2 2");
+          svg.appendChild(el);
+          if(future){ svg.appendChild(mk("circle",{cx:p[0].toFixed(1),cy:p[1].toFixed(1),r:(isup?5:3.6)+4,fill:"none",stroke:gold,"stroke-width":0.8,opacity:0.5,"stroke-dasharray":"1 2"}, tip)); }
+        });
 
         // First / Last Light (season opens / closes) + the Turn (offseason midpoint).
         // Ticks on the artificial window edges are skipped; the Turn sits in each
@@ -322,13 +344,13 @@ import Base from "../../layouts/Base.astro";
           var L=leagues[lg], arcs=L.seasons||[];
           arcs.forEach(function(s,ai){
             if(frac(s.start) > 0.03){ var a=ang(s.start), p0=pol(a,BAND[lg]-5), p1=pol(a,BAND[lg]+5);
-              svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:.8}, L.label+" First Light — "+s.start)); }
+              svg.appendChild(mk("line",{x1:p0[0].toFixed(1),y1:p0[1].toFixed(1),x2:p1[0].toFixed(1),y2:p1[1].toFixed(1),stroke:ink,"stroke-width":1.5,opacity:isFut(s.start)?GHOST:.8}, L.label+" First Light — "+s.start+(isFut(s.start)?" (scheduled)":""))); }
             if(frac(s.end) < 0.97){ var a2=ang(s.end), q0=pol(a2,BAND[lg]-5), q1=pol(a2,BAND[lg]+5);
-              svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:.8}, L.label+" Last Light — "+s.end)); }
+              svg.appendChild(mk("line",{x1:q0[0].toFixed(1),y1:q0[1].toFixed(1),x2:q1[0].toFixed(1),y2:q1[1].toFixed(1),stroke:muted,"stroke-width":1.5,opacity:isFut(s.end)?GHOST:.8}, L.label+" Last Light — "+s.end+(isFut(s.end)?" (scheduled)":""))); }
             if(ai < arcs.length-1){
               var g0=new Date(s.end+"T12:00:00").getTime(), g1=new Date(arcs[ai+1].start+"T12:00:00").getTime();
               var mid=isoOf(new Date((g0+g1)/2)), ma=ang(mid), cm=pol(ma,BAND[lg]);
-              svg.appendChild(mk("circle",{cx:cm[0].toFixed(1),cy:cm[1].toFixed(1),r:2.8,fill:bg,stroke:L.color,"stroke-width":1.2,opacity:.95}, L.label+" Turn — offseason midpoint ("+mid+")"));
+              svg.appendChild(mk("circle",{cx:cm[0].toFixed(1),cy:cm[1].toFixed(1),r:2.8,fill:bg,stroke:L.color,"stroke-width":1.2,opacity:isFut(mid)?GHOST:.95}, L.label+" Turn — offseason midpoint ("+mid+")"));
             }
           });
         });
@@ -362,6 +384,8 @@ import Base from "../../layouts/Base.astro";
         var pe=document.createElement("span"); pe.innerHTML='<i style="background:'+gold+';border-radius:50%"></i>Perihelion'; leg.appendChild(pe);
         if(equ.length){ var eq=document.createElement("span"); eq.innerHTML='<i style="background:'+gold+';border-radius:50%;box-shadow:0 0 0 1px '+ink+'"></i>Equinox'; leg.appendChild(eq); }
         if(ecl.length){ var ec=document.createElement("span"); ec.innerHTML='<i style="background:'+bg+';border-radius:50%;box-shadow:inset 0 0 0 1px '+muted+'"></i>Eclipse'; leg.appendChild(ec); }
+        var hasFut=!!liveCut && Object.keys(dayKeys).some(function(ds){ return isFut(ds); });
+        if(hasFut){ var sc=document.createElement("span"); sc.innerHTML='<i style="background:'+muted+';border-radius:2px;opacity:.3"></i>scheduled (ahead of today)'; leg.appendChild(sc); }
 
         // lede summary
         var now=document.getElementById("z-now");
@@ -369,9 +393,12 @@ import Base from "../../layouts/Base.astro";
           if(shown.length){
             var names=shown.map(function(lg){return leagues[lg].label;}).join(", ");
             var txt=LAB+": "+shown.length+" league"+(shown.length===1?"":"s")+" shown ("+names+").";
-            if(per.date){ txt+=" Fullest day: "+new Date(per.date+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"})+", "+per.count+" games."; }
-            if(equ.length){ txt+=" "+equ.length+" Equinox"+(equ.length===1?"":"es")+(sup.length?" ("+sup.length+" Super)":"")+"."; }
+            if(per.date){ txt+=" Fullest day"+(liveCut?" so far":"")+": "+new Date(per.date+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"})+", "+per.count+" games."; }
+            var upc=equ.filter(function(d){ return isFut(d); }), pastEqu=equ.length-upc.length;
+            if(pastEqu){ txt+=" "+pastEqu+" Equinox"+(pastEqu===1?"":"es")+(sup.filter(function(d){return !isFut(d);}).length?" (incl. Super)":"")+(liveCut?" so far":"")+"."; }
             if(ecl.length){ txt+=" "+ecl.length+" Eclipse"+(ecl.length===1?"":"s")+"."; }
+            if(upc.length){ var nd=upc[0], isNs=sup.indexOf(nd)>=0, dA=Math.round((new Date(nd+"T12:00:00")-new Date(liveCut+"T12:00:00"))/86400000);
+              txt+=" Next "+(isNs?"Super ":"Sports ")+"Equinox: "+new Date(nd+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric"})+" (in "+dA+" day"+(dA===1?"":"s")+")"+(upc.length>1?", "+upc.length+" upcoming":"")+"."; }
             now.textContent=txt;
           } else { now.textContent=LAB+": pick a league to show."; }
         }
