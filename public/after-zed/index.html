@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After Zed</title>
+<meta name="description" content="A neural net trained to draw the next letter in an alphabet — and what it invents past the end of one.">
+<style>
+  :root{--paper:#f7f4ee;--ink:#20201c;--muted:#6b675e;--line:#ddd7cb;--card:#fffefb;--accent:#9a5b34;--glyph:#20201c;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}}
+  :root[data-theme="dark"]{--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:52px 20px 80px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 30px}
+  .lede{color:var(--muted);margin:0 0 20px}
+  p{margin:0 0 16px}
+  a{color:var(--accent)}
+  .note{font-size:14px;color:var(--muted);min-height:18px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:22px 0}
+  .ctl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+  .ctl label{font-size:14px;color:var(--muted)}
+  select{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)}
+  fieldset{border:1px solid var(--line);border-radius:9px;padding:6px 12px;margin:0}
+  fieldset label{margin-right:12px}
+  input[type=radio]{vertical-align:middle}
+  .row2{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+  .seqout{width:150px;height:150px;background:var(--glyph);
+          -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mask-mode:alpha;
+          -webkit-mask-size:var(--msz,150px 150px);mask-size:var(--msz,150px 150px);
+          -webkit-mask-position:var(--mpos,0 0);mask-position:var(--mpos,0 0);}
+  .cap{font-size:13px;color:var(--muted);text-align:center;display:block;margin-top:6px}
+  .kv{font-variant-numeric:tabular-nums}
+  .slider{width:100%;max-width:520px;margin:10px 0;accent-color:var(--accent)}
+  .related{font-size:14px;color:var(--muted);border-top:1px solid var(--line);margin-top:48px;padding-top:16px}
+  footer{border-top:1px solid var(--line);margin-top:20px;padding-top:16px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>After Zed</h1>
+  <p class="tag">A model that learned the order of an alphabet — and what it draws past the last letter.</p>
+  <p class="lede">The companion to Capitals and After Nine, aimed at letters instead of digits. Same idea: a net trained to morph a glyph into the next one in its alphabet — B after A, Ψ after Χ — rendered as a slider you can scrub, across Latin, Greek, Cyrillic, and Armenian, upper and lower.</p><p class="lede">Pick an alphabet and a letter and drag it forward into its successor. The ends are where it gets strange: ask for the letter after Z, or after the last letter of Greek or Armenian, and the sequence runs out. Watch what it draws when there is nothing next.</p>
+  <section class="box">
+    <div class="ctl">
+      <label>Alphabet: <select id="seq"></select></label>
+      <label>Letter: <select id="ch"></select></label>
+      <fieldset>
+        <label><input type="radio" name="dir" value="fwd" checked> forward</label>
+        <label><input type="radio" name="dir" value="back"> backward</label>
+      </fieldset>
+    </div>
+    <div class="row2">
+      <div style="text-align:center">
+        <div id="out" class="seqout"></div>
+        <span class="cap">step <span id="stepn" class="kv">0</span> / <span id="stepmax" class="kv">0</span></span>
+      </div>
+      <div style="flex:1;min-width:260px">
+        <input type="range" id="slider" class="slider" min="0" max="0" value="0">
+        <div class="note" id="status">drag to watch it settle</div>
+      </div>
+    </div>
+  </section>
+  <p class="related">Companion pieces: <a href="/after-nine">what comes after 9</a>, and the one that started it — <a href="/capitals">Capitals</a>, on casing as a transformation.</p>
+  <footer>Built by Rob Heffern. A sibling of the Capitals model — a glyph successor net, trained on sequence instead of case. Static page, no model at runtime; the frames are precomputed.</footer>
+</div>
+<script>
+(function(){
+  var DISP=150, SEQS=["latin_upper","latin_lower","greek_upper","greek_lower","cyrillic_upper","cyrillic_lower","armenian_upper","armenian_lower"], DEFAULT={"seq":"latin_upper","char":"Z"};
+  var out=document.getElementById("out"), slider=document.getElementById("slider");
+  var stepn=document.getElementById("stepn"), stepmax=document.getElementById("stepmax");
+  var status=document.getElementById("status"), chSel=document.getElementById("ch");
+  var seqSel=document.getElementById("seq");
+  var MAN=null, seq=null, cur=null;
+  function nice(k){ return k.replace(/_/g," ").replace(/\b\w/g,function(m){return m.toUpperCase();}); }
+  function fillChars(){ chSel.innerHTML=""; MAN.seqs[seq].chars.forEach(function(c,i){ var o=document.createElement("option"); o.value=i; o.textContent=c; chSel.appendChild(o); }); }
+  function stripFor(ci,dir){ var ch=MAN.seqs[seq].chars[ci]; return (MAN.seqs[seq].strips||[]).filter(function(s){return s.char===ch&&s.dir===dir;})[0]; }
+  function pick(){
+    var ci=parseInt(chSel.value,10)||0, dir=(document.querySelector('input[name=dir]:checked')||{}).value||"fwd";
+    cur=stripFor(ci,dir);
+    if(!cur){ status.textContent="(no strip for that one)"; return; }
+    out.style.webkitMaskImage=out.style.maskImage="url(spr2/"+cur.file+")";
+    out.style.setProperty("--msz",(cur.frames*DISP)+"px "+DISP+"px");
+    slider.max=cur.frames-1; slider.value=0; stepmax.textContent=cur.frames-1;
+    show(0);
+  }
+  function show(n){
+    out.style.setProperty("--mpos",(-n*DISP)+"px 0");
+    stepn.textContent=n;
+    status.textContent = (cur && n>=cur.settled) ? "settled — the model’s answer for what comes next" : "drag to watch it settle";
+  }
+  chSel.addEventListener("change",pick);
+  document.querySelectorAll('input[name=dir]').forEach(function(r){ r.addEventListener("change",pick); });
+  slider.addEventListener("input",function(e){ show(parseInt(e.target.value,10)); });
+  if(seqSel){ seqSel.addEventListener("change",function(){ seq=seqSel.value; fillChars(); chSel.value=0; pick(); }); }
+  fetch("spr2/manifest.json").then(function(r){return r.json();}).then(function(m){
+    MAN=m;
+    if(seqSel){ SEQS.forEach(function(k){ var o=document.createElement("option"); o.value=k; o.textContent=nice(k); seqSel.appendChild(o); }); }
+    seq = (DEFAULT && DEFAULT.seq) || SEQS[0];
+    if(seqSel) seqSel.value=seq;
+    fillChars();
+    if(DEFAULT && DEFAULT.char!=null){ var idx=MAN.seqs[seq].chars.indexOf(DEFAULT.char); if(idx>=0) chSel.value=idx; }
+    pick();
+  }).catch(function(){ status.textContent="Couldn’t load the sprites — spr2/manifest.json didn’t fetch."; });
+})();
+</script>
+</body>
+</html>
