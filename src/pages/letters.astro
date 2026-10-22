@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+
+const pieces = [
+  { name: "Capitals", glyph: "Aa", blurb: "A net that learned casing as a transformation — and what it does when you feed it things that have no case.", href: "/capitals" },
+  { name: "After Nine", glyph: "9", blurb: "A model that learned to count by shape. Ask for the digit after 9 and watch what it reaches for when the sequence runs out.", href: "/after-nine" },
+  { name: "After Zed", glyph: "Z", blurb: "The same idea, aimed at letters: the one after Z, and past the end of Latin, Greek, Cyrillic, and Armenian.", href: "/after-zed" },
+];
+---
+<Base title="Letterforms — Rob Heffern" description="Small neural nets that learned the shape of letters and numbers — how we case them, and what comes next.">
+  <main class="wrap">
+    <p class="crumb"><a href="/">← the cabinet</a></p>
+    <header class="room-head">
+      <p class="kicker">Letterforms</p>
+      <h1>Letters and numbers, as a model sees them.</h1>
+      <p class="lede">
+        Three small neural nets, each pointed at one quiet thing about written symbols:
+        how we decide which letters to make big, and what comes next when you follow a
+        sequence past its end. Draw in them; they answer in glyphs.
+      </p>
+    </header>
+
+    <section class="grid">
+      {pieces.map((p) => (
+        <a class="piece" href={p.href}>
+          <span class="glyph" aria-hidden="true">{p.glyph}</span>
+          <span class="body">
+            <span class="name">{p.name}</span>
+            <span class="blurb">{p.blurb}</span>
+          </span>
+          <span class="go">open →</span>
+        </a>
+      ))}
+    </section>
+  </main>
+
+  <style>
+    .crumb { font-family: var(--sans); font-size: .8rem; margin: 0 0 2rem; }
+    .room-head { margin-bottom: 2.5rem; }
+    .kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: .28em; font-size: .72rem; color: var(--muted); margin: 0 0 .5rem; }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 500; margin: 0 0 1rem; }
+    .lede { color: var(--muted); max-width: 40rem; font-size: 1.1rem; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+    .piece { display: flex; align-items: center; gap: 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1.3rem 1.4rem; color: var(--ink); transition: transform .15s ease, border-color .15s ease; }
+    .piece:hover { transform: translateY(-3px); border-color: var(--gold); text-decoration: none; }
+    .glyph { font-family: var(--serif); font-size: 2rem; line-height: 1; width: 2.4rem; text-align: center; color: var(--gold); }
+    .body { display: flex; flex-direction: column; flex: 1; }
+    .name { font-size: 1.3rem; }
+    .blurb { color: var(--muted); font-size: .92rem; margin-top: .2rem; }
+    .go { font-family: var(--sans); font-size: .72rem; color: var(--gold); white-space: nowrap; }
+  </style>
+</Base>
