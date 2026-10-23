@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alphabet Weather</title>
+<meta name="description" content="An interactive weather map of letterspace: the 'next-glyph' wind across five scripts, where it blows, where it stalls, and where it spins into storms.">
+<style>
+  :root{--paper:#f7f4ee;--ink:#20201c;--muted:#6b675e;--line:#ddd7cb;--card:#fffefb;--accent:#9a5b34;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;}}
+  :root[data-theme="dark"]{--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:52px 20px 80px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 26px}
+  h2{font-size:24px;margin:48px 0 6px;letter-spacing:-0.01em}
+  p{margin:0 0 16px}.lede{color:var(--muted)}
+  section{border-top:1px solid var(--line);padding-top:8px}
+  .note{font-size:14px;color:var(--muted)}
+  .mapbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:18px 0}
+  canvas#map{width:100%;max-width:560px;aspect-ratio:1;display:block;margin:0 auto;border-radius:10px;touch-action:none}
+  .controls{display:flex;flex-wrap:wrap;gap:8px 16px;margin:14px 2px 2px;align-items:center}
+  .controls fieldset{border:1px solid var(--line);border-radius:9px;padding:6px 12px;margin:0;display:flex;gap:10px;flex-wrap:wrap}
+  .controls legend{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 4px}
+  label.ck{font-size:14px;color:var(--ink);display:inline-flex;gap:5px;align-items:center;cursor:pointer}
+  .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .legend{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Alphabet Weather</h1>
+  <p class="tag">A weather map of letterspace — where "next" blows, stalls, and spins.</p>
+
+  <p>Every glyph a small AI knows sits somewhere on this map, and at each one there's an arrow: the
+  direction "the next letter" would push it. Read it like a weather chart. The <b>wind</b> is the one
+  thing you really need — follow the arrow off any letter to see where succession carries it. Turn the
+  other layers on only when you're curious: <b>height</b> is the best guess at an "uphill" for the
+  whole field (it mostly fails — that's the interesting part), and <b>storms</b> marks where the wind
+  spins instead of flowing, the places the alphabet curls back on itself.</p>
+
+  <section>
+    <h2>The map</h2>
+    <div class="mapbox">
+      <canvas id="map" width="1120" height="1120"></canvas>
+      <div class="controls">
+        <fieldset><legend>layers</legend>
+          <label class="ck"><input type="checkbox" id="L-wind" checked> wind</label>
+          <label class="ck"><input type="checkbox" id="L-letters" checked> letters</label>
+          <label class="ck"><input type="checkbox" id="L-height"> height</label>
+          <label class="ck"><input type="checkbox" id="L-storm"> storms</label>
+        </fieldset>
+        <fieldset id="scripts"><legend>scripts</legend></fieldset>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <p class="note">Positions are a flattened shadow of a 64-dimensional space, so distances are only
+    roughly meaningful — but the neighbourhoods and the swirl are real. Drag nothing; just toggle.</p>
+  </section>
+
+  <section>
+    <h2>What to look for</h2>
+    <p>With just <b>wind</b> on, pick a script and trace its alphabet — the arrows don't march in one
+    tidy direction, they wheel around. Switch on <b>storms</b> and you'll see why: bright patches are
+    where the wind rotates, and there are a lot of them. Those are the places where "A comes before B
+    comes before C" quietly curves back on itself. Switch on <b>height</b> and watch the arrows
+    <i>ignore</i> it — if the alphabet rolled downhill, every arrow would run from red to blue. They
+    don't. That disagreement, across every script at once, is the whole finding: the alphabet isn't a
+    staircase you descend. It's a weather system.</p>
+  </section>
+
+  <p style="border-top:1px solid var(--line);margin-top:48px;padding-top:16px;font-size:14px;color:var(--muted)">The map here is built on the space from <a href="/letterspace">Letterspace</a>; the still blobs it drifts into are the subject of <a href="/fixed-points">Fixed Points</a>.</p>
+  <footer>Built by Rob Heffern. The model, the data pipeline, and this page all run on open tools.</footer>
+</main>
+
+<script>
+const GROUPCOL={digit:[27,58,91],latin:[122,59,26],greek:[47,107,79],cyrillic:[106,47,122],armenian:[138,109,26]};
+const GROUPLAB={digit:"digits",latin:"Latin",greek:"Greek",cyrillic:"Cyrillic",armenian:"Armenian"};
+// height ramp — no white, saturated throughout
+const RAMP=[[21,49,79],[46,107,138],[79,158,140],[201,162,58],[158,59,31]];
+function ramp(t){t=Math.max(0,Math.min(1,t));const n=RAMP.length-1;let f=t*n,i=Math.floor(f);if(i>=n)i=n-1;const g=f-i,a=RAMP[i],b=RAMP[i+1];return [a[0]+(b[0]-a[0])*g,a[1]+(b[1]-a[1])*g,a[2]+(b[2]-a[2])*g];}
+
+let D=null, cv=document.getElementById("map"), ctx=cv.getContext("2d");
+let on={wind:true,letters:true,height:false,storm:false};
+let gon={}; // per-group visibility
+let GR=56, hgrid=null, cgrid=null, dgrid=null; // height, curl, nearest-dist grids
+const PAD=0.08;
+
+function mapToPx(x,y){const s=cv.width*(1-2*PAD);return [cv.width*PAD + x*s, cv.height*(1-PAD) - y*s];} // flip y
+
+function buildGrids(){
+  const pts=D.points;
+  hgrid=[];cgrid=[];dgrid=[];
+  const ug=[],vg=[];
+  // bbox in data coords
+  let minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9;
+  for(const p of pts){minx=Math.min(minx,p.x);maxx=Math.max(maxx,p.x);miny=Math.min(miny,p.y);maxy=Math.max(maxy,p.y);}
+  window._bb={minx,maxx,miny,maxy};
+  for(let gy=0;gy<GR;gy++){hgrid.push([]);ug.push([]);vg.push([]);dgrid.push([]);
+    for(let gx=0;gx<GR;gx++){
+      const X=minx+(maxx-minx)*gx/(GR-1), Y=miny+(maxy-miny)*gy/(GR-1);
+      let wsum=0,hs=0,us=0,vs=0,nd=1e9;
+      for(const p of pts){const dx=p.x-X,dy=p.y-Y;const d2=dx*dx+dy*dy;nd=Math.min(nd,Math.sqrt(d2));
+        const w=1/(d2+1e-4);wsum+=w;hs+=w*p.h;us+=w*p.u;vs+=w*p.v;}
+      hgrid[gy].push(hs/wsum);ug[gy].push(us/wsum);vg[gy].push(vs/wsum);dgrid[gy].push(nd);
+    }
+  }
+  // curl from interpolated field
+  const dx=(maxx-minx)/(GR-1), dy=(maxy-miny)/(GR-1);
+  for(let gy=0;gy<GR;gy++){cgrid.push([]);
+    for(let gx=0;gx<GR;gx++){
+      const gxp=Math.min(GR-1,gx+1),gxm=Math.max(0,gx-1),gyp=Math.min(GR-1,gy+1),gym=Math.max(0,gy-1);
+      const dvdx=(vg[gy][gxp]-vg[gy][gxm])/(2*dx), dudy=(ug[gyp][gx]-ug[gym][gx])/(2*dy);
+      cgrid[gy].push(dvdx-dudy);
+    }
+  }
+  // normalize ranges
+  let hmin=1e9,hmax=-1e9,cmax=1e-6;
+  for(let a=0;a<GR;a++)for(let b=0;b<GR;b++){if(dgrid[a][b]<0.12){hmin=Math.min(hmin,hgrid[a][b]);hmax=Math.max(hmax,hgrid[a][b]);}cmax=Math.max(cmax,Math.abs(cgrid[a][b]));}
+  window._hr=[hmin,hmax]; window._cmax=cmax;
+  // median arrow magnitude (for tuft scaling)
+  const mags=D.points.map(p=>Math.hypot(p.u,p.v)).filter(x=>x>1e-6).sort((a,b)=>a-b);
+  window._med=mags[Math.floor(mags.length/2)]||1;
+}
+
+function draw(){
+  const bg=getComputedStyle(document.body).getPropertyValue("--paper").trim();
+  ctx.fillStyle=bg; ctx.fillRect(0,0,cv.width,cv.height);
+  const {minx,maxx,miny,maxy}=window._bb;
+  const cellw=cv.width*(1-2*PAD)/(GR-1);
+  // HEIGHT layer
+  if(on.height){const [hmin,hmax]=window._hr;
+    for(let gy=0;gy<GR;gy++)for(let gx=0;gx<GR;gx++){
+      if(dgrid[gy][gx]>0.11)continue;
+      const t=(hgrid[gy][gx]-hmin)/(hmax-hmin+1e-9);const c=ramp(t);
+      const X=minx+(maxx-minx)*gx/(GR-1), Y=miny+(maxy-miny)*gy/(GR-1);const[px,py]=mapToPx(X,Y);
+      const fade=Math.max(0,1-dgrid[gy][gx]/0.11);
+      ctx.fillStyle=`rgba(${c[0]|0},${c[1]|0},${c[2]|0},${0.72*fade})`;
+      ctx.fillRect(px-cellw/2-1,py-cellw/2-1,cellw+2,cellw+2);
+    }
+  }
+  // STORM layer (|curl|)
+  if(on.storm){const cmax=window._cmax;
+    for(let gy=0;gy<GR;gy++)for(let gx=0;gx<GR;gx++){
+      if(dgrid[gy][gx]>0.11)continue;
+      const t=Math.abs(cgrid[gy][gx])/cmax;if(t<0.12)continue;
+      const X=minx+(maxx-minx)*gx/(GR-1), Y=miny+(maxy-miny)*gy/(GR-1);const[px,py]=mapToPx(X,Y);
+      const fade=Math.max(0,1-dgrid[gy][gx]/0.11);
+      // storm hue: magenta->hot, by sign cw/ccw
+      const c = cgrid[gy][gx]>0 ? [196,64,120] : [64,120,196];
+      ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},${0.75*t*fade})`;
+      ctx.fillRect(px-cellw/2-1,py-cellw/2-1,cellw+2,cellw+2);
+    }
+  }
+  // WIND layer — short local tufts (direction, with mild length-for-speed)
+  if(on.wind){
+    const BASE=cv.width*0.030, MED=window._med, hl=cv.width*0.009;
+    const col=getComputedStyle(document.body).getPropertyValue("--ink").trim();
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.globalAlpha=0.72;
+    for(const p of D.points){ if(!gon[p.g])continue;
+      const mag=Math.hypot(p.u,p.v); if(mag<1e-6)continue;
+      const len=BASE*(0.6+0.7*Math.min(mag/MED,2));
+      const[px,py]=mapToPx(p.x,p.y);
+      const dx=p.u/mag*len, dy=-p.v/mag*len; const ex=px+dx, ey=py+dy;
+      ctx.lineWidth=cv.width*0.0016;
+      ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(ex,ey);ctx.stroke();
+      const ang=Math.atan2(ey-py,ex-px);
+      ctx.beginPath();ctx.moveTo(ex,ey);
+      ctx.lineTo(ex-hl*Math.cos(ang-0.5),ey-hl*Math.sin(ang-0.5));
+      ctx.lineTo(ex-hl*Math.cos(ang+0.5),ey-hl*Math.sin(ang+0.5));
+      ctx.closePath();ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  // LETTERS layer
+  if(on.letters){
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.font=`${Math.round(cv.width*0.020)}px DejaVu Sans, Arial, sans-serif`;
+    for(const p of D.points){ if(!gon[p.g])continue; const[px,py]=mapToPx(p.x,p.y);
+      const c=GROUPCOL[p.g];ctx.fillStyle=`rgb(${c[0]},${c[1]},${c[2]})`;ctx.fillText(p.c,px,py);
+    }
+  }
+}
+
+function buildControls(){
+  const host=document.getElementById("scripts");
+  host.innerHTML='<legend>scripts</legend>';
+  for(const g of D.groups){gon[g]=true;const c=GROUPCOL[g];
+    const lab=document.createElement("label");lab.className="ck";
+    lab.innerHTML=`<input type="checkbox" checked data-g="${g}"><span class="sw" style="background:rgb(${c[0]},${c[1]},${c[2]})"></span>${GROUPLAB[g]}`;
+    lab.querySelector("input").addEventListener("change",e=>{gon[g]=e.target.checked;draw();});
+    host.appendChild(lab);
+  }
+  for(const k of ["wind","letters","height","storm"])
+    document.getElementById("L-"+k).addEventListener("change",e=>{on[k]=e.target.checked;updateLegend();draw();});
+}
+function updateLegend(){
+  const el=document.getElementById("legend");
+  let s=[];
+  if(on.height)s.push("height: <b style='color:#9e3b1f'>■</b> high &nbsp; <b style='color:#15314f'>■</b> low (arrows should ignore it)");
+  if(on.storm)s.push("storms: <b style='color:#c44078'>■</b>/<b style='color:#4078c4'>■</b> = wind spinning (brighter = harder)");
+  el.innerHTML=s.join(" &nbsp;·&nbsp; ");
+}
+
+async function init(){
+  D=await (await fetch("weather_data.json")).json();
+  buildControls(); buildGrids(); updateLegend(); draw();
+  window.addEventListener("resize",draw);
+}
+init().catch(e=>{document.getElementById("legend").textContent="Could not load the map data.";console.error(e);});
+</script>
+</body>
+</html>
