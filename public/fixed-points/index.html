@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixed Points</title>
+<meta name="description" content="Every operation has shapes it leaves alone — its fixed points. For casing, they're the letters that are already their own capital. For succession, it's the blob every letter decays into.">
+<style>
+  :root{--paper:#f7f4ee;--ink:#20201c;--muted:#6b675e;--line:#ddd7cb;--card:#fffefb;--accent:#9a5b34;--glyph:#20201c;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}}
+  :root[data-theme="dark"]{--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:52px 20px 80px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 30px}
+  h2{font-size:24px;margin:52px 0 6px;letter-spacing:-0.01em}
+  .lede{color:var(--muted);margin:0 0 20px}
+  p{margin:0 0 16px}
+  section{border-top:1px solid var(--line);padding-top:8px}
+  a{color:var(--accent)}
+  .note{font-size:14px;color:var(--muted)}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:18px 0}
+  .fig{width:100%;background:var(--glyph);-webkit-mask:var(--src) center/contain no-repeat;mask:var(--src) center/contain no-repeat}
+  .figcap{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
+  .rowlab{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;max-width:520px;margin:0 auto}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Fixed Points</h1>
+  <p class="tag">Every operation has shapes it refuses to change. They tell you what it really does.</p>
+
+  <p>Take any operation that turns one shape into another — make-it-a-capital, or step-to-the-next-letter.
+  Most shapes, it moves. But almost every operation has a few special shapes it leaves exactly where they
+  are. Push them through and nothing happens. Those are its <b>fixed points</b>, and they're worth
+  hunting for, because the shapes an operation <i>won't</i> move turn out to be the clearest X-ray of what
+  it's actually doing. Here are the fixed points of the two operations this little corner of the site is
+  built on.</p>
+
+  <!-- CASING -->
+  <section>
+    <h2>The letters that are their own capital</h2>
+    <p class="lede">Run "make it a capital" across the alphabet and ask which letters don't really change.
+    Here they are — top row small, bottom row capital. Look how little moves: these letters are the
+    <i>same drawing</i> at two sizes.</p>
+    <div class="box">
+      <div class="fig" style="--src:url(fp/selfcap.png);aspect-ratio:576/138;max-width:520px;margin:0 auto"></div>
+      <div class="rowlab" style="margin-top:6px"><span>small</span><span>capital</span></div>
+      <p class="note" style="text-align:center;margin-top:12px">i j v w c z x s o — the fixed points of casing</p>
+    </div>
+    <p>Now the opposite end — the letters casing <i>does</i> move, hard. Top row small, bottom row capital,
+    and they barely look related:</p>
+    <div class="box">
+      <div class="fig" style="--src:url(fp/redrawn.png);aspect-ratio:384/138;max-width:360px;margin:0 auto"></div>
+      <p class="note" style="text-align:center;margin-top:12px">a g e r d h — two different shapes we agreed to call one letter</p>
+    </div>
+    <p>That split is the whole point. Half of our alphabet is one shape you resize. The other half is a
+    pair of unrelated drawings — a lowercase and an uppercase that look nothing alike — that history
+    glued together under one name. You never notice, because you learned them as children. The fixed
+    points make it visible: casing is a real, simple operation for half the letters and a total costume
+    change for the other half.</p>
+  </section>
+
+  <!-- SUCCESSION -->
+  <section>
+    <h2>The one place every letter ends up</h2>
+    <p class="lede">The other operation — step to the next glyph — has fixed points too, but of a stranger
+    kind. Feed a letter its own output over and over (the heat-death trick from the other pages) and it
+    drifts until it reaches a shape that <i>steps to itself</i>. That shape is a fixed point: succession
+    can't move it any further. Every letter in a script falls into the same one.</p>
+    <div class="box">
+      <div class="fig" style="--src:url(fp/attractors.png);aspect-ratio:384/640;max-width:300px;margin:0 auto"></div>
+      <p class="figcap">Nine scripts (rows); six different starting letters each, run to exhaustion. Within a
+      row they land in nearly the same place.</p>
+    </div>
+    <p>So succession has essentially one fixed point per alphabet — a single resting blob that the whole
+    script pours into. It's not a letter. It's what's left when you apply "next" so many times that the
+    idea of "which letter" wears off entirely. The casing fixed points are letters that were already
+    done. The succession fixed point is the place letters go to stop being letters.</p>
+  </section>
+
+  <!-- WRAP -->
+  <section>
+    <h2>Why anyone cares about the things that don't move</h2>
+    <p>This isn't just a curiosity. Finding the shapes an operation leaves alone is one of the oldest
+    moves in mathematics — they're close cousins of what physicists and mathematicians call
+    <i>eigenvectors</i>, and whole fields are built on hunting them down. The reason is exactly what you
+    just saw: a thing can be complicated and hard to describe, but its fixed points are few, specific, and
+    honest. They're the skeleton. Ask what an operation does to everything and you drown. Ask what it
+    <i>leaves alone</i> and it tells you its secret.</p>
+  </section>
+
+  <p style="border-top:1px solid var(--line);margin-top:48px;padding-top:16px;font-size:14px;color:var(--muted)">Part of the same thread: <a href="/after-nine">what comes after 9</a>, <a href="/after-zed">the letter after Z</a>, and <a href="/letterspace">Letterspace</a>, the engine behind them.</p>
+  <footer>Built by Rob Heffern. The model, the data pipeline, and this page all run on open tools.</footer>
+</main>
+</body>
+</html>
