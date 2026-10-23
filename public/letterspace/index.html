@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Letterspace</title>
+<meta name="description" content="Every letter a computer knows lives as a place in a space of shapes. Here's the map — drag a letter around and watch it morph, and see how a machine 'understands' what a letter is.">
+<style>
+  :root{--paper:#f7f4ee;--ink:#20201c;--muted:#6b675e;--line:#ddd7cb;--card:#fffefb;--accent:#9a5b34;--glyph:#20201c;--field:#efe9dd;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;--field:#211f1a;}}
+  :root[data-theme="dark"]{--paper:#171613;--ink:#eae6dc;--muted:#9a948a;--line:#332f28;--card:#1e1c18;--accent:#d59c6b;--glyph:#eae6dc;--field:#211f1a;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:52px 20px 80px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 6px;letter-spacing:-0.01em}
+  .tag{color:var(--muted);font-style:italic;font-size:19px;margin:0 0 30px}
+  h2{font-size:24px;margin:52px 0 6px;letter-spacing:-0.01em}
+  .lede{color:var(--muted);margin:0 0 20px}
+  p{margin:0 0 16px}
+  section{border-top:1px solid var(--line);padding-top:8px}
+  a{color:var(--accent)}
+  b.term{color:var(--ink);border-bottom:2px solid var(--accent);cursor:help}
+  .note{font-size:14px;color:var(--muted)}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:18px 0}
+  .ctl{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  .ctl label{font-size:14px;color:var(--muted)}
+  select{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)}
+  input[type=range]{width:100%;max-width:420px}
+  canvas.out{width:150px;height:150px;image-rendering:auto;background:transparent}
+  canvas.outsm{width:96px;height:96px;image-rendering:auto;background:transparent}
+  .field{touch-action:none;background:var(--field);border:1px solid var(--line);border-radius:14px;cursor:grab}
+  .field:active{cursor:grabbing}
+  .fieldwrap{display:flex;gap:22px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .tcol{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+  .tlab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .status{font-size:13px;color:var(--muted);min-height:18px;margin-top:8px}
+  .morphrow{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .big{font-size:60px;line-height:1;font-weight:700}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:16px;font-size:14px;color:var(--muted)}
+  .pill{display:inline-block;background:var(--field);border:1px solid var(--line);border-radius:20px;padding:2px 10px;font-size:13px;color:var(--muted);margin:2px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Letterspace</h1>
+  <p class="tag">Every letter is a place. Here's the map — and you can walk around in it.</p>
+
+  <p>Here's a strange idea that turns out to be true. When a computer learns what letters look like,
+  it doesn't store them as pictures in a drawer. It arranges them in a kind of <b>space</b> — the way
+  towns are arranged on a map. Every letter gets a <i>location</i>. Letters that look alike end up
+  near each other; letters that look different end up far apart. And the empty land <i>between</i> the
+  letters isn't empty at all — it's full of shapes that are half one letter and half another.</p>
+
+  <p>That probably sounds abstract. So let's not explain it — let's just go there. Below is the actual
+  map a small AI built. Drag the dot around and watch what happens.</p>
+
+  <!-- THE FIELD -->
+  <section>
+    <h2>Walk around the map</h2>
+    <p class="lede">The faint letters are real letters, sitting at their real locations. Grab the dot
+    and drag it. The big letter on the right is whatever shape lives at that exact spot — drag toward a
+    letter and it becomes that letter; stop in between two and you get the thing that's halfway between
+    them. There's no list being picked from. Every point is a shape, and you're walking through all of
+    them.</p>
+    <div class="box">
+      <div class="fieldwrap">
+        <canvas id="field" class="field" width="320" height="320"></canvas>
+        <div class="tcol">
+          <canvas id="fieldout" class="out" width="64" height="64"></canvas>
+          <span class="tlab">you are here</span>
+        </div>
+      </div>
+      <div class="status" id="fstatus">loading the map…</div>
+      <p class="note">Colors just mark groups: capitals, small letters, digits. The map is flattened
+      from a much bigger space down to this flat picture, so it's a little squished — but the
+      neighbourhoods are real.</p>
+    </div>
+  </section>
+
+  <!-- WHAT JUST HAPPENED -->
+  <section>
+    <h2>What you were actually doing</h2>
+    <p>You were moving a <b class="term" title="a location in the space — the computer's internal description of one shape">point</b>
+    through the AI's imagination and asking, at every step, "what shape is here?" The model answers by
+    <i>painting</i> — it was never choosing from the 26 letters it knows. It genuinely builds the shape
+    at wherever you point, including the in-between places no real letter occupies. Those halfway shapes
+    are the tell: a lookup table can't do that. A <i>space</i> can.</p>
+    <p>Why would anyone build it this way? Because a space lets you do arithmetic with shapes. That's
+    the part that feels like magic, and it's next.</p>
+  </section>
+
+  <!-- INTERPOLATION -->
+  <section>
+    <h2>The straight line between two letters</h2>
+    <p class="lede">Pick a letter to start and a letter to end. The slider walks in a straight line
+    from one to the other, through the space. Watch the shape hand off from the first to the second —
+    and notice it stays letter-<i>ish</i> the whole way. That's the space being smooth: no cliffs, no
+    teleporting, just one shape easing into another.</p>
+    <div class="box">
+      <div class="ctl">
+        <label>from</label><select id="ia"></select>
+        <label>to</label><select id="ib"></select>
+      </div>
+      <div class="tcol" style="align-items:flex-start;width:100%">
+        <canvas id="interout" class="out" width="64" height="64"></canvas>
+        <input id="interslider" type="range" min="0" max="100" value="0">
+        <span class="status" id="istatus">drag the slider</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VECTORS / CASING ARROW -->
+  <section>
+    <h2>A direction you can walk — the same everywhere</h2>
+    <p>Here's the single idea that makes this powerful, and it needs no math. On a real map, "go north"
+    is a direction that means the same thing <i>wherever you're standing</i>. Walk north from your house
+    or north from the shop — it's the same move. A direction like that, one you can apply from anywhere,
+    is what people mean by the word <b class="term" title="a direction and distance you can apply from any starting point">vector</b>.
+    That's the whole definition: a vector is just a reusable "go this way, this far."</p>
+    <p>Now the surprising bit. In letterspace there is a single direction that means <b>"make this a
+    capital."</b> One fixed heading. Walk it from <span class="pill">c</span> and you arrive at
+    <span class="pill">C</span>. Walk the <i>same</i> heading from <span class="pill">o</span> and you land
+    on <span class="pill">O</span>; from <span class="pill">w</span> you get <span class="pill">W</span>.
+    The model was never taught this arrow — it fell out of how the letters arranged themselves. Start the
+    slider on <b>c, o, v, w,</b> or <b>x</b> and push — the small letter grows into its capital:</p>
+    <div class="box">
+      <div class="ctl"><label>start from</label><select id="casesel"></select></div>
+      <div class="tcol" style="align-items:flex-start;width:100%">
+        <canvas id="caseout" class="out" width="64" height="64"></canvas>
+        <input id="caseslider" type="range" min="0" max="130" value="0">
+        <span class="status" id="castatus">slide to walk the "make it a capital" direction</span>
+      </div>
+      <p>Then switch it to <span class="pill">a</span>, <span class="pill">g</span>, or
+      <span class="pill">e</span> and push the same slider. It barely moves. <b>That's not a glitch —
+      it's the model telling you something true.</b> <span class="pill">C</span> and
+      <span class="pill">c</span> are the same drawing at two sizes, so one arrow gets you there. But
+      <span class="pill">A</span> and <span class="pill">a</span> are <i>different shapes</i> we just agreed
+      to call the same letter — there's no single move between them, so the arrow stalls. You can feel,
+      with a slider, which of our letters are really one shape and which are two in a trenchcoat.</p>
+      <p class="note">The working version is the shape cousin of a famous word trick, where a computer
+      does <i>king − man + woman</i> and lands on <i>queen</i> — the same reusable-direction idea, done
+      with letter shapes instead of word meanings.</p>
+    </div>
+  </section>
+
+  <!-- CURVED PATH -->
+  <section>
+    <h2>Some things are directions. Some things are journeys.</h2>
+    <p>You might guess the alphabet works the same way — that there's a "next letter" arrow you keep
+    walking: A to B to C. It turns out there <i>isn't</i>. If you measure it, the step from A to B points
+    one way, B to C points a slightly different way, C to D turns again. The alphabet isn't a straight
+    heading you can reuse; it's a <i>winding road</i>. Casing is "go north." The alphabet is "follow the
+    river." One is a vector; the other is a path that bends the whole way. Finding out which operations
+    are straight and which are curved is a real thing people study — and you just felt the difference.</p>
+  </section>
+
+  <!-- HIDDEN DIAL -->
+  <section>
+    <h2>A dial the model invented on its own</h2>
+    <p class="lede">Casing is a direction <i>we</i> had a name for. But the space is full of directions
+    nobody named — the model made them up because they were useful for telling shapes apart. Here's the
+    biggest unnamed one. Nobody built it; it emerged. Slide it and watch — then try to name what it
+    controls.</p>
+    <div class="box">
+      <div class="ctl"><label>letter</label><select id="widthsel"></select></div>
+      <div class="tcol" style="align-items:flex-start;width:100%">
+        <canvas id="widthout" class="out" width="64" height="64"></canvas>
+        <input id="widthslider" type="range" min="-100" max="100" value="0">
+        <span class="status" id="wstatus">slide left and right</span>
+      </div>
+      <p class="note">(It's roughly <i>width</i> / how splayed the letter stands. The point isn't the
+      name — it's that the machine decided, with no instruction from us, that this was one of the most
+      important ways letters differ, and parked a dial on it.)</p>
+    </div>
+  </section>
+
+  <!-- WRAP -->
+  <section>
+    <h2>Why this is the whole game</h2>
+    <p>Everything you just did is, more or less, how modern AI works under the hood — not just for
+    letters. A model that handles words, images, or sounds is doing the same move: it turns each thing
+    into a <i>location</i> in a big space, arranges them so that similar things sit close, and then gets
+    its powers from the <i>geometry</i> — the straight-line betweens, the reusable direction-arrows, the
+    emergent dials. "Understanding," for a machine, largely means "having arranged things in a space
+    where the directions mean something." You just walked around inside one.</p>
+    <p>This one only knows letters, and it's small enough to run live on your phone while you drag. But
+    the shape of the trick is the same one running the big ones.</p>
+  </section>
+
+  <p style="border-top:1px solid var(--line);margin-top:48px;padding-top:16px;font-size:14px;color:var(--muted)">This is the engine behind three other pages: <a href="/capitals">Capitals</a>, <a href="/after-nine">what comes after 9</a>, and <a href="/after-zed">the letter after Z</a>.</p>
+  <footer>Built by Rob Heffern. The model, the data pipeline, and this page all run on open tools.</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.wasm.min.js"></script>
+<script>
+const SIZE=64;
+ort.env.wasm.wasmPaths="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
+ort.env.wasm.numThreads=1;
+let V=null, sess=null, L=64;
+const fstatus=document.getElementById("fstatus");
+
+function drawTile(canvas,arr){const ctx=canvas.getContext("2d"),im=ctx.createImageData(SIZE,SIZE);const css=getComputedStyle(document.body).getPropertyValue("--glyph").trim();const m=css.match(/#?([0-9a-f]{6})/i);let r=32,g=32,b=28;if(m){r=parseInt(m[1].substr(0,2),16);g=parseInt(m[1].substr(2,2),16);b=parseInt(m[1].substr(4,2),16);}for(let i=0;i<SIZE*SIZE;i++){let v=arr[i];v=Math.max(0,Math.min(1,(v-0.45)*2.2+0.5));im.data[i*4]=r;im.data[i*4+1]=g;im.data[i*4+2]=b;im.data[i*4+3]=Math.round(v*255);}ctx.clearRect(0,0,SIZE,SIZE);ctx.putImageData(im,0,0);}
+
+async function decode(z){ // z: Float32Array(L) -> Float32Array(SIZE*SIZE)
+  const t=new ort.Tensor("float32",z,[1,L]);
+  const o=await sess.run({z:t});
+  return o.img.data;
+}
+function addv(a,b,s){const o=new Float32Array(a.length);for(let i=0;i<a.length;i++)o[i]=a[i]+s*b[i];return o;}
+function lerp(a,b,t){const o=new Float32Array(a.length);for(let i=0;i<a.length;i++)o[i]=a[i]*(1-t)+b[i]*t;return o;}
+
+// ---- the draggable field ----
+const GCOL={latin_upper:"--accent",latin_lower:"--accent",digit:"--muted"};
+let handle={x:0.1,y:-0.1}, dragging=false, fpending=false;
+function fieldBlend(x,y){
+  // softmax-weighted blend of landmark latents by 2D distance
+  const T=0.06; let ws=[],sum=0;
+  for(const lm of V.landmarks){const dx=lm.x-x,dy=lm.y-y;const w=Math.exp(-(dx*dx+dy*dy)/T);ws.push(w);sum+=w;}
+  const z=new Float32Array(L);
+  for(let k=0;k<V.landmarks.length;k++){const w=ws[k]/sum,zz=V.landmarks[k].z;for(let i=0;i<L;i++)z[i]+=w*zz[i];}
+  return z;
+}
+function fieldXY(px,py){const c=document.getElementById("field");return {x:(px/c.width)*2-1,y:(py/c.height)*2-1};}
+function drawField(){
+  const c=document.getElementById("field"),x=c.getContext("2d");
+  x.clearRect(0,0,c.width,c.height);
+  const acc=getComputedStyle(document.body).getPropertyValue("--accent").trim();
+  const mut=getComputedStyle(document.body).getPropertyValue("--muted").trim();
+  const ink=getComputedStyle(document.body).getPropertyValue("--glyph").trim();
+  x.textAlign="center";x.textBaseline="middle";x.font='16px Palatino,Georgia,serif';
+  for(const lm of V.landmarks){
+    const px=(lm.x+1)/2*c.width, py=(lm.y+1)/2*c.height;
+    x.fillStyle=lm.grp==="digit"?mut:acc; x.globalAlpha=0.5;
+    x.fillText(lm.ch,px,py);
+  }
+  x.globalAlpha=1;
+  const hx=(handle.x+1)/2*c.width, hy=(handle.y+1)/2*c.height;
+  x.beginPath();x.arc(hx,hy,9,0,7);x.fillStyle=ink;x.fill();
+  x.beginPath();x.arc(hx,hy,9,0,7);x.strokeStyle=acc;x.lineWidth=3;x.stroke();
+}
+async function fieldUpdate(){
+  drawField();
+  const z=fieldBlend(handle.x,handle.y);
+  drawTile(document.getElementById("fieldout"), await decode(z));
+}
+function fieldDrag(e){
+  const c=document.getElementById("field"),r=c.getBoundingClientRect();
+  const px=(e.clientX-r.left)*(c.width/r.width), py=(e.clientY-r.top)*(c.height/r.height);
+  const xy=fieldXY(Math.max(0,Math.min(c.width,px)),Math.max(0,Math.min(c.height,py)));
+  handle.x=Math.max(-1,Math.min(1,xy.x)); handle.y=Math.max(-1,Math.min(1,xy.y));
+  if(!fpending){fpending=true;requestAnimationFrame(async()=>{fpending=false;await fieldUpdate();});}
+}
+function initField(){
+  const c=document.getElementById("field");
+  c.addEventListener("pointerdown",e=>{dragging=true;c.setPointerCapture(e.pointerId);fieldDrag(e);});
+  c.addEventListener("pointermove",e=>{if(dragging)fieldDrag(e);});
+  c.addEventListener("pointerup",()=>dragging=false);
+  fieldUpdate();
+  fstatus.textContent="grab the dot and drag";
+}
+
+// ---- dropdown helpers ----
+function fillSel(sel,pred){sel.innerHTML=V.landmarks.filter(pred).map((lm,i)=>`<option value="${V.landmarks.indexOf(lm)}">${lm.ch}</option>`).join("");}
+function zOf(idx){return Float32Array.from(V.landmarks[idx].z);}
+
+// interpolation
+async function interShow(){
+  const a=zOf(+document.getElementById("ia").value), b=zOf(+document.getElementById("ib").value);
+  const t=+document.getElementById("interslider").value/100;
+  drawTile(document.getElementById("interout"), await decode(lerp(a,b,t)));
+  document.getElementById("istatus").textContent=t<0.04?"at the start":t>0.96?"at the end":`${Math.round(t*100)}% of the way across`;
+}
+// casing arrow
+async function caseShow(){
+  const z=zOf(+document.getElementById("casesel").value);
+  const t=+document.getElementById("caseslider").value/100;
+  drawTile(document.getElementById("caseout"), await decode(addv(z,V.case_dir,t)));
+  document.getElementById("castatus").textContent=t<0.05?"the small letter":"walking the capital direction…";
+}
+// width dial
+async function widthShow(){
+  const z=zOf(+document.getElementById("widthsel").value);
+  const t=+document.getElementById("widthslider").value/100*2.2;
+  drawTile(document.getElementById("widthout"), await decode(addv(z,V.width_dir,t)));
+}
+
+async function init(){
+  V=await (await fetch("vectors.json")).json(); L=V.latent;
+  sess=await ort.InferenceSession.create("vae_decoder.onnx");
+  // dropdowns
+  const upLo=lm=>lm.grp!=="digit";
+  fillSel(document.getElementById("ia"),()=>true);
+  fillSel(document.getElementById("ib"),()=>true);
+  fillSel(document.getElementById("casesel"),lm=>lm.grp==="latin_lower");
+  fillSel(document.getElementById("widthsel"),lm=>lm.grp==="latin_upper");
+  document.getElementById("ia").value=V.landmarks.findIndex(l=>l.ch==="A");
+  document.getElementById("ib").value=V.landmarks.findIndex(l=>l.ch==="B");
+  document.getElementById("casesel").value=V.landmarks.findIndex(l=>l.ch==="c");
+  document.getElementById("widthsel").value=V.landmarks.findIndex(l=>l.ch==="A");
+  document.getElementById("interslider").addEventListener("input",interShow);
+  document.getElementById("ia").addEventListener("change",interShow);
+  document.getElementById("ib").addEventListener("change",interShow);
+  document.getElementById("caseslider").addEventListener("input",caseShow);
+  document.getElementById("casesel").addEventListener("change",caseShow);
+  document.getElementById("widthslider").addEventListener("input",widthShow);
+  document.getElementById("widthsel").addEventListener("change",widthShow);
+  initField(); interShow(); caseShow(); widthShow();
+}
+init().catch(e=>{fstatus.textContent="Could not load the model.";console.error(e);});
+</script>
+</body>
+</html>
